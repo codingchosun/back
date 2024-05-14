@@ -1,0 +1,15 @@
+
+POST /bridge/validate/post/1/user/1
+Host: localhost:8080
+Content-Type: application/json
+
+{
+	"user_validate" : [
+                        {"user_id" : 1,
+                          "template_name" : "이집 잘하네"
+                        },
+                        {"user_id" : 2,
+                          "template_name" : "밥경찰"
+                        }
+    ]
+}

@@ -1,0 +1,13 @@
+POST /register
+Host: localhost:8080
+Content-Type: application/json
+
+{
+    "name": "김재진",
+    "loginId": "kimjaejin",
+    "password": "12345678",
+    "email": "kimjaejin@gmail.com",
+    "genderCode": "MALE",
+    "birth": "2000-05-11",
+    "nickname": "zzzzz"
+}
