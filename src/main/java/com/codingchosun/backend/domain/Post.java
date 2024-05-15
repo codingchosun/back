@@ -35,7 +35,7 @@ public class Post {
     @Enumerated(EnumType.STRING)
     private StateCode stateCode;
 
-    private  BigInteger viewCount;
+    private  Long viewCount;
 
     @OneToMany(mappedBy = "post")
     private List<PostHash> postHashes;
