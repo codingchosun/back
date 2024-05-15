@@ -2,6 +2,7 @@ package com.codingchosun.backend.domain;
 
 import com.codingchosun.backend.constants.GenderCode;
 import com.codingchosun.backend.request.RegisterUserRequest;
+import com.codingchosun.backend.request.UserUpdateRequest;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
@@ -92,5 +93,13 @@ public class User {
         return "로그인아이디 : " + this.loginId + "\n 닉네임 : " + this.nickname + "\n 성별 + " + this.genderCode +
                 "\n 자기소개 : " + this.introduction + "\n 이메일 : " + this.email + "\n 생일 : " + this.birth +
                 "\n 닉네임 : " + this.nickname  + "\n 매너점수 : " + this.score + "\n 상태 : " + this.state;
+    }
+
+    public void setUpdateRequest(UserUpdateRequest updateRequest) {
+        this.nickname = updateRequest.getNickname();
+        this.password = updateRequest.getPassword();
+        this.email = updateRequest.getEmail();
+        this.genderCode = updateRequest.getGenderCode();
+        this.introduction = updateRequest.getIntroduction();
     }
 }
