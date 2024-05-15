@@ -13,12 +13,13 @@ import java.util.Objects;
 @EqualsAndHashCode
 public class PostHash {
 
-    @Id
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "postId")
     private Post post;
 
-    @Id
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "hashtagId")
     private Hashtag hashtag;
