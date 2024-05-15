@@ -12,11 +12,13 @@ import lombok.Setter;
 public class PostUser {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long postUserId;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn (name = "userId")
     private User user;
-//d
-    @Id
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn (name = "postId")
     private Post post;

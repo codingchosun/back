@@ -29,7 +29,7 @@ public class PostResponse {
 
     private StateCode stateCode;
 
-    private BigInteger viewCount;
+    private Long viewCount;
     private UserDTO userDTO;
     private List<String> hashList;
     private List<CommentDTO> commentList;
