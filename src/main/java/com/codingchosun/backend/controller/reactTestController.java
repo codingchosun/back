@@ -16,7 +16,7 @@ public class reactTestController {
     @PostMapping
     public String postTest(@RequestBody String body) {
         log.info("postBody: " + body);
-
+//test2
         return "ok";
     }
 }
