@@ -15,7 +15,7 @@ public class PostUser {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn (name = "userId")
     private User user;
-
+//d
     @Id
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn (name = "postId")
