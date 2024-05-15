@@ -26,25 +26,16 @@ public class UserUpdateService {
         user = userRepository.findById(user.getUserId()).orElseThrow(()
                 -> new IllegalArgumentException("해당하는 아이디가 없습니다 id : "));
 
-        if (updateRequest.getPassword() != null) {
-            user.setPassword(updateRequest.getPassword());
-        }
-        if (updateRequest.getEmail() != null) {
-            user.setEmail(updateRequest.getEmail());
-        }
-        if (updateRequest.getGenderCode() != null) {
-            user.setGenderCode(updateRequest.getGenderCode());
-        }
-        if (updateRequest.getNickname() != null) {
-            user.setNickname(updateRequest.getNickname());
-        }
-        if (updateRequest.getIntroduction() != null) {
-            user.setIntroduction(updateRequest.getIntroduction());
-        }
-        userRepository.save(user);
+        updateRequest = UserUpdateRequest.builder()
+                .password(updateRequest.getPassword() != null ? updateRequest.getPassword() : user.getPassword())
+                .email(updateRequest.getEmail() != null ? updateRequest.getEmail() : user.getEmail())
+                .genderCode(updateRequest.getGenderCode() != null ? updateRequest.getGenderCode() : user.getGenderCode())
+                .nickname(updateRequest.getNickname() != null ? updateRequest.getNickname() : user.getNickname())
+                .introduction(updateRequest.getIntroduction() != null ? updateRequest.getIntroduction() : user.getIntroduction())
+                .build();
+        user.setUpdateRequest(updateRequest);
+
     }
-
-
 }
 
 
