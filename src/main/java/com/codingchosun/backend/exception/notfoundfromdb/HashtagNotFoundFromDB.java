@@ -1,4 +1,4 @@
-package com.codingchosun.backend.exception;
+package com.codingchosun.backend.exception.notfoundfromdb;
 
 
 public class HashtagNotFoundFromDB extends EntityNotFoundFromDB {

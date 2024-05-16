@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,5 +18,10 @@ public class RegisterPostRequest {
     private String title;
     @NotNull
     private String content;
+
+    //모임 시작 시간
+    @NotNull
+    private LocalDateTime startTime;
+
     private List<String> hashtags = new ArrayList<>();
 }
