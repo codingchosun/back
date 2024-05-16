@@ -19,3 +19,4 @@ INSERT INTO Comment (content, created_at, user_id, post_id) VALUES ('첫 번째 
 INSERT INTO Comment (content, created_at, user_id, post_id) VALUES ('두 번째 댓글 - 유저 1', '2023-05-13T10:20:30', 1, 1);
 INSERT INTO Comment (content, created_at, user_id, post_id) VALUES ('첫 번째 댓글 - 유저 2', '2023-05-13T10:25:30', 2, 1);
 INSERT INTO Comment (content, created_at, user_id, post_id) VALUES ('두 번째 댓글 - 유저 2', '2023-05-13T10:30:30', 2, 1);
+
