@@ -3,9 +3,9 @@ package com.codingchosun.backend.service;
 
 import com.codingchosun.backend.constants.StateCode;
 import com.codingchosun.backend.domain.*;
-import com.codingchosun.backend.exception.EntityNotFoundFromDB;
-import com.codingchosun.backend.exception.HashtagNotFoundFromDB;
-import com.codingchosun.backend.exception.PostNotFoundFromDB;
+import com.codingchosun.backend.exception.invalidtime.TimeBeforeCurrentException;
+import com.codingchosun.backend.exception.notfoundfromdb.HashtagNotFoundFromDB;
+import com.codingchosun.backend.exception.notfoundfromdb.PostNotFoundFromDB;
 import com.codingchosun.backend.repository.hashtagrepository.DataJpaHashtagRepository;
 import com.codingchosun.backend.repository.hashtagrepository.DataJpaPostHashRepository;
 import com.codingchosun.backend.repository.postrepository.DataJpaPostRepository;
@@ -19,7 +19,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.NoSuchElementException;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -34,11 +34,19 @@ public class PostService {
     private final DataJpaPostHashRepository dataJpaPostHashRepository;
     private final ValidateService validateService;
 
-    public PostResponse findById(Long postId) {
+    //post자체가 필요한 경우
+    public Optional<Post> getPost(Long postId){
+        return dataJpaPostRepository.findById(postId);
+    }
+
+    //작성한 모임글의 내용만 가져오기
+    public PostResponse getPostResponse(Long postId) {
 
         Post post = dataJpaPostRepository.findById(postId)
                 .orElseThrow( () -> new PostNotFoundFromDB("postId: " + postId + "를 찾지 못했습니다"));
 
+        //post의 조회수 증가
+        post.increaseViewCount();
 
         return new PostResponse(post);
     }
@@ -51,12 +59,17 @@ public class PostService {
         post.setTitle(registerPostRequest.getTitle());
         post.setContent(registerPostRequest.getContent());
         post.setStateCode(StateCode.ACTIVE);
+        post.setViewCount(0L);
 
         LocalDateTime now = LocalDateTime.now();
         post.setCreatedAt(now);
-        post.setStartTime(now);
-        post.setEndTime(now.plusDays(1));
-        post.setViewCount(0L);
+        //약속시간이 현재 시간보다 늦은지 확인
+        if( registerPostRequest.getStartTime().isBefore(now) ){
+            throw new TimeBeforeCurrentException("현재 시간: " + now + "설정한 시간: " +registerPostRequest.getStartTime());
+        }
+        post.setStartTime(registerPostRequest.getStartTime());
+        post.setEndTime(registerPostRequest.getStartTime().plusDays(1));
+
         Post save = dataJpaPostRepository.save(post);
 
         //작성자는 참여자이기도 하므로 참여인원에 등록
@@ -74,13 +87,8 @@ public class PostService {
         //PostHash에 등록하는 과정
         List<String> hashtagStrings = registerPostRequest.getHashtags();
         for (String hashtagString : hashtagStrings) {
-            Hashtag hashtag;
-            try {
-                hashtag = dataJpaHashtagRepository.findByHashtagName(hashtagString);
-                log.info("hash {}", hashtag.getHashtagName());
-            }catch (NoSuchElementException e){
-                throw new HashtagNotFoundFromDB(hashtagString, e);
-            }
+            Hashtag hashtag = dataJpaHashtagRepository.findByHashtagName(hashtagString)
+                    .orElseThrow( () ->  new HashtagNotFoundFromDB(hashtagString));
             PostHash postHash = new PostHash();
             postHash.setPost(save);
             postHash.setHashtag(hashtag);

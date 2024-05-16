@@ -5,8 +5,9 @@ import com.codingchosun.backend.domain.Hashtag;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface DataJpaHashtagRepository extends JpaRepository<Hashtag, Long> {
     List<Hashtag> findByHashtagIdIn(List<Long> hashtagIds);
-    Hashtag findByHashtagName(String hashtagName);
+    Optional<Hashtag> findByHashtagName(String hashtagName);
 }

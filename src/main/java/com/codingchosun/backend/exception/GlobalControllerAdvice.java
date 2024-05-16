@@ -1,6 +1,12 @@
 package com.codingchosun.backend.exception;
 
-import com.codingchosun.backend.response.ErrorResult;
+import com.codingchosun.backend.constants.ExceptionConstants;
+import com.codingchosun.backend.exception.emptyrequest.EmptyRequestException;
+import com.codingchosun.backend.exception.invalidtime.TimeBeforeCurrentException;
+import com.codingchosun.backend.exception.notfoundfromdb.EntityNotFoundFromDB;
+import com.codingchosun.backend.response.ApiResponse;
+import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -8,13 +14,60 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 @Slf4j
-@RestControllerAdvice
+@RestControllerAdvice(basePackages = "com.codingchosun.backend")    //적용되는 범위를 패키지 단위로 설정
 public class GlobalControllerAdvice {
+
+    @ExceptionHandler({ IllegalStateException.class })
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ApiResponse<ExceptionDto> illegalStateExceptionHandler(IllegalStateException e) {
+        log.warn(ExceptionConstants.PROCESSED);
+        ExceptionDto exceptionDto = new ExceptionDto("illegalStateException 발생", e.getMessage(), e);
+        return new ApiResponse<>(HttpStatus.NOT_FOUND, false, exceptionDto);
+    }
+
+    @ExceptionHandler( {LoggedInUserNotFound.class} )
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ApiResponse<ExceptionDto> loggedInUserNotFoundHandler(LoggedInUserNotFound e){
+        log.warn(ExceptionConstants.LOGGED_IN_USER_NOT_FOUND);
+        ExceptionDto exceptionDto = new ExceptionDto("login여부를 확인하세요", e.getMessage(), e);
+        return new ApiResponse<>(HttpStatus.BAD_REQUEST, false, exceptionDto);
+    }
+
+    @ExceptionHandler( {EmptyRequestException.class} )
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ApiResponse<ExceptionDto> emptyRequestExceptionHandler(EmptyRequestException e){
+        log.warn(ExceptionConstants.EMPTY_CONTENTS);
+        ExceptionDto exceptionDto = new ExceptionDto("요청이 비어있습니다.", e.getMessage(), e);
+        return new ApiResponse<>(HttpStatus.BAD_REQUEST, false,exceptionDto);
+    }
+
 
     @ExceptionHandler({ EntityNotFoundFromDB.class })
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    protected ErrorResult entityNotFoundHandler(EntityNotFoundFromDB e) {
+    protected ApiResponse<ExceptionDto> entityNotFoundHandler(EntityNotFoundFromDB e) {
         //log.warn("Exception: ", e);   //에러 메시지 너무 많이 나옴
-        return new ErrorResult("NOT_FOUND", e.getMessage());
+        log.warn(ExceptionConstants.PROCESSED);
+        ExceptionDto exceptionDto = new ExceptionDto("db에 없는 데이터입니다.", e.getMessage(), e);
+        return new ApiResponse<>(HttpStatus.NOT_FOUND, false, exceptionDto);
+    }
+
+    @ExceptionHandler( { TimeBeforeCurrentException.class } )
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    protected ApiResponse<ExceptionDto> timeBeforeCurrentExceptionHandler(TimeBeforeCurrentException e) {
+        ExceptionDto exceptionDto = new ExceptionDto("현재시간보다 이른 약속시간을 설정할수없습니다.", e.getMessage(), e);
+        log.warn(ExceptionConstants.PROCESSED);
+        return new ApiResponse<>(HttpStatus.BAD_REQUEST, false, exceptionDto);
+    }
+
+    @Data
+    @AllArgsConstructor
+    public static class ExceptionDto{
+        //넣고 싶은 메시지
+        private String message;
+
+        //예외의 메시지
+        private String exceptionMessage;
+
+        private Exception exception;
     }
 }
