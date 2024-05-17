@@ -1,6 +1,6 @@
 
 POST /bridge/validate/post/1/user/1
-Host: localhost:8080
+Host: localhost:8090
 Content-Type: application/json
 
 {
@@ -13,3 +13,10 @@ Content-Type: application/json
                         }
     ]
 }
+
+###
+
+
+GET /bridge/validate/post/1/members
+Host: localhost:8090
+Content-Type: application/json
