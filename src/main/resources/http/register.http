@@ -11,3 +11,16 @@ Content-Type: application/json
     "birth": "2000-05-11",
     "nickname": "zzzzz"
 }
+
+###
+
+POST /login
+Host: localhost:8080
+Content-Type: application/json
+
+{
+"loginId": "kimjaejin",
+"password": "12345678"
+}
+
+###
