@@ -4,7 +4,7 @@ Host: localhost:8090
 Content-Type: application/json
 
 {
-	"user_validate" : [
+	"user_validates" : [
                         {"user_id" : 1,
                           "template_name" : "이집 잘하네"
                         },
@@ -17,6 +17,6 @@ Content-Type: application/json
 ###
 
 
-GET /bridge/validate/post/1/members
+GET /bridge/validate/post/16/members
 Host: localhost:8090
 Content-Type: application/json

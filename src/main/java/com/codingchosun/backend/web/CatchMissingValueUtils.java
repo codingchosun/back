@@ -11,7 +11,7 @@ public class CatchMissingValueUtils {
 
     public static void throwMissingValue(BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
-            throw new MissingValueException("요청에 대한 필드값이 부족합니다.");
+            throw new MissingValueException("요청에 대한 필드값 정확하지 않습니다.");
         }
     }
 }
