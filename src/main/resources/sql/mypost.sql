@@ -15,3 +15,22 @@ INSERT INTO post_user (post_id, user_id) VALUES (2, 1);
 INSERT INTO post_user (post_id, user_id) VALUES (3, 1);
 INSERT INTO post_user (post_id, user_id) VALUES (4, 1);
 INSERT INTO post_user (post_id, user_id) VALUES (5, 1);
+
+
+INSERT INTO hashtag (hashtag_id, hashtag_name) VALUES  (1 ,'#광주광역시');
+ INSERT INTO hashtag (hashtag_id, hashtag_name) VALUES  (2 ,'#지원1동');
+INSERT INTO hashtag (hashtag_id, hashtag_name) VALUES  (3 ,'#소태역');
+INSERT INTO user_hash (user_id, hashtag_id) VALUES  (1 , 1);;
+INSERT INTO user_hash (user_id, hashtag_id) VALUES  (1 , 2);
+INSERT INTO user_hash (user_id, hashtag_id) VALUES  (1 , 3);
+INSERT INTO template (score, content) VALUES (2, '이 집 잘하네');
+INSERT INTO template (score, content) VALUES (10, '밥경찰');
+INSERT INTO template (score, content) VALUES (33, '재미없어요');
+
+
+INSERT INTO validate(template_id, from_user_id, to_user_id, post_id)
+VALUES (1, 2, 1, 1);
+INSERT INTO validate(template_id, from_user_id, to_user_id, post_id)
+VALUES (2, 3, 1, 2);
+INSERT INTO validate(template_id, from_user_id, to_user_id, post_id)
+VALUES (3, 4, 1, 3);
