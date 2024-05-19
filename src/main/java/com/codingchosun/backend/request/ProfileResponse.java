@@ -12,7 +12,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class ProfileRequest {
+public class ProfileResponse {
 
     @NotEmpty
     private String nickname;
@@ -26,6 +26,5 @@ public class ProfileRequest {
 
     private List<String> hashNames;
 
-    //일단 무슨 평가를 제일 많았는지는 제외 (어떻게해야할지 모르겠음)
-
+    private List<String> templateNames;
 }

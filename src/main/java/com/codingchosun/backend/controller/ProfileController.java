@@ -1,7 +1,7 @@
 package com.codingchosun.backend.controller;
 
 
-import com.codingchosun.backend.request.ProfileRequest;
+import com.codingchosun.backend.request.ProfileResponse;
 import com.codingchosun.backend.service.ProfileService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -18,7 +18,7 @@ public class ProfileController {
 
     @GetMapping("/profile/{nickname}")
     @ResponseBody
-    public ProfileRequest viewProfile(@PathVariable String nickname, Model model) {
+    public ProfileResponse viewProfile(@PathVariable String nickname, Model model) {
         return profileService.getProfile(nickname);
     }
 }
