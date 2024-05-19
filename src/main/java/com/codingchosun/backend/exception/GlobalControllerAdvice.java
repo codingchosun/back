@@ -59,6 +59,22 @@ public class GlobalControllerAdvice {
         return new ApiResponse<>(HttpStatus.BAD_REQUEST, false, exceptionDto);
     }
 
+    @ExceptionHandler( { MissingValueException.class})
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    protected ApiResponse<ExceptionDto> wrongRequestEntity(MissingValueException e) {
+        ExceptionDto exceptionDto = new ExceptionDto(e.getMessage(), e.getMessage(), e);
+        log.warn(ExceptionConstants.PROCESSED);
+        return new ApiResponse<>(HttpStatus.BAD_REQUEST, false, exceptionDto);
+    }
+
+    @ExceptionHandler( { ObjectNotFound.class})
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    protected ApiResponse<ExceptionDto> objectNotFound(ObjectNotFound e) {
+        ExceptionDto exceptionDto = new ExceptionDto(e.getMessage(), e.getMessage(), e);
+        log.warn(ExceptionConstants.PROCESSED);
+        return new ApiResponse<>(HttpStatus.NOT_FOUND, false, exceptionDto);
+    }
+
     @Data
     @AllArgsConstructor
     public static class ExceptionDto{
