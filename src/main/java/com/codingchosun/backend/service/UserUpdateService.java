@@ -1,6 +1,5 @@
 package com.codingchosun.backend.service;
 
-
 import com.codingchosun.backend.domain.User;
 import com.codingchosun.backend.repository.userrepository.DataJpaUserRepository;
 import com.codingchosun.backend.request.UserUpdateRequest;
@@ -8,7 +7,6 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 
 @Service
 @RequiredArgsConstructor
@@ -20,7 +18,6 @@ public class UserUpdateService {
     public UserUpdateService(DataJpaUserRepository userRepository) {
         this.userRepository = userRepository;
     }
-
 
     public void updateUser(User user, UserUpdateRequest updateRequest) {
         user = userRepository.findById(user.getUserId()).orElseThrow(()
@@ -34,9 +31,5 @@ public class UserUpdateService {
                 .introduction(updateRequest.getIntroduction() != null ? updateRequest.getIntroduction() : user.getIntroduction())
                 .build();
         user.setUpdateRequest(updateRequest);
-
     }
 }
-
-
-

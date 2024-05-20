@@ -1,6 +1,5 @@
 package com.codingchosun.backend.request;
 
-
 import com.codingchosun.backend.constants.GenderCode;
 import lombok.*;
 import org.springframework.stereotype.Repository;
