@@ -75,6 +75,14 @@ public class GlobalControllerAdvice {
         return new ApiResponse<>(HttpStatus.NOT_FOUND, false, exceptionDto);
     }
 
+    @ExceptionHandler( { NotEqualsUserSize.class})
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    protected ApiResponse<ExceptionDto> notEqualsUserSize(ObjectNotFound e) {
+        ExceptionDto exceptionDto = new ExceptionDto(e.getMessage(), e.getMessage(), e);
+        log.warn(ExceptionConstants.PROCESSED);
+        return new ApiResponse<>(HttpStatus.BAD_REQUEST, false, exceptionDto);
+    }
+
     @Data
     @AllArgsConstructor
     public static class ExceptionDto{

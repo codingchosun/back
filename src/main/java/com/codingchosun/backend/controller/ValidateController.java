@@ -3,6 +3,7 @@ package com.codingchosun.backend.controller;
 
 import com.codingchosun.backend.request.ValidateRequest;
 import com.codingchosun.backend.response.MembersAndTemplates;
+import com.codingchosun.backend.response.UpdateUsersManner;
 import com.codingchosun.backend.service.ValidateService;
 import com.codingchosun.backend.web.CatchMissingValueUtils;
 import jakarta.validation.Valid;
@@ -14,6 +15,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Map;
 
 
@@ -25,13 +27,13 @@ public class ValidateController {
 
     // 모임 시작할 때
     @PostMapping("/user/{fromUserId}")
-    public HttpEntity<Map<String, LocalDateTime>> saveValidate(@PathVariable(name = "postId") Long postId,
+    public HttpEntity<List<UpdateUsersManner>> saveValidate(@PathVariable(name = "postId") Long postId,
                                          @PathVariable(name = "fromUserId") Long fromUserId,
                                          @RequestBody @Valid ValidateRequest validateRequest,
                                          BindingResult bindingResult) {
         CatchMissingValueUtils.throwMissingValue(bindingResult);
-        validateService.saveValidate(postId, fromUserId, validateRequest);
-        return new ResponseEntity<>(Map.of("createdAt", LocalDateTime.now()), HttpStatus.CREATED);
+
+        return new ResponseEntity<>(validateService.saveValidate(postId, fromUserId, validateRequest), HttpStatus.CREATED);
     }
 
 
@@ -41,12 +43,7 @@ public class ValidateController {
     public HttpEntity<MembersAndTemplates> getParticipateMember(@PathVariable(name = "postId") Long postId) {
         return new ResponseEntity<>(validateService.getParticipateMember(postId), HttpStatus.OK);
     }
-//    @PostMapping
-//    public HttpEntity<Map<String, LocalDateTime>> saveValidate2(@PathVariable(name = "postId") Long postId,
-//                                         @PathVariable(name = "fromUserId") Long fromUserId,
-//                                         BindingResult bindingResult) {
-//        CatchMissingValueUtils.throwMissingValue(bindingResult);
-//        validateService.saveValidate2(postId, fromUserId);
-//        return new ResponseEntity<>(Map.of("createdAt", LocalDateTime.now()), HttpStatus.CREATED);
-//    }
+
+
+
 }

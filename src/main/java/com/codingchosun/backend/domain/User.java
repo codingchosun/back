@@ -102,4 +102,8 @@ public class User {
         this.genderCode = updateRequest.getGenderCode();
         this.introduction = updateRequest.getIntroduction();
     }
+
+    public int calMannerScore(int score) {
+        return this.score += score;
+    }
 }
