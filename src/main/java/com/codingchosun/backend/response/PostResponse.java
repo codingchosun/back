@@ -32,7 +32,6 @@ public class PostResponse {
     private Long viewCount;
     private UserDTO userDTO;
     private List<String> hashList;
-    private List<CommentDTO> commentList;
 
     public PostResponse(Post post){
         this.postId = post.getPostId();
@@ -49,34 +48,6 @@ public class PostResponse {
                 .map(postHash -> postHash.getHashtag().getHashtagName()) // 해시태그 이름 추출
                 .collect(Collectors.toList());
 
-        this.commentList = post.getComments().stream()
-                .map(CommentDTO::new)
-                .collect(Collectors.toList());
     }
 
-    @Data
-    public static class UserDTO{
-        private Long userId;
-        private String nickname;
-
-        public UserDTO(User user){
-            this.userId = user.getUserId();
-            this.nickname = user.getNickname();
-        }
-    }
-
-    @Data
-    public static class CommentDTO{
-        private Long commentId;
-        private String content;
-        private LocalDateTime createdAt;
-        private UserDTO userDTO;
-
-        public CommentDTO(Comment comment){
-            this.commentId = comment.getCommentId();
-            this.content = comment.getContent();
-            this.createdAt = comment.getCreatedAt();
-            this.userDTO = new UserDTO(comment.getUser());
-        }
-    }
 }

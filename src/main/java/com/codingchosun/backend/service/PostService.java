@@ -78,11 +78,6 @@ public class PostService {
         postUser.setPost(post);
         dataJpaPostUserRepository.save(postUser);
 
-        //validate에 등록하는 과정
-        //근데 이거를 postService에서 하는게 맞는지는 모르겠음 validate의 서비스계층에서 하는게 맞는거 같기도함
-        //그렇다고 validateService를 불러서쓰자니 서비스계층이 서비스계층을 호출하는것도 아닌것같음
-//        validateService.saveValidate2(save.getPostId(), user.getUserId());
-        //validate테이블은 모임인원이 확정됐을때 등록해야할것 같음 여기서 넣어버리면 toUser가 null인게 들어감
 
         //PostHash에 등록하는 과정
         List<String> hashtagStrings = registerPostRequest.getHashtags();
