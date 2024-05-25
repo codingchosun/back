@@ -15,15 +15,18 @@ import com.codingchosun.backend.web.argumentresolver.Login;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.data.domain.Page;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -36,8 +39,19 @@ public class PostController {
 
     //작성한 모임글의 내용만 가져오는 컨트롤러
     @GetMapping("/{postId}")
-    public PostResponse getPost(@PathVariable Long postId) {
-        return postService.getPostResponse(postId);
+    public PostAndComments getPost(@PathVariable Long postId) {
+        PostAndComments postAndComments = new PostAndComments();
+
+        //게시글 넣기
+        postAndComments.setPostResponse(postService.getPostResponse(postId));
+
+        //댓글넣기
+        Pageable pageable = PageRequest.of(PagingConstants.DEFAULT_COMMENT_PAGE_NO, PagingConstants.MAX_COMMENT_SIZE,
+                Sort.by(Sort.Direction.DESC, PagingConstants.DEFAULT_COMMENT_CRITERIA));
+        postAndComments.setCommentResponseList(commentService.getPagedComments(pageable, postId));
+
+        //todo 이미지 넣기
+        return postAndComments;
     }
 
     //게시글 작성
