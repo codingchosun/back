@@ -5,7 +5,7 @@ Content-Type: application/json
 
 {
 	"user_validate" : [
-                        {"user_id" : 1,
+                        {"user_id" : 6,
                           "template_name" : "이 집 잘하네"
                         },
                         {"user_id" : 2,
@@ -38,7 +38,7 @@ Content-Type: application/json
 ###
 
 
-GET /bridge/validate/post/16/members
+GET /bridge/validate/post/4/members
 Host: localhost:8090
 Content-Type: application/json
 

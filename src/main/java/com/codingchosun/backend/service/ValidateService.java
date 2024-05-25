@@ -121,19 +121,7 @@ public class ValidateService {
 
     // 포스트 아이디를 받아서 포함된 멈버를 다 가져오고, 템플릿도 모두 받아와서 보내준다
     public MembersAndTemplates getParticipateMember(Long postId) {
-//        Post post = dataJpaPostRepository.findById(postId).orElseThrow(() -> new ObjectNotFound("아이디에 해당하는 포스트가 없음"));
-//        User writer = post.getUser();
-//        List<PostUser> postUsers = dataJpaPostRepository.findById(postId)
-//                .orElseThrow(() -> new ObjectNotFound("아이디에 해당하는 포스트가 없음"))
-//                .getPostUsers();
-//        List<String> userNames = new ArrayList<>();
-//        for(PostUser p : postUsers) {
-//            if(p != null && p.getUser() != writer) {
-//                userNames.add(p.getUser().getName());
-//            }
-//        }
-//        Post post = dataJpaPostRepository.findById(postId).orElseThrow(() -> new ObjectNotFound("아이디에 해당하는 포스트가 없음"));
-//        User writer = post.getUser();
+
 
         Post post = dataJpaPostRepository.findById(postId)
                 .orElseThrow(() -> new ObjectNotFound("아이디에 해당하는 포스트가 없음"));
@@ -144,15 +132,6 @@ public class ValidateService {
                 .filter(p -> p != null && !p.getUser().equals(writer))
                 .map(p -> p.getUser().getName())
                 .toList();
-
-
-//        List<Template> templates = templateRepository.findAll();
-//        List<String> templateNames = new ArrayList<>();
-//        for(Template template : templates) {
-//            if(Objects.nonNull(template)) {
-//                templateNames.add(template.getContent());
-//            }
-//        }
 
         List<String> templateNames = templateRepository.findAll().stream()
                 .filter(Objects::nonNull)
