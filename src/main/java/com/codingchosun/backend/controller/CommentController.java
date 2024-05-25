@@ -9,16 +9,19 @@ import com.codingchosun.backend.exception.emptyrequest.EmptyCommentException;
 import com.codingchosun.backend.exception.notfoundfromdb.PostNotFoundFromDB;
 import com.codingchosun.backend.request.RegisterCommentRequest;
 import com.codingchosun.backend.response.ApiResponse;
+import com.codingchosun.backend.response.CommentResponse;
 import com.codingchosun.backend.service.CommentService;
 import com.codingchosun.backend.service.PostService;
 import com.codingchosun.backend.web.argumentresolver.Login;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -49,5 +52,15 @@ public class CommentController {
         Comment comment = commentService.registerComments(user, post, registerCommentRequest);
 
         return new ApiResponse<>(HttpStatus.OK, true, comment.getCommentId());
+    }
+
+    @GetMapping("/posts/{postId}/comments")
+    public List<CommentResponse> getPostComments(@PathVariable Long postId,
+                                                 @RequestParam(required = false, defaultValue = "1", value = "pageNo") int pageNo,
+                                                 @RequestParam(required = false, defaultValue = "createdAt", value = "criteria") String criteria){
+
+        Pageable pageable = PageRequest.of(pageNo - 1, 5, Sort.by(Sort.Direction.DESC, criteria));
+
+        return commentService.getPagedComments(pageable, postId);
     }
 }
