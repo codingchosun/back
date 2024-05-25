@@ -104,6 +104,12 @@ public class User {
     }
 
     public int calMannerScore(int score) {
-        return this.score += score;
+        this.score += score;
+        if (this.score > 100) {
+            score = 100;
+        } else if (this.score < 0) {
+            score = 0;
+        }
+        return this.score;
     }
 }
