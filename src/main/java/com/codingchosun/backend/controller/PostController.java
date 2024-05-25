@@ -5,12 +5,16 @@ import com.codingchosun.backend.domain.Post;
 import com.codingchosun.backend.domain.User;
 import com.codingchosun.backend.request.RegisterPostRequest;
 import com.codingchosun.backend.response.ApiResponse;
+import com.codingchosun.backend.response.NoLoginPostsRequest;
 import com.codingchosun.backend.response.PostResponse;
 import com.codingchosun.backend.service.PostService;
 import com.codingchosun.backend.web.argumentresolver.Login;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
@@ -35,5 +39,15 @@ public class PostController {
         Post registeredPost = postService.registerPost(registerPostRequest, user);
         return new ApiResponse<>(HttpStatus.OK, true, registeredPost.getPostId());
     }
+
+    // 로그인 안 했을 때 글 보기
+    @GetMapping
+    public HttpEntity<Page<NoLoginPostsRequest>> NoLoginShowPosts(@RequestParam("page") int page,
+                                                                    @RequestParam("size") int size
+                                                                    )
+    {
+        return new ResponseEntity<>(postService.noLoginGetPosts(page, size), HttpStatus.OK);
+    }
+    //TODO 로그인 했을 때 글 보기
 
 }
