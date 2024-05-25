@@ -5,11 +5,9 @@ import com.codingchosun.backend.constants.PagingConstants;
 import com.codingchosun.backend.domain.Post;
 import com.codingchosun.backend.domain.User;
 import com.codingchosun.backend.request.RegisterPostRequest;
-import com.codingchosun.backend.response.ApiResponse;
-import com.codingchosun.backend.response.NoLoginPostsRequest;
-import com.codingchosun.backend.response.CommentResponse;
-import com.codingchosun.backend.response.PostResponse;
+import com.codingchosun.backend.response.*;
 import com.codingchosun.backend.service.CommentService;
+import com.codingchosun.backend.service.ImageService;
 import com.codingchosun.backend.service.PostService;
 import com.codingchosun.backend.web.argumentresolver.Login;
 import lombok.Data;
@@ -36,8 +34,9 @@ public class PostController {
 
     private final PostService postService;
     private final CommentService commentService;
+    private final ImageService imageService;
 
-    //작성한 모임글의 내용만 가져오는 컨트롤러
+    //작성한 모임글의 내용만 가져오는 컨트롤러 todo 예외 처리
     @GetMapping("/{postId}")
     public PostAndComments getPost(@PathVariable Long postId) {
         PostAndComments postAndComments = new PostAndComments();
@@ -46,11 +45,15 @@ public class PostController {
         postAndComments.setPostResponse(postService.getPostResponse(postId));
 
         //댓글넣기
-        Pageable pageable = PageRequest.of(PagingConstants.DEFAULT_COMMENT_PAGE_NO, PagingConstants.MAX_COMMENT_SIZE,
+        Pageable commentsPageable = PageRequest.of(PagingConstants.DEFAULT_COMMENT_PAGE_NO, PagingConstants.MAX_COMMENT_SIZE,
                 Sort.by(Sort.Direction.DESC, PagingConstants.DEFAULT_COMMENT_CRITERIA));
-        postAndComments.setCommentResponseList(commentService.getPagedComments(pageable, postId));
+        postAndComments.setCommentResponseList(commentService.getPagedComments(commentsPageable, postId));
 
-        //todo 이미지 넣기
+        //이미지 url 넣기
+        Pageable imageURLPageable = PageRequest.of(PagingConstants.DEFAULT_IMAGE_URL_PAGE_NO, PagingConstants.MAX_IMAGE_URL_SIZE,
+                Sort.by(Sort.Direction.ASC, PagingConstants.DEFAULT_IMAGE_URL_CRITERIA));
+        postAndComments.setImageResponses(imageService.getImageURLList(imageURLPageable, postId));
+
         return postAndComments;
     }
 
@@ -75,9 +78,8 @@ public class PostController {
     @Data
     public static class PostAndComments{
         private PostResponse postResponse;
+        private List<ImageResponse> imageResponses;
         private List<CommentResponse> commentResponseList;
-        //todo 이미지 추가
-
     }
 
 }
