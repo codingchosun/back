@@ -11,10 +11,14 @@ import com.codingchosun.backend.repository.hashtagrepository.DataJpaPostHashRepo
 import com.codingchosun.backend.repository.postrepository.DataJpaPostRepository;
 import com.codingchosun.backend.repository.postuserrepository.DataJpaPostUserRepository;
 import com.codingchosun.backend.request.RegisterPostRequest;
+import com.codingchosun.backend.response.NoLoginPostsRequest;
 import com.codingchosun.backend.response.PostResponse;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -100,4 +104,20 @@ public class PostService {
                 .map(PostResponse::new)
                 .collect(Collectors.toList());
     }
+
+
+    //ToDo 이미지 경로 추후 수정 바람
+    public Page<NoLoginPostsRequest> noLoginGetPosts(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Post> posts = dataJpaPostRepository.findAllByOrderByCreatedAtDesc(pageable);
+        return posts.map(
+                m -> new NoLoginPostsRequest().builder()
+                                                .id(m.getPostId())
+                                                .contents(m.getContent())
+                                                .path(null)
+                                                .title(m.getTitle())
+                                                .build());
+    }
+
+
 }
