@@ -37,7 +37,7 @@ public class PostController {
     private final PostService postService;
     private final CommentService commentService;
 
-    //작성한 모임글의 내용만 가져오는 컨트롤러
+    //작성한 모임글의 내용만 가져오는 컨트롤러 todo 예외 처리
     @GetMapping("/{postId}")
     public PostAndComments getPost(@PathVariable Long postId) {
         PostAndComments postAndComments = new PostAndComments();
