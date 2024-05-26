@@ -1,7 +1,9 @@
 package com.codingchosun.backend.domain;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.List;
@@ -10,11 +12,13 @@ import java.util.List;
 @Entity
 @Getter @Setter
 @Table
+@NoArgsConstructor
 public class Hashtag {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long hashtagId;
 
+    @NotNull
     private String hashtagName;
 
     @OneToMany(mappedBy = "hashtag")
