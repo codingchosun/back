@@ -2,6 +2,7 @@ package com.codingchosun.backend.exception;
 
 import com.codingchosun.backend.constants.ExceptionConstants;
 import com.codingchosun.backend.exception.emptyrequest.EmptyRequestException;
+import com.codingchosun.backend.exception.invalidrequest.InvalidEditorException;
 import com.codingchosun.backend.exception.invalidtime.TimeBeforeCurrentException;
 import com.codingchosun.backend.exception.notfoundfromdb.EntityNotFoundFromDB;
 import com.codingchosun.backend.response.ApiResponse;
@@ -78,6 +79,14 @@ public class GlobalControllerAdvice {
     @ExceptionHandler( { NotEqualsUserSize.class})
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     protected ApiResponse<ExceptionDto> notEqualsUserSize(ObjectNotFound e) {
+        ExceptionDto exceptionDto = new ExceptionDto(e.getMessage(), e.getMessage(), e);
+        log.warn(ExceptionConstants.PROCESSED);
+        return new ApiResponse<>(HttpStatus.BAD_REQUEST, false, exceptionDto);
+    }
+
+    @ExceptionHandler( {InvalidEditorException.class} )
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    protected ApiResponse<ExceptionDto> invalidEditorException(InvalidEditorException e) {
         ExceptionDto exceptionDto = new ExceptionDto(e.getMessage(), e.getMessage(), e);
         log.warn(ExceptionConstants.PROCESSED);
         return new ApiResponse<>(HttpStatus.BAD_REQUEST, false, exceptionDto);
