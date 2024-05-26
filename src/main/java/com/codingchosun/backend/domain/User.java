@@ -21,11 +21,13 @@ import java.util.List;
 @Generated
 @NoArgsConstructor
 @AllArgsConstructor
+@EqualsAndHashCode
 public class User {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long userId;
 
     @NotNull @Size(min = 6, max = 16)
+    @Column(unique = true)
     private String loginId;
 
     @NotNull @Size(min = 6, max = 16)
@@ -43,6 +45,7 @@ public class User {
     private String introduction;
 
     @NotNull @Size(min = 2, max = 12)
+    @Column(unique = true)
     private String nickname;
 
     private int state;

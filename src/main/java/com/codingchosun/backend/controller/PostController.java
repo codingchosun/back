@@ -4,11 +4,14 @@ package com.codingchosun.backend.controller;
 import com.codingchosun.backend.constants.PagingConstants;
 import com.codingchosun.backend.domain.Post;
 import com.codingchosun.backend.domain.User;
+import com.codingchosun.backend.exception.notfoundfromdb.PostNotFoundFromDB;
+import com.codingchosun.backend.request.PostUpdateRequest;
 import com.codingchosun.backend.request.RegisterPostRequest;
 import com.codingchosun.backend.response.*;
 import com.codingchosun.backend.service.CommentService;
 import com.codingchosun.backend.service.ImageService;
 import com.codingchosun.backend.service.PostService;
+import com.codingchosun.backend.service.PostUserService;
 import com.codingchosun.backend.web.argumentresolver.Login;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
@@ -35,6 +38,7 @@ public class PostController {
     private final PostService postService;
     private final CommentService commentService;
     private final ImageService imageService;
+    private final PostUserService postUserService;
 
     //작성한 모임글의 내용만 가져오는 컨트롤러 todo 예외 처리
     @GetMapping("/{postId}")
@@ -74,6 +78,28 @@ public class PostController {
         return new ResponseEntity<>(postService.noLoginGetPosts(page, size), HttpStatus.OK);
     }
     //TODO 로그인 했을 때 글 보기
+
+    //post 수정
+    @GetMapping("/{postId}/edit")
+    public  ApiResponse<Long> editPost(@PathVariable Long postId,
+                                       @RequestBody PostUpdateRequest postUpdateRequest,
+                                       @Login User user){
+        Post editedPost = postService.editPost(postId, user, postUpdateRequest);
+        return new ApiResponse<>(HttpStatus.OK, true, editedPost.getPostId());
+    }
+
+    //post의 참가자 확인
+    @GetMapping("/{postId}/participant")
+    public List<UserDTO> getAllParticipants(@PathVariable Long postId){
+        return postUserService.getParticipants(postId);
+    }
+
+    //post의 모임참가
+    @PostMapping("/{postId}/participant")
+    public ApiResponse<Long> particaptePost(@PathVariable Long postId, @Login User user){
+        User participant = postUserService.participate(postId, user);
+        return new ApiResponse<>(HttpStatus.OK, true, participant.getUserId());
+    }
 
     @Data
     public static class PostAndComments{

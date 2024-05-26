@@ -19,6 +19,7 @@ public class Hashtag {
     private Long hashtagId;
 
     @NotNull
+    @Column(unique = true)
     private String hashtagName;
 
     @OneToMany(mappedBy = "hashtag")
