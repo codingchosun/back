@@ -30,9 +30,9 @@ public class ProfileService {
         this.templateRepository = templateRepository;
     }
 
-    public ProfileResponse getProfile(String nickname) {
-
-        User profileUser = userRepository.findByNickname(nickname);
+    public ProfileResponse getProfile(String loginId) {
+        User profileUser = userRepository.findByLoginId(loginId);
+        String nickname = profileUser.getNickname();
         Long userId = profileUser.getUserId();
         List<UserHash> userHashes = userHashRepository.findHashtagsByUser_UserId(userId);
         List<Long> hashtagIds = userHashes.stream().map(UserHash::getHashtag).map(Hashtag::getHashtagId).collect(Collectors.toList());

@@ -7,6 +7,7 @@ import com.codingchosun.backend.repository.userrepository.DataJpaUserRepository;
 import com.codingchosun.backend.request.UserUpdateRequest;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,6 +17,7 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 @Transactional
+@Slf4j
 public class UserUpdateService {
 
     private DataJpaUserRepository userRepository;
@@ -40,6 +42,7 @@ public class UserUpdateService {
                 .introduction(updateRequest.getIntroduction() != null ? updateRequest.getIntroduction() : user.getIntroduction())
                 .build();
         user.setUpdateRequest(updateRequest);
+        log.info("request = {}", updateRequest);
         userRepository.save(user);
     }
 
