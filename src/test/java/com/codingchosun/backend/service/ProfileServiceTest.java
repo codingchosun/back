@@ -1,5 +1,7 @@
 package com.codingchosun.backend.service;
 
+import com.codingchosun.backend.domain.User;
+import com.codingchosun.backend.repository.userrepository.DataJpaUserRepository;
 import com.codingchosun.backend.request.ProfileResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Assertions;
@@ -11,15 +13,22 @@ import org.springframework.boot.test.context.SpringBootTest;
 @SpringBootTest
 public class ProfileServiceTest {
 
-    @Autowired
-    private ProfileService profileService;
+    private final ProfileService profileService;
+    private final DataJpaUserRepository userRepository;
 
+    @Autowired
+    public ProfileServiceTest(ProfileService profileService, DataJpaUserRepository userRepository) {
+        this.profileService = profileService;
+        this.userRepository = userRepository;
+    }
+    //  resources/sql/profiletest.sql
     @Test
     public void profileTest() {
-        ProfileResponse p = profileService.getProfile("kim");
-        log.info(p.getNickname());
-        log.info(p.getEmail());
-        log.info(p.getIntroduction());
+        User user = userRepository.findByUserId(10000L);
+        ProfileResponse p = profileService.getProfile(user.getNickname());
+        log.info("닉네임={}", p.getNickname());
+        log.info("이메일={}",p.getEmail());
+        log.info("자기소개={}",p.getIntroduction());
         log.info("score={}", p.getScore());
         log.info("Hashtag Names:");
 
@@ -29,19 +38,9 @@ public class ProfileServiceTest {
 
         log.info("Template Names : ");
         for (String templateNames : p.getTemplateNames()) {
-            log.info(templateNames + ", ");
+            log.info(templateNames);
         }
 
         Assertions.assertNotNull(p);
     }
-
-// INSERT INTO hashtag (hashtag_id, hashtag_name) VALUES  (1 ,'#광주광역시')
-// INSERT INTO hashtag (hashtag_id, hashtag_name) VALUES  (2 ,'#지원1동')
-//INSERT INTO hashtag (hashtag_id, hashtag_name) VALUES  (3 ,'#소태역')
-//INSERT INTO user_hash (user_id, hashtag_id) VALUES  (1 , 1);
-//INSERT INTO user_hash (user_id, hashtag_id) VALUES  (1 , 2);
-//INSERT INTO user_hash (user_id, hashtag_id) VALUES  (1 , 3);
-// INSERT INTO template (score, content) VALUES (2, '이 집 잘하네');
-// INSERT INTO template (score, content) VALUES (10, '밥경찰');
-// INSERT INTO template (score, content) VALUES (33, '재미없어요');
 }
