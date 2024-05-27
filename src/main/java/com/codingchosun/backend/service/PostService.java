@@ -9,12 +9,14 @@ import com.codingchosun.backend.exception.notfoundfromdb.HashtagNotFoundFromDB;
 import com.codingchosun.backend.exception.notfoundfromdb.PostNotFoundFromDB;
 import com.codingchosun.backend.repository.hashtagrepository.DataJpaHashtagRepository;
 import com.codingchosun.backend.repository.hashtagrepository.DataJpaPostHashRepository;
+import com.codingchosun.backend.repository.hashtagrepository.DataJpaUserHashRepository;
 import com.codingchosun.backend.repository.imagerepository.DataJpaImageRepository;
 import com.codingchosun.backend.repository.postrepository.DataJpaPostRepository;
 import com.codingchosun.backend.repository.postuserrepository.DataJpaPostUserRepository;
 import com.codingchosun.backend.request.PostUpdateRequest;
 import com.codingchosun.backend.request.RegisterPostRequest;
-import com.codingchosun.backend.response.NoLoginPostsRequest;
+import com.codingchosun.backend.response.LoginPostsResponse;
+import com.codingchosun.backend.response.NoLoginPostsResponse;
 import com.codingchosun.backend.response.PostResponse;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -25,6 +27,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -41,6 +44,7 @@ public class PostService {
     private final DataJpaPostHashRepository dataJpaPostHashRepository;
     private final DataJpaImageRepository dataJpaImageRepository;
     private final ValidateService validateService;
+    private final DataJpaUserHashRepository dataJpaUserHashRepository;
 
     //post자체가 필요한 경우
     public Optional<Post> getPost(Long postId){
@@ -111,16 +115,34 @@ public class PostService {
 
 
     //ToDo 이미지 경로 추후 수정 바람
-    public Page<NoLoginPostsRequest> noLoginGetPosts(int page, int size) {
+    public Page<NoLoginPostsResponse> noLoginGetPosts(int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
         Page<Post> posts = dataJpaPostRepository.findAllByOrderByCreatedAtDesc(pageable);
         return posts.map(
-                m -> new NoLoginPostsRequest().builder()
+                m -> new NoLoginPostsResponse().builder()
                                                 .id(m.getPostId())
                                                 .contents(m.getContent())
                                                 .path(null)
                                                 .title(m.getTitle())
                                                 .build());
+    }
+
+    public Page<LoginPostsResponse> loginPostsRequests(User user, Pageable pageable) {
+        List<UserHash> userHashList = dataJpaUserHashRepository.findHashtagsByUser_UserId(user.getUserId());
+        List<Long> hashIds = new ArrayList<>();
+        for (UserHash userHash : userHashList) {
+            hashIds.add(userHash.getHashtag().getHashtagId());
+        }
+        Page<Post> postPage = dataJpaPostRepository.findPostsByHashTagId(hashIds, pageable);
+        Page<LoginPostsResponse> loginPostsRequests = postPage.map(
+                m -> new LoginPostsResponse().builder()
+                        .id(m.getPostId())
+                        .contents(m.getContent())
+                        .path(null)
+                        .title(m.getTitle())
+                        .build());
+
+        return loginPostsRequests;
     }
 
     public Post editPost(Long postId, User user, PostUpdateRequest postUpdateRequest){
