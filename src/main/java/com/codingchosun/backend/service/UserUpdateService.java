@@ -1,9 +1,9 @@
 package com.codingchosun.backend.service;
 
 import com.codingchosun.backend.domain.*;
-import com.codingchosun.backend.repository.hashtagrepository.DataJpaHashtagRepository;
-import com.codingchosun.backend.repository.hashtagrepository.DataJpaUserHashRepository;
-import com.codingchosun.backend.repository.userrepository.DataJpaUserRepository;
+import com.codingchosun.backend.repository.hashtagrepository.HashtagRepository;
+import com.codingchosun.backend.repository.hashtagrepository.UserHashRepository;
+import com.codingchosun.backend.repository.userrepository.UserRepository;
 import com.codingchosun.backend.request.UserUpdateRequest;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -18,11 +18,11 @@ import java.util.Optional;
 @Transactional
 public class UserUpdateService {
 
-    private DataJpaUserRepository userRepository;
-    private DataJpaUserHashRepository userHashRepository;
-    private DataJpaHashtagRepository hashtagRepository;
+    private UserRepository userRepository;
+    private UserHashRepository userHashRepository;
+    private HashtagRepository hashtagRepository;
     @Autowired
-    public UserUpdateService(DataJpaUserRepository userRepository, DataJpaUserHashRepository userHashRepository, DataJpaHashtagRepository hashtagRepository) {
+    public UserUpdateService(UserRepository userRepository, UserHashRepository userHashRepository, HashtagRepository hashtagRepository) {
         this.userRepository = userRepository;
         this.userHashRepository = userHashRepository;
         this.hashtagRepository = hashtagRepository;

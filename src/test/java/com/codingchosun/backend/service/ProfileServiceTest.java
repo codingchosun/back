@@ -1,7 +1,7 @@
 package com.codingchosun.backend.service;
 
 import com.codingchosun.backend.domain.User;
-import com.codingchosun.backend.repository.userrepository.DataJpaUserRepository;
+import com.codingchosun.backend.repository.userrepository.UserRepository;
 import com.codingchosun.backend.request.ProfileResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Assertions;
@@ -14,10 +14,10 @@ import org.springframework.boot.test.context.SpringBootTest;
 public class ProfileServiceTest {
 
     private final ProfileService profileService;
-    private final DataJpaUserRepository userRepository;
+    private final UserRepository userRepository;
 
     @Autowired
-    public ProfileServiceTest(ProfileService profileService, DataJpaUserRepository userRepository) {
+    public ProfileServiceTest(ProfileService profileService, UserRepository userRepository) {
         this.profileService = profileService;
         this.userRepository = userRepository;
     }

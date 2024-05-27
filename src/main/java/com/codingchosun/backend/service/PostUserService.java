@@ -3,8 +3,8 @@ package com.codingchosun.backend.service;
 import com.codingchosun.backend.domain.Post;
 import com.codingchosun.backend.domain.PostUser;
 import com.codingchosun.backend.domain.User;
-import com.codingchosun.backend.repository.postrepository.DataJpaPostRepository;
-import com.codingchosun.backend.repository.postuserrepository.DataJpaPostUserRepository;
+import com.codingchosun.backend.repository.postrepository.PostRepository;
+import com.codingchosun.backend.repository.postuserrepository.PostUserRepository;
 import com.codingchosun.backend.response.UserDTO;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -13,7 +13,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -21,12 +20,12 @@ import java.util.stream.Collectors;
 @Transactional
 public class PostUserService {
 
-    private final DataJpaPostUserRepository dataJpaPostUserRepository;
-    private final DataJpaPostRepository dataJpaPostRepository;
+    private final PostUserRepository postUserRepository;
+    private final PostRepository postRepository;
 
     //post의 모든 참가자 가져오기
     public List<UserDTO> getParticipants(Long postId){
-        List<PostUser> postUserList = dataJpaPostUserRepository.findAllByPost_PostId(postId);
+        List<PostUser> postUserList = postUserRepository.findAllByPost_PostId(postId);
 
         List<User> userList = new ArrayList<>();
         for (PostUser postUser : postUserList) {
@@ -38,11 +37,11 @@ public class PostUserService {
 
     //모임 참가
     public User participate(Long postId, User user) {
-        Post post = dataJpaPostRepository.findById(postId).orElseThrow(() -> new RuntimeException("post 못찾음"));
+        Post post = postRepository.findById(postId).orElseThrow(() -> new RuntimeException("post 못찾음"));
         PostUser postUser = new PostUser();
         postUser.setPost(post);
         postUser.setUser(user);
-        PostUser save = dataJpaPostUserRepository.save(postUser);
+        PostUser save = postUserRepository.save(postUser);
         return save.getUser();
     }
 }

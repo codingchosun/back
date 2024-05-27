@@ -3,14 +3,12 @@ package com.codingchosun.backend.service;
 import com.codingchosun.backend.component.file.FileStore;
 import com.codingchosun.backend.domain.Image;
 import com.codingchosun.backend.domain.Post;
-import com.codingchosun.backend.repository.imagerepository.DataJpaImageRepository;
+import com.codingchosun.backend.repository.imagerepository.ImageRepository;
 import com.codingchosun.backend.response.ImageResponse;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -23,11 +21,11 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ImageService {
 
-    private final DataJpaImageRepository dataJpaImageRepository;
+    private final ImageRepository imageRepository;
     private final FileStore fileStore;
 
     public List<ImageResponse> getImageURLList(Pageable pageable, Long postId){
-        return dataJpaImageRepository.findByPost_PostId(postId, pageable).map(ImageResponse::new).getContent();
+        return imageRepository.findByPost_PostId(postId, pageable).map(ImageResponse::new).getContent();
     }
 
     //여러개의 파일을 받아서 지정된 경로에 저장, 리턴값으로는 저장한 파일개수 반환
@@ -52,7 +50,7 @@ public class ImageService {
             image.setUrl(savedFile);
             image.setName("ex");    //일단 생략
 
-            dataJpaImageRepository.save(image); //저장
+            imageRepository.save(image); //저장
             count++;
         }
 

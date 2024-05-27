@@ -1,7 +1,7 @@
 package com.codingchosun.backend.controller;
 
 import com.codingchosun.backend.domain.User;
-import com.codingchosun.backend.repository.userrepository.DataJpaUserRepository;
+import com.codingchosun.backend.repository.userrepository.UserRepository;
 import com.codingchosun.backend.request.ProfileResponse;
 import com.codingchosun.backend.request.UserUpdateRequest;
 import com.codingchosun.backend.service.ProfileService;
@@ -24,10 +24,10 @@ public class ProfileController {
 
     private final ProfileService profileService;
     private final UserUpdateService userUpdateService;
-    private final DataJpaUserRepository userRepository;
+    private final UserRepository userRepository;
 
     @Autowired
-    public ProfileController(ProfileService profileService, UserUpdateService userUpdateService, DataJpaUserRepository userRepository) {
+    public ProfileController(ProfileService profileService, UserUpdateService userUpdateService, UserRepository userRepository) {
         this.profileService = profileService;
         this.userUpdateService = userUpdateService;
         this.userRepository = userRepository;
