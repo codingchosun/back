@@ -12,10 +12,10 @@ import org.springframework.boot.test.context.SpringBootTest;
 @Slf4j
 @SpringBootTest
 @Transactional
-class DataJpaPostRepositoryTest {
+class PostRepositoryTest {
 
     @Autowired
-    DataJpaPostRepository dataJpaPostRepository;
+    PostRepository postRepository;
 
     @Test
     void postSaveTest() {
@@ -24,7 +24,7 @@ class DataJpaPostRepositoryTest {
         post.setContent("Post Content");
 
         log.info("post: {}", post);
-        Post save = dataJpaPostRepository.save(post);
+        Post save = postRepository.save(post);
         log.info("save: {}", save);
 
         Assertions.assertThat(post).isEqualTo(save);

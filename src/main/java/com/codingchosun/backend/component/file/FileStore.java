@@ -2,7 +2,7 @@ package com.codingchosun.backend.component.file;
 
 
 
-import com.codingchosun.backend.repository.imagerepository.DataJpaImageRepository;
+import com.codingchosun.backend.repository.imagerepository.ImageRepository;
 import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,13 +23,13 @@ import java.util.UUID;
 public class FileStore {
 
     private final ApplicationContext applicationContext;
-    private final DataJpaImageRepository dataJpaImageRepository;
+    private final ImageRepository imageRepository;
     private String DIRECTORY_PATH;
 
     @Autowired
-    public FileStore(ApplicationContext applicationContext, DataJpaImageRepository dataJpaImageRepository) {
+    public FileStore(ApplicationContext applicationContext, ImageRepository imageRepository) {
         this.applicationContext = applicationContext;
-        this.dataJpaImageRepository = dataJpaImageRepository;
+        this.imageRepository = imageRepository;
     }
 
 
