@@ -1,5 +1,5 @@
 POST /register
-Host: localhost:8080
+Host: localhost:8090
 Content-Type: application/json
 
 {
@@ -14,13 +14,8 @@ Content-Type: application/json
 
 ###
 
-POST /login
-Host: localhost:8080
+POST /login?loginId=id1111111&password=비밀번호입니다.
+Host: localhost:8090
 Content-Type: application/json
-
-{
-"loginId": "kimjaejin",
-"password": "12345678"
-}
 
 ###

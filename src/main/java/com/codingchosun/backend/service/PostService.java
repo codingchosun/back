@@ -3,14 +3,18 @@ package com.codingchosun.backend.service;
 
 import com.codingchosun.backend.constants.StateCode;
 import com.codingchosun.backend.domain.*;
+import com.codingchosun.backend.exception.ObjectNotFound;
 import com.codingchosun.backend.exception.invalidtime.TimeBeforeCurrentException;
 import com.codingchosun.backend.exception.notfoundfromdb.HashtagNotFoundFromDB;
 import com.codingchosun.backend.exception.notfoundfromdb.PostNotFoundFromDB;
 import com.codingchosun.backend.repository.hashtagrepository.DataJpaHashtagRepository;
 import com.codingchosun.backend.repository.hashtagrepository.DataJpaPostHashRepository;
+import com.codingchosun.backend.repository.hashtagrepository.DataJpaUserHashRepository;
 import com.codingchosun.backend.repository.postrepository.DataJpaPostRepository;
+import com.codingchosun.backend.repository.postrepository.DataJpaPostRepositoryCustom;
 import com.codingchosun.backend.repository.postuserrepository.DataJpaPostUserRepository;
 import com.codingchosun.backend.request.RegisterPostRequest;
+import com.codingchosun.backend.response.LoginPostsRequest;
 import com.codingchosun.backend.response.NoLoginPostsRequest;
 import com.codingchosun.backend.response.PostResponse;
 import jakarta.transaction.Transactional;
@@ -22,6 +26,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -37,6 +42,7 @@ public class PostService {
     private final DataJpaHashtagRepository dataJpaHashtagRepository;
     private final DataJpaPostHashRepository dataJpaPostHashRepository;
     private final ValidateService validateService;
+    private final DataJpaUserHashRepository dataJpaUserHashRepository;
 
     //post자체가 필요한 경우
     public Optional<Post> getPost(Long postId){
@@ -117,6 +123,33 @@ public class PostService {
                                                 .path(null)
                                                 .title(m.getTitle())
                                                 .build());
+    }
+
+    public Page<LoginPostsRequest> loginPostsRequests(User user, Pageable pageable) {
+        List<UserHash> userHashList = dataJpaUserHashRepository.findHashtagsByUser_UserId(user.getUserId());
+        List<Long> hashIds = new ArrayList<>();
+        for (UserHash userHash : userHashList) {
+            hashIds.add(userHash.getHashtag().getHashtagId());
+        }
+        Page<Post> postPage = dataJpaPostRepository.findPostsByHashTagId(hashIds, pageable);
+        Page<LoginPostsRequest> loginPostsRequests = postPage.map(
+                m -> new LoginPostsRequest().builder()
+                        .id(m.getPostId())
+                        .contents(m.getContent())
+                        .path(null)
+                        .title(m.getTitle())
+                        .build());
+
+
+
+
+
+        List<LoginPostsRequest> loginPostsRequests1 = new ArrayList<>();
+        loginPostsRequests1 = loginPostsRequests.getContent();
+// 3) pagelist 가 null 이 아니고 && content 가 존재한다면
+// pagelist의 content 를 우리가 담아줄 리스트에 대입해주면 끝 !
+
+        return loginPostsRequests;
     }
 
 

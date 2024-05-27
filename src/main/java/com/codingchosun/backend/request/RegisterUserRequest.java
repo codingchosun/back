@@ -1,10 +1,7 @@
 package com.codingchosun.backend.request;
 
 import com.codingchosun.backend.constants.GenderCode;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Generated;
-import lombok.Getter;
+import lombok.*;
 
 import java.time.LocalDate;
 
@@ -12,6 +9,7 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @Builder
 @Generated
+@NoArgsConstructor
 public class RegisterUserRequest {
     private String name;
     private String loginId;
