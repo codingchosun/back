@@ -10,7 +10,7 @@ import java.util.List;
 
 @Transactional
 @Repository
-public interface UserHashRepository extends JpaRepository<UserHash, Long> {
+public interface DataJpaUserHashRepository extends JpaRepository<UserHash, Long> {
     List<UserHash> findHashtagsByUser_UserId(Long userId);
     UserHash findHashtagsByHashtag_HashtagIdAndUser_UserId(Long hashtagId, Long userId);
 }

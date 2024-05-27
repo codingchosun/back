@@ -7,11 +7,11 @@ import com.codingchosun.backend.exception.invalidrequest.InvalidEditorException;
 import com.codingchosun.backend.exception.invalidtime.TimeBeforeCurrentException;
 import com.codingchosun.backend.exception.notfoundfromdb.HashtagNotFoundFromDB;
 import com.codingchosun.backend.exception.notfoundfromdb.PostNotFoundFromDB;
-import com.codingchosun.backend.repository.hashtagrepository.HashtagRepository;
-import com.codingchosun.backend.repository.hashtagrepository.PostHashRepository;
-import com.codingchosun.backend.repository.imagerepository.ImageRepository;
-import com.codingchosun.backend.repository.postrepository.PostRepository;
-import com.codingchosun.backend.repository.postuserrepository.PostUserRepository;
+import com.codingchosun.backend.repository.hashtagrepository.DataJpaHashtagRepository;
+import com.codingchosun.backend.repository.hashtagrepository.DataJpaPostHashRepository;
+import com.codingchosun.backend.repository.imagerepository.DataJpaImageRepository;
+import com.codingchosun.backend.repository.postrepository.DataJpaPostRepository;
+import com.codingchosun.backend.repository.postuserrepository.DataJpaPostUserRepository;
 import com.codingchosun.backend.request.PostUpdateRequest;
 import com.codingchosun.backend.request.RegisterPostRequest;
 import com.codingchosun.backend.response.NoLoginPostsRequest;
@@ -35,22 +35,22 @@ import java.util.stream.Collectors;
 @Transactional
 public class PostService {
 
-    private final PostRepository postRepository;
-    private final PostUserRepository postUserRepository;
-    private final HashtagRepository hashtagRepository;
-    private final PostHashRepository postHashRepository;
-    private final ImageRepository imageRepository;
+    private final DataJpaPostRepository dataJpaPostRepository;
+    private final DataJpaPostUserRepository dataJpaPostUserRepository;
+    private final DataJpaHashtagRepository dataJpaHashtagRepository;
+    private final DataJpaPostHashRepository dataJpaPostHashRepository;
+    private final DataJpaImageRepository dataJpaImageRepository;
     private final ValidateService validateService;
 
     //post자체가 필요한 경우
     public Optional<Post> getPost(Long postId){
-        return postRepository.findById(postId);
+        return dataJpaPostRepository.findById(postId);
     }
 
     //작성한 모임글의 내용만 가져오기
     public PostResponse getPostResponse(Long postId) {
 
-        Post post = postRepository.findById(postId)
+        Post post = dataJpaPostRepository.findById(postId)
                 .orElseThrow( () -> new PostNotFoundFromDB("postId: " + postId + "를 찾지 못했습니다"));
 
         //post의 조회수 증가
@@ -78,24 +78,24 @@ public class PostService {
         post.setStartTime(registerPostRequest.getStartTime());
         post.setEndTime(registerPostRequest.getStartTime().plusDays(1));
 
-        Post save = postRepository.save(post);
+        Post save = dataJpaPostRepository.save(post);
 
         //작성자는 참여자이기도 하므로 참여인원에 등록
         PostUser postUser = new PostUser();
         postUser.setUser(user);
         postUser.setPost(post);
-        postUserRepository.save(postUser);
+        dataJpaPostUserRepository.save(postUser);
 
 
         //PostHash에 등록하는 과정
         List<String> hashtagStrings = registerPostRequest.getHashtags();
         for (String hashtagString : hashtagStrings) {
-            Hashtag hashtag = hashtagRepository.findByHashtagName(hashtagString)
+            Hashtag hashtag = dataJpaHashtagRepository.findByHashtagName(hashtagString)
                     .orElseThrow( () ->  new HashtagNotFoundFromDB(hashtagString));
             PostHash postHash = new PostHash();
             postHash.setPost(save);
             postHash.setHashtag(hashtag);
-            postHashRepository.save(postHash);
+            dataJpaPostHashRepository.save(postHash);
         }
 
         return save;
@@ -103,7 +103,7 @@ public class PostService {
 
     //검증 필요 + state_code가 active인것만 검색되게 할지 결정해야함
     public List<PostResponse> findByTitle(String title) {
-        List<Post> posts = postRepository.findByTitle(title);
+        List<Post> posts = dataJpaPostRepository.findByTitle(title);
         return posts.stream()
                 .map(PostResponse::new)
                 .collect(Collectors.toList());
@@ -113,7 +113,7 @@ public class PostService {
     //ToDo 이미지 경로 추후 수정 바람
     public Page<NoLoginPostsRequest> noLoginGetPosts(int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
-        Page<Post> posts = postRepository.findAllByOrderByCreatedAtDesc(pageable);
+        Page<Post> posts = dataJpaPostRepository.findAllByOrderByCreatedAtDesc(pageable);
         return posts.map(
                 m -> new NoLoginPostsRequest().builder()
                                                 .id(m.getPostId())
@@ -124,7 +124,7 @@ public class PostService {
     }
 
     public Post editPost(Long postId, User user, PostUpdateRequest postUpdateRequest){
-        Post post = postRepository.findById(postId)
+        Post post = dataJpaPostRepository.findById(postId)
                 .orElseThrow(() -> new PostNotFoundFromDB("postId: " + postId + "를 찾지 못했습니다"));
 
         log.info("작성자 : {}, 수정자 : {}", post.getUser().getUserId(), user.getUserId());
@@ -151,7 +151,7 @@ public class PostService {
 
         //이미지 수정
         for (Long removeImage : postUpdateRequest.getRemoveImages()) {
-            imageRepository.deleteById(removeImage);
+            dataJpaImageRepository.deleteById(removeImage);
         }
 
         return post;
@@ -178,7 +178,7 @@ public class PostService {
 
     private void addHashtagToPost(PostUpdateRequest postUpdateRequest, Post post) {
         for (String addTag : postUpdateRequest.getAddTags()) {
-            Optional<Hashtag> optionalHashtag = hashtagRepository.findByHashtagName(addTag);
+            Optional<Hashtag> optionalHashtag = dataJpaHashtagRepository.findByHashtagName(addTag);
 
             if( optionalHashtag.isPresent() ){  //이미 있는 해쉬태그의 경우
                 Hashtag hashtag = optionalHashtag.get();
@@ -186,19 +186,19 @@ public class PostService {
                 PostHash postHash = new PostHash();
                 postHash.setPost(post);
                 postHash.setHashtag(hashtag);
-                postHashRepository.save(postHash);
+                dataJpaPostHashRepository.save(postHash);
             }
             else {
                 //해쉬태그 만들기
                 Hashtag hashtag = new Hashtag();
                 hashtag.setHashtagName(addTag);
-                Hashtag savedHashtag = hashtagRepository.save(hashtag);
+                Hashtag savedHashtag = dataJpaHashtagRepository.save(hashtag);
 
                 //해쉬태그 저장
                 PostHash postHash = new PostHash();
                 postHash.setPost(post);
                 postHash.setHashtag(savedHashtag);
-                postHashRepository.save(postHash);
+                dataJpaPostHashRepository.save(postHash);
             }
 
         }
@@ -206,12 +206,12 @@ public class PostService {
 
     private void deleteHashtagFromPost(PostUpdateRequest postUpdateRequest, Post post) {
         for (String removeTag : postUpdateRequest.getRemoveTags()) {
-            Hashtag hashtag = hashtagRepository.findByHashtagName(removeTag).orElseThrow(
+            Hashtag hashtag = dataJpaHashtagRepository.findByHashtagName(removeTag).orElseThrow(
                     () -> new HashtagNotFoundFromDB("없는 해쉬태그"));
-            PostHash postHash = postHashRepository.findByPostAndHashtag(post, hashtag)
+            PostHash postHash = dataJpaPostHashRepository.findByPostAndHashtag(post, hashtag)
                     .orElseThrow(() -> new RuntimeException("이 글에 달린 태그가 아님"));
 
-            postHashRepository.delete(postHash); //태그 지우기
+            dataJpaPostHashRepository.delete(postHash); //태그 지우기
         }
     }
 

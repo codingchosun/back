@@ -10,7 +10,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 @Transactional
 @Repository
-public interface PostUserRepository extends JpaRepository<PostUser, Long> {
+public interface DataJpaPostUserRepository extends JpaRepository<PostUser, Long> {
     List<PostUser> findAllByPost_PostId(Long postId);
     List<PostUser> findAllByUser_UserId(Long userId);
 
