@@ -4,7 +4,6 @@ package com.codingchosun.backend.controller;
 import com.codingchosun.backend.constants.PagingConstants;
 import com.codingchosun.backend.domain.Post;
 import com.codingchosun.backend.domain.User;
-import com.codingchosun.backend.exception.notfoundfromdb.PostNotFoundFromDB;
 import com.codingchosun.backend.request.PostUpdateRequest;
 import com.codingchosun.backend.request.RegisterPostRequest;
 import com.codingchosun.backend.response.*;
@@ -71,13 +70,21 @@ public class PostController {
 
     // 로그인 안 했을 때 글 보기
     @GetMapping
-    public HttpEntity<Page<NoLoginPostsRequest>> NoLoginShowPosts(@RequestParam("page") int page,
-                                                                    @RequestParam("size") int size
+    public HttpEntity<Page<NoLoginPostsResponse>> NoLoginShowPosts(@RequestParam("page") int page,
+                                                                   @RequestParam("size") int size
                                                                     )
     {
         return new ResponseEntity<>(postService.noLoginGetPosts(page, size), HttpStatus.OK);
     }
     //TODO 로그인 했을 때 글 보기
+    @GetMapping("/login")
+    public HttpEntity<Page<LoginPostsResponse>> loginShowPosts(@Login User user,
+                                                              Pageable pageable
+    )
+    {
+
+        return new ResponseEntity<>(postService.loginPostsRequests(user, pageable), HttpStatus.OK);
+    }
 
     //post 수정
     @GetMapping("/{postId}/edit")
