@@ -4,10 +4,10 @@ package com.codingchosun.backend.service;
 import com.codingchosun.backend.domain.*;
 import com.codingchosun.backend.exception.NotEqualsUserSize;
 import com.codingchosun.backend.exception.ObjectNotFound;
-import com.codingchosun.backend.repository.postrepository.PostRepository;
-import com.codingchosun.backend.repository.postuserrepository.PostUserRepository;
+import com.codingchosun.backend.repository.postrepository.DataJpaPostRepository;
+import com.codingchosun.backend.repository.postuserrepository.DataJpaPostUserRepository;
 import com.codingchosun.backend.repository.templaterepository.TemplateRepository;
-import com.codingchosun.backend.repository.userrepository.UserRepository;
+import com.codingchosun.backend.repository.userrepository.DataJpaUserRepository;
 import com.codingchosun.backend.repository.validaterepository.ValidateRepository;
 import com.codingchosun.backend.request.UserValidate;
 import com.codingchosun.backend.request.ValidateRequest;
@@ -26,10 +26,10 @@ import java.util.Objects;
 @RequiredArgsConstructor
 public class ValidateService {
     private final ValidateRepository validateRepository;
-    private final UserRepository userRepository;
-    private final PostRepository postRepository;
+    private final DataJpaUserRepository dataJpaUserRepository;
+    private final DataJpaPostRepository dataJpaPostRepository;
     private final TemplateRepository templateRepository;
-    private final PostUserRepository postUserRepository;
+    private final DataJpaPostUserRepository dataJpaPostUserRepository;
     //ToDo 들어온 유저 갯수 == postUser - 1
     // 평가하기 했을 때 저장되는 경우
     @Transactional
@@ -37,12 +37,12 @@ public class ValidateService {
         if (!checkUserList(postId, validateRequest)) {
             throw new NotEqualsUserSize("모든 사용자를 투표하지 않았습니다");
         }
-        Post post = postRepository.findById(postId).orElseThrow(() -> new ObjectNotFound("아이디에 해당하는 포스트가 없음"));
-        User fromUser = userRepository.findById(fromUserId).orElseThrow(() -> new ObjectNotFound("아이디에 해당하는 작성자가 없음"));
+        Post post = dataJpaPostRepository.findById(postId).orElseThrow(() -> new ObjectNotFound("아이디에 해당하는 포스트가 없음"));
+        User fromUser = dataJpaUserRepository.findById(fromUserId).orElseThrow(() -> new ObjectNotFound("아이디에 해당하는 작성자가 없음"));
 
         for (UserValidate userValidate: validateRequest.getUserValidate()) {
             if (!fromUserId.equals(userValidate.getUserId())) {
-                User toUser = userRepository.findById(userValidate.getUserId()).orElseThrow(() -> new ObjectNotFound("아이디에 해당하는 유저 없음"));
+                User toUser = dataJpaUserRepository.findById(userValidate.getUserId()).orElseThrow(() -> new ObjectNotFound("아이디에 해당하는 유저 없음"));
                 Template template = templateRepository.findTemplateByContent(userValidate.getTemplateName()).orElseThrow(() -> new ObjectNotFound("내용과 일치하는 템플릿 없음"));
                 validateRepository.save(Validate.builder()
                         .post(post)
@@ -56,7 +56,7 @@ public class ValidateService {
     }
 
     private Boolean checkUserList(Long postId, ValidateRequest validateRequest) {
-        List<PostUser> postUsers = postUserRepository.findAllByPost_PostId(postId);
+        List<PostUser> postUsers = dataJpaPostUserRepository.findAllByPost_PostId(postId);
         List<UserValidate> userValidates = validateRequest.getUserValidate();
 
         if (postUsers.size() -1 == userValidates.size()) {
@@ -69,7 +69,7 @@ public class ValidateService {
     private List<UpdateUsersManner> calculateManner(Long postId, ValidateRequest validateRequest) {
 
         List<UpdateUsersManner> updateUsersManner = new ArrayList<>();
-        List<PostUser> postUsers = postUserRepository.findAllByPost_PostId(postId);
+        List<PostUser> postUsers = dataJpaPostUserRepository.findAllByPost_PostId(postId);
         List<User> users = new ArrayList<>();
         for (PostUser postUser : postUsers) {
             users.add(postUser.getUser());
@@ -79,7 +79,7 @@ public class ValidateService {
 
         for (User user : users) {
             for (UserValidate userValidate : userValidates) {
-                if (user.getNickname().equals(userRepository.findByUserId(userValidate.getUserId()).getNickname())) {
+                if (user.getNickname().equals(dataJpaUserRepository.findByUserId(userValidate.getUserId()).getNickname())) {
                     int score = templateRepository.findTemplateByContent(userValidate.getTemplateName()).orElseThrow(() -> new ObjectNotFound("컨텐츠에 해당하는 유저 없음")).getScore();
                     user.calMannerScore(score);
                     updateUsersManner.add(new UpdateUsersManner(user.getNickname(), user.getScore()));
@@ -123,10 +123,10 @@ public class ValidateService {
     public MembersAndTemplates getParticipateMember(Long postId) {
 
 
-        Post post = postRepository.findById(postId)
+        Post post = dataJpaPostRepository.findById(postId)
                 .orElseThrow(() -> new ObjectNotFound("아이디에 해당하는 포스트가 없음"));
         User writer = post.getUser();
-        List<String> userNickNames = postRepository.findById(postId)
+        List<String> userNickNames = dataJpaPostRepository.findById(postId)
                 .orElseThrow(() -> new ObjectNotFound("아이디에 해당하는 포스트가 없음"))
                 .getPostUsers().stream()
                 .filter(p -> p != null && !p.getUser().equals(writer))
@@ -144,8 +144,8 @@ public class ValidateService {
 
     // 모임 시작됐을 때 저장되는 경우
     public void saveValidate2(Long postId, Long fromUserId) {
-        Post post = postRepository.findById(postId).get();
-        User fromUser = userRepository.findById(fromUserId).get();
+        Post post = dataJpaPostRepository.findById(postId).get();
+        User fromUser = dataJpaUserRepository.findById(fromUserId).get();
 
         validateRepository.save(Validate.builder()
                         .post(post)

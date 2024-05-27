@@ -2,7 +2,7 @@ package com.codingchosun.backend.service;
 
 import com.codingchosun.backend.constants.GenderCode;
 import com.codingchosun.backend.domain.User;
-import com.codingchosun.backend.repository.userrepository.UserRepository;
+import com.codingchosun.backend.repository.userrepository.DataJpaUserRepository;
 import com.codingchosun.backend.request.UserUpdateRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
@@ -16,12 +16,12 @@ import java.util.List;
 @Slf4j
 public class UserUpdateServiceTest {
 
-        private final UserRepository userRepository;
+        private final DataJpaUserRepository userRepository;
         private final UserUpdateService userUpdateService;
         private final UserUpdateRequest updateRequest;
 
         @Autowired
-        public UserUpdateServiceTest(UserRepository userRepository, UserUpdateService userUpdateService, UserUpdateRequest updateRequest) {
+        public UserUpdateServiceTest(DataJpaUserRepository userRepository, UserUpdateService userUpdateService, UserUpdateRequest updateRequest) {
             this.userRepository = userRepository;
             this.userUpdateService = userUpdateService;
             this.updateRequest = updateRequest;

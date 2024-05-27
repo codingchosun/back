@@ -5,10 +5,10 @@ import com.codingchosun.backend.domain.Hashtag;
 import com.codingchosun.backend.domain.Template;
 import com.codingchosun.backend.domain.User;
 import com.codingchosun.backend.domain.UserHash;
-import com.codingchosun.backend.repository.hashtagrepository.HashtagRepository;
-import com.codingchosun.backend.repository.hashtagrepository.UserHashRepository;
+import com.codingchosun.backend.repository.hashtagrepository.DataJpaHashtagRepository;
+import com.codingchosun.backend.repository.hashtagrepository.DataJpaUserHashRepository;
 import com.codingchosun.backend.repository.templaterepository.TemplateRepository;
-import com.codingchosun.backend.repository.userrepository.UserRepository;
+import com.codingchosun.backend.repository.userrepository.DataJpaUserRepository;
 import com.codingchosun.backend.request.ProfileResponse;
 import org.springframework.stereotype.Service;
 
@@ -18,12 +18,12 @@ import java.util.stream.Collectors;
 @Service
 public class ProfileService {
 
-    private final UserRepository userRepository;
-    private final HashtagRepository hashtagRepository;
-    private final UserHashRepository userHashRepository;
+    private final DataJpaUserRepository userRepository;
+    private final DataJpaHashtagRepository hashtagRepository;
+    private final DataJpaUserHashRepository userHashRepository;
     private final TemplateRepository templateRepository;
 
-    public ProfileService(UserRepository userRepository, HashtagRepository hashtagRepository, UserHashRepository userHashRepository, TemplateRepository templateRepository) {
+    public ProfileService(DataJpaUserRepository userRepository, DataJpaHashtagRepository hashtagRepository, DataJpaUserHashRepository userHashRepository, TemplateRepository templateRepository) {
         this.userRepository = userRepository;
         this.hashtagRepository = hashtagRepository;
         this.userHashRepository = userHashRepository;
