@@ -4,6 +4,7 @@ package com.codingchosun.backend.controller;
 import com.codingchosun.backend.constants.PagingConstants;
 import com.codingchosun.backend.domain.Post;
 import com.codingchosun.backend.domain.User;
+import com.codingchosun.backend.exception.LoggedInUserNotFound;
 import com.codingchosun.backend.request.PostUpdateRequest;
 import com.codingchosun.backend.request.RegisterPostRequest;
 import com.codingchosun.backend.response.*;
@@ -50,12 +51,12 @@ public class PostController {
         //댓글넣기
         Pageable commentsPageable = PageRequest.of(PagingConstants.DEFAULT_COMMENT_PAGE_NO, PagingConstants.MAX_COMMENT_SIZE,
                 Sort.by(Sort.Direction.DESC, PagingConstants.DEFAULT_COMMENT_CRITERIA));
-        postAndComments.setCommentResponseList(commentService.getPagedComments(commentsPageable, postId));
+        postAndComments.setPagedCommentResponseList(commentService.getPagedComments(commentsPageable, postId));
 
         //이미지 url 넣기
         Pageable imageURLPageable = PageRequest.of(PagingConstants.DEFAULT_IMAGE_URL_PAGE_NO, PagingConstants.MAX_IMAGE_URL_SIZE,
                 Sort.by(Sort.Direction.ASC, PagingConstants.DEFAULT_IMAGE_URL_CRITERIA));
-        postAndComments.setImageResponses(imageService.getImageURLList(imageURLPageable, postId));
+        postAndComments.setPagedImageResponseList(imageService.getImageURLList(imageURLPageable, postId));
 
         return postAndComments;
     }
@@ -64,6 +65,9 @@ public class PostController {
     @PostMapping("/register")
     public ApiResponse<Long> registerPost(@RequestBody RegisterPostRequest registerPostRequest, BindingResult bindingResult,
                                     @Login User user){
+        if(user == null){
+            throw new LoggedInUserNotFound("로그인을 해야 글을 쓸수있습니다.");
+        }
         Post registeredPost = postService.registerPost(registerPostRequest, user);
         return new ApiResponse<>(HttpStatus.OK, true, registeredPost.getPostId());
     }
@@ -90,6 +94,9 @@ public class PostController {
     public  ApiResponse<Long> editPost(@PathVariable Long postId,
                                        @RequestBody PostUpdateRequest postUpdateRequest,
                                        @Login User user){
+        if(user == null){
+            throw new LoggedInUserNotFound("수정 중 로그인불량");
+        }
         Post editedPost = postService.editPost(postId, user, postUpdateRequest);
         return new ApiResponse<>(HttpStatus.OK, true, editedPost.getPostId());
     }
@@ -110,8 +117,8 @@ public class PostController {
     @Data
     public static class PostAndComments{
         private PostResponse postResponse;
-        private List<ImageResponse> imageResponses;
-        private List<CommentResponse> commentResponseList;
+        private Page<ImageResponse> pagedImageResponseList;
+        private Page<CommentResponse> pagedCommentResponseList;
     }
 
 }

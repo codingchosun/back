@@ -32,7 +32,7 @@ public class CommentService {
         return dataJpaCommentRepository.save(comment);
     }
 
-    public List<CommentResponse> getPagedComments(Pageable pageable, Long postId){
-        return dataJpaCommentRepository.findAllByPost_PostId(postId, pageable).map(CommentResponse::new).getContent();
+    public Page<CommentResponse> getPagedComments(Pageable pageable, Long postId){
+        return dataJpaCommentRepository.findAllByPost_PostId(postId, pageable).map(CommentResponse::new);
     }
 }

@@ -162,7 +162,7 @@ public class PostService {
 
     public Post editPost(Long postId, User user, PostUpdateRequest postUpdateRequest){
         Post post = dataJpaPostRepository.findById(postId)
-                .orElseThrow(() -> new PostNotFoundFromDB("postId: " + postId + "를 찾지 못했습니다"));
+                .orElseThrow(() -> new PostNotFoundFromDB("postId: " + postId + "를 찾지 못해 글을 수정할수없음"));
 
         log.info("작성자 : {}, 수정자 : {}", post.getUser().getUserId(), user.getUserId());
 
