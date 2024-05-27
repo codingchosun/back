@@ -46,6 +46,7 @@ public class PostService {
     private final ValidateService validateService;
     private final DataJpaUserHashRepository dataJpaUserHashRepository;
 
+
     //post자체가 필요한 경우
     public Optional<Post> getPost(Long postId){
         return dataJpaPostRepository.findById(postId);
@@ -115,8 +116,9 @@ public class PostService {
 
 
     //ToDo 이미지 경로 추후 수정 바람
-    public Page<NoLoginPostsResponse> noLoginGetPosts(int page, int size) {
-        Pageable pageable = PageRequest.of(page, size);
+    public Page<NoLoginPostsResponse> noLoginGetPosts(Pageable pageable) {
+        List<Hashtag> hashtagList = dataJpaHashtagRepository.findRandomHashtags(5);
+
         Page<Post> posts = dataJpaPostRepository.findAllByOrderByCreatedAtDesc(pageable);
         return posts.map(
                 m -> new NoLoginPostsResponse().builder()
@@ -124,6 +126,7 @@ public class PostService {
                                                 .contents(m.getContent())
                                                 .path(null)
                                                 .title(m.getTitle())
+                                                .hashtagList(hashtagList)
                                                 .build());
     }
 

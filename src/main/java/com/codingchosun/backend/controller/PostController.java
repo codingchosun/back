@@ -70,11 +70,10 @@ public class PostController {
 
     // 로그인 안 했을 때 글 보기
     @GetMapping
-    public HttpEntity<Page<NoLoginPostsResponse>> NoLoginShowPosts(@RequestParam("page") int page,
-                                                                   @RequestParam("size") int size
+    public HttpEntity<Page<NoLoginPostsResponse>> NoLoginShowPosts(Pageable pageable
                                                                     )
     {
-        return new ResponseEntity<>(postService.noLoginGetPosts(page, size), HttpStatus.OK);
+        return new ResponseEntity<>(postService.noLoginGetPosts(pageable), HttpStatus.OK);
     }
     //TODO 로그인 했을 때 글 보기
     @GetMapping("/login")
