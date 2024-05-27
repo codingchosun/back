@@ -1,6 +1,7 @@
 package com.codingchosun.backend.domain;
 
 import com.codingchosun.backend.constants.GenderCode;
+import com.codingchosun.backend.constants.StateCode;
 import com.codingchosun.backend.request.RegisterUserRequest;
 import com.codingchosun.backend.request.UserUpdateRequest;
 import jakarta.persistence.*;
@@ -48,7 +49,8 @@ public class User {
     @Column(unique = true)
     private String nickname;
 
-    private int state;
+    @NotNull @Enumerated(EnumType.STRING)
+    private StateCode state;
 
     private int score;
 
@@ -89,6 +91,7 @@ public class User {
         this.nickname = register.getNickname();
         this.name = register.getName();
         this.genderCode = register.getGenderCode();
+        this.state = StateCode.ACTIVE;
     }
 
     @Override
