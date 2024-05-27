@@ -14,8 +14,13 @@ Content-Type: application/json
 
 ###
 
-POST /login?loginId=id1111111&password=비밀번호입니다.
+POST /login
 Host: localhost:8090
 Content-Type: application/json
+
+{
+  "loginId" : "id1111111",
+  "password" : "비밀번호입니다."
+}
 
 ###

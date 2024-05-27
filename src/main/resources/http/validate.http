@@ -48,11 +48,11 @@ Content-Type: application/json
 
 GET /posts/login?page=1&size=2
 Host: localhost:8090
-Content-Type: application/json
 
 ###
 
 GET /posts?page=1&size=2
 Host: localhost:8090
-Content-Type: application/json
+
+
 ###
