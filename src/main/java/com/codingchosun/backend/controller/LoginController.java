@@ -7,34 +7,35 @@ import com.codingchosun.backend.service.LoginService;
 import com.codingchosun.backend.web.SessionConst;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Controller;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 @Slf4j
-@RequiredArgsConstructor
-@Controller
+@RestController
 public class LoginController {
 
     private final LoginService loginService;
 
+    @Autowired
+    public LoginController(LoginService loginService) {
+        this.loginService = loginService;
+    }
+
     @PostMapping("/login")
-    public String login(
-            @RequestParam (name = "loginId") String loginId,
-            @RequestParam (name = "password") String password,
-            @ModelAttribute LoginRequest loginrequest,
+    public ResponseEntity<String> login(
+            @RequestBody LoginRequest loginRequest,
             BindingResult bindingResult, HttpServletRequest request)
     {
+        //log.info("Received login request: loginId={}, password={}", loginRequest.getLoginId(), loginRequest.getPassword());
         if (bindingResult.hasErrors()) {
-            return "redirect:/login";
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-        loginrequest.setLoginId(loginId);
-        loginrequest.setPassword(password);
-        User loginUser = loginService.login(loginrequest);
+
+        User loginUser = loginService.login(loginRequest);
 
         if (loginUser == null) {
             bindingResult.reject("loginFail", "아이디 또는 비밀번호가 맞지 않습니다.");
@@ -46,18 +47,18 @@ public class LoginController {
             log.info(String.valueOf(session.getCreationTime()));
             session.setAttribute(SessionConst.LOGIN_USER, loginUser);
         }
-        return "redirect:/";
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
 
     @PostMapping("/logout")
-    public String logout(HttpServletRequest request) {
+    public ResponseEntity<String> logout(HttpServletRequest request) {
+
         HttpSession session = request.getSession(false);
-        if (session != null) {
-            log.info(String.valueOf(session.getAttribute(SessionConst.LOGIN_USER)));
-            session.invalidate();
-            log.info("logout success");
-        }
-        return "redirect:/";
+        loginService.logout(session);
+
+        if (session != null) { return new ResponseEntity<>(HttpStatus.FORBIDDEN); }
+
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 }
