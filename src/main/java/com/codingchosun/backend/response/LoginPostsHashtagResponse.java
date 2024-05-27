@@ -13,5 +13,7 @@ import java.util.List;
 @Setter
 public class LoginPostsHashtagResponse {
     Page<LoginPostsResponse> loginPostsResponses;
-    List<Hashtag> hashtagList;
+    List<HashtagDto> hashtagDtoList;
+
+
 }

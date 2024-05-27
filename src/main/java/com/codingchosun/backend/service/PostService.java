@@ -141,6 +141,8 @@ public class PostService {
             hashIds.add(userHash.getHashtag().getHashtagId());
         }
 
+        List<HashtagDto> hashtagDtoList = hashtagList.stream().map(HashtagDto::new).toList();
+
         Page<Post> postPage = dataJpaPostRepository.findPostsByHashTagId(hashIds, pageable);
         Page<LoginPostsResponse> loginPostsRequests = postPage.map(
                 m -> new LoginPostsResponse().builder()
@@ -152,7 +154,7 @@ public class PostService {
 
         return new LoginPostsHashtagResponse().builder()
                 .loginPostsResponses(loginPostsRequests)
-                .hashtagList(hashtagList)
+                .hashtagDtoList(hashtagDtoList)
                 .build();
 
     }
