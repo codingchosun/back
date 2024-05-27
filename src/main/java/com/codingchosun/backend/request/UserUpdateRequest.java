@@ -1,6 +1,7 @@
 package com.codingchosun.backend.request;
 
 import com.codingchosun.backend.constants.GenderCode;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 import org.springframework.stereotype.Repository;
 
@@ -13,10 +14,19 @@ import org.springframework.stereotype.Repository;
 @Repository
 @ToString
 public class UserUpdateRequest {
+    @JsonProperty("password")
     private String password;
+
+    @JsonProperty("email")
     private String email;
+
+    @JsonProperty("genderCode")
     private GenderCode genderCode;
+
+    @JsonProperty("nickname")
     private String nickname;
+
+    @JsonProperty("introduction")
     private String introduction;
 
     @Builder

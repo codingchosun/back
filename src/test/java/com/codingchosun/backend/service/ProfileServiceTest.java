@@ -25,7 +25,7 @@ public class ProfileServiceTest {
     @Test
     public void profileTest() {
         User user = userRepository.findByUserId(10000L);
-        ProfileResponse p = profileService.getProfile(user.getNickname());
+        ProfileResponse p = profileService.getProfile(user.getLoginId());
         log.info("닉네임={}", p.getNickname());
         log.info("이메일={}",p.getEmail());
         log.info("자기소개={}",p.getIntroduction());
