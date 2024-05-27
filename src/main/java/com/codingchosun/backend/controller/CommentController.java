@@ -15,6 +15,7 @@ import com.codingchosun.backend.service.PostService;
 import com.codingchosun.backend.web.argumentresolver.Login;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -37,7 +38,7 @@ public class CommentController {
 
         //user 못 가져올경우
         if(user == null){
-            throw new LoggedInUserNotFound(ExceptionConstants.LOGGED_IN_USER_NOT_FOUND);
+            throw new LoggedInUserNotFound("로그인을 해야 댓글을 작성할수있습니다");
         }
 
         //빈 댓글 예외처리
@@ -55,7 +56,7 @@ public class CommentController {
     }
 
     @GetMapping("/posts/{postId}/comments")
-    public List<CommentResponse> getPostComments(@PathVariable Long postId,
+    public Page<CommentResponse> getPostComments(@PathVariable Long postId,
                                                  @RequestParam(required = false, defaultValue = "1", value = "pageNo") int pageNo,
                                                  @RequestParam(required = false, defaultValue = "createdAt", value = "criteria") String criteria){
 

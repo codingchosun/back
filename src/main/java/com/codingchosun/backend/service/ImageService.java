@@ -10,7 +10,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -26,8 +25,8 @@ public class ImageService {
     private final DataJpaImageRepository dataJpaImageRepository;
     private final FileStore fileStore;
 
-    public List<ImageResponse> getImageURLList(Pageable pageable, Long postId){
-        return dataJpaImageRepository.findByPost_PostId(postId, pageable).map(ImageResponse::new).getContent();
+    public Page<ImageResponse> getImageURLList(Pageable pageable, Long postId){
+        return dataJpaImageRepository.findByPost_PostId(postId, pageable).map(ImageResponse::new);
     }
 
     //여러개의 파일을 받아서 지정된 경로에 저장, 리턴값으로는 저장한 파일개수 반환
@@ -50,7 +49,7 @@ public class ImageService {
             Image image = new Image();
             image.setPost(post);
             image.setUrl(savedFile);
-            image.setName("ex");    //일단 생략
+            image.setName("none");    //일단 생략
 
             dataJpaImageRepository.save(image); //저장
             count++;
