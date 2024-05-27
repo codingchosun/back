@@ -15,9 +15,7 @@ import com.codingchosun.backend.repository.postrepository.DataJpaPostRepository;
 import com.codingchosun.backend.repository.postuserrepository.DataJpaPostUserRepository;
 import com.codingchosun.backend.request.PostUpdateRequest;
 import com.codingchosun.backend.request.RegisterPostRequest;
-import com.codingchosun.backend.response.LoginPostsResponse;
-import com.codingchosun.backend.response.NoLoginPostsResponse;
-import com.codingchosun.backend.response.PostResponse;
+import com.codingchosun.backend.response.*;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -116,26 +114,33 @@ public class PostService {
 
 
     //ToDo 이미지 경로 추후 수정 바람
-    public Page<NoLoginPostsResponse> noLoginGetPosts(Pageable pageable) {
+    public NoLoginPostsHashtagsResponse noLoginGetPosts(Pageable pageable) {
         List<Hashtag> hashtagList = dataJpaHashtagRepository.findRandomHashtags(5);
 
         Page<Post> posts = dataJpaPostRepository.findAllByOrderByCreatedAtDesc(pageable);
-        return posts.map(
+        Page<NoLoginPostsResponse> noLoginPostsResponses = posts.map(
                 m -> new NoLoginPostsResponse().builder()
                                                 .id(m.getPostId())
                                                 .contents(m.getContent())
                                                 .path(null)
                                                 .title(m.getTitle())
-                                                .hashtagList(hashtagList)
                                                 .build());
+
+        return new NoLoginPostsHashtagsResponse().builder()
+                .noLoginPostsResponses(noLoginPostsResponses)
+                .hashtagList(hashtagList)
+                .build();
     }
 
-    public Page<LoginPostsResponse> loginPostsRequests(User user, Pageable pageable) {
+    public LoginPostsHashtagResponse loginPostsRequests(User user, Pageable pageable) {
         List<UserHash> userHashList = dataJpaUserHashRepository.findHashtagsByUser_UserId(user.getUserId());
+        List<Hashtag> hashtagList = new ArrayList<>();
         List<Long> hashIds = new ArrayList<>();
         for (UserHash userHash : userHashList) {
+            hashtagList.add(userHash.getHashtag());
             hashIds.add(userHash.getHashtag().getHashtagId());
         }
+
         Page<Post> postPage = dataJpaPostRepository.findPostsByHashTagId(hashIds, pageable);
         Page<LoginPostsResponse> loginPostsRequests = postPage.map(
                 m -> new LoginPostsResponse().builder()
@@ -145,7 +150,11 @@ public class PostService {
                         .title(m.getTitle())
                         .build());
 
-        return loginPostsRequests;
+        return new LoginPostsHashtagResponse().builder()
+                .loginPostsResponses(loginPostsRequests)
+                .hashtagList(hashtagList)
+                .build();
+
     }
 
     public Post editPost(Long postId, User user, PostUpdateRequest postUpdateRequest){
