@@ -1,6 +1,9 @@
 package com.codingchosun.backend.response;
 
+import com.codingchosun.backend.domain.Hashtag;
 import lombok.*;
+
+import java.util.List;
 
 @Getter
 @NoArgsConstructor
@@ -12,4 +15,5 @@ public class NoLoginPostsResponse {
     String title;
     String contents;
     String path;
+    List<Hashtag> hashtagList;
 }
