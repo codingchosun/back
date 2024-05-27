@@ -25,14 +25,14 @@ public class ImageController {
 
     @PostMapping(value = "/posts/{postId}/images", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @ResponseBody
-    public ApiResponse<Integer> saveImages(@RequestParam("files") List<MultipartFile> multipartFiles, @PathVariable Long postId){
+    public ApiResponse<Integer> saveImages(@RequestParam(value = "files") List<MultipartFile> files, @PathVariable Long postId){
         
-        log.info("멀티파트 폼 데이터 크기 = {}",multipartFiles.size());
+        log.info("멀티파트 폼 데이터 크기 = {}", files.size());
 
         Post post = dataJpaPostRepository.findById(postId)
                 .orElseThrow(() -> new PostNotFoundFromDB("postId: " + postId + "를 찾지 못했습니다"));
 
-        int count = imageService.uploadImages(multipartFiles, post);    //저장된 파일 개수
+        int count = imageService.uploadImages(files, post);    //저장된 파일 개수
 
         return new ApiResponse<>(HttpStatus.OK, true, count);
     }

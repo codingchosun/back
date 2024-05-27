@@ -14,5 +14,5 @@ import java.util.List;
 public class NoLoginPostsHashtagsResponse {
 
     Page<NoLoginPostsResponse> noLoginPostsResponses;
-    List<Hashtag> hashtagList;
+    List<HashtagDto> hashtagDtoList;
 }
