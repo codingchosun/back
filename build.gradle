@@ -50,3 +50,5 @@ clean {
 tasks.withType(JavaCompile).configureEach {
     options.getGeneratedSourceOutputDirectory().set(file(querydslSrcDir))
 }
+
+compileJava {	options.compilerArgs << '-parameters'}

@@ -3,6 +3,7 @@ package com.codingchosun.backend.service;
 
 import com.codingchosun.backend.constants.StateCode;
 import com.codingchosun.backend.domain.*;
+import com.codingchosun.backend.exception.ObjectNotFound;
 import com.codingchosun.backend.exception.invalidrequest.InvalidEditorException;
 import com.codingchosun.backend.exception.invalidtime.TimeBeforeCurrentException;
 import com.codingchosun.backend.exception.notfoundfromdb.HashtagNotFoundFromDB;
@@ -116,19 +117,19 @@ public class PostService {
     //ToDo 이미지 경로 추후 수정 바람
     public NoLoginPostsHashtagsResponse noLoginGetPosts(Pageable pageable) {
         List<Hashtag> hashtagList = dataJpaHashtagRepository.findRandomHashtags(5);
-
+        List<HashtagDto> hashtagDtoList = hashtagList.stream().map(HashtagDto::new).toList();
         Page<Post> posts = dataJpaPostRepository.findAllByOrderByCreatedAtDesc(pageable);
         Page<NoLoginPostsResponse> noLoginPostsResponses = posts.map(
                 m -> new NoLoginPostsResponse().builder()
                                                 .id(m.getPostId())
                                                 .contents(m.getContent())
-                                                .path(null)
+                                                .path(dataJpaImageRepository.findFirstByPost(m).orElse(new Image()).getUrl())
                                                 .title(m.getTitle())
                                                 .build());
 
         return new NoLoginPostsHashtagsResponse().builder()
                 .noLoginPostsResponses(noLoginPostsResponses)
-                .hashtagList(hashtagList)
+                .hashtagDtoList(hashtagDtoList)
                 .build();
     }
 
@@ -148,7 +149,7 @@ public class PostService {
                 m -> new LoginPostsResponse().builder()
                         .id(m.getPostId())
                         .contents(m.getContent())
-                        .path(null)
+                        .path(dataJpaImageRepository.findFirstByPost(m).orElse(new Image()).getUrl())
                         .title(m.getTitle())
                         .build());
 
