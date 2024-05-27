@@ -141,13 +141,6 @@ public class PostService {
             hashIds.add(userHash.getHashtag().getHashtagId());
         }
 
-//        List<Long> hsId = new ArrayList<>();
-//        List<String> hsN = new ArrayList<>();
-//        for (Hashtag h : hashtagList) {
-//            hsId.add(h.getHashtagId());
-//            hsN.add(h.getHashtagName());
-//        }
-
         Page<Post> postPage = dataJpaPostRepository.findPostsByHashTagId(hashIds, pageable);
         Page<LoginPostsResponse> loginPostsRequests = postPage.map(
                 m -> new LoginPostsResponse().builder()
