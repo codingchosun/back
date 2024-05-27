@@ -1,6 +1,7 @@
 package com.codingchosun.backend.request;
 
 import com.codingchosun.backend.constants.GenderCode;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Generated;
@@ -13,12 +14,24 @@ import java.time.LocalDate;
 @Builder
 @Generated
 public class RegisterUserRequest {
+    @JsonProperty("name")
     private String name;
-    private String loginId;
-    private String password;
-    private String email;
-    private GenderCode genderCode;
-    private LocalDate birth;
-    private String nickname;
 
+    @JsonProperty("loginId")
+    private String loginId;
+
+    @JsonProperty("password")
+    private String password;
+
+    @JsonProperty("email")
+    private String email;
+
+    @JsonProperty("genderCode")
+    private GenderCode genderCode;
+
+    @JsonProperty("birth")
+    private LocalDate birth;
+
+    @JsonProperty("nickname")
+    private String nickname;
 }
