@@ -2,6 +2,7 @@ package com.codingchosun.backend.response;
 
 import com.codingchosun.backend.domain.Hashtag;
 import lombok.*;
+import org.springframework.data.domain.Page;
 
 import java.util.List;
 
@@ -10,9 +11,7 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 @Setter
-public class NoLoginPostsResponse {
-    Long id;
-    String title;
-    String contents;
-    String path;
+public class LoginPostsHashtagResponse {
+    Page<LoginPostsResponse> loginPostsResponses;
+    List<Hashtag> hashtagList;
 }

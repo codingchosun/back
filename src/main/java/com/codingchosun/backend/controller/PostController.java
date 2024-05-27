@@ -70,14 +70,14 @@ public class PostController {
 
     // 로그인 안 했을 때 글 보기
     @GetMapping
-    public HttpEntity<Page<NoLoginPostsResponse>> NoLoginShowPosts(Pageable pageable
+    public HttpEntity<NoLoginPostsHashtagsResponse> NoLoginShowPosts(Pageable pageable
                                                                     )
     {
         return new ResponseEntity<>(postService.noLoginGetPosts(pageable), HttpStatus.OK);
     }
     //TODO 로그인 했을 때 글 보기
     @GetMapping("/login")
-    public HttpEntity<Page<LoginPostsResponse>> loginShowPosts(@Login User user,
+    public HttpEntity<LoginPostsHashtagResponse> loginShowPosts(@Login User user,
                                                               Pageable pageable
     )
     {
