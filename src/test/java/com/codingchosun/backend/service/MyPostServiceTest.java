@@ -28,7 +28,10 @@ public class MyPostServiceTest {
 
     @Test
     public void getMyPostsTest() {
-        User user = dataJpaUserRepository.findByUserId(1L);
+
+        User user = dataJpaUserRepository.findByUserId(10000L);
+        log.info("user: {}", user);
+
         List<MyPostResponse> post = myPostService.getMyPost(user);
         for(MyPostResponse myPostResponse : post){
             log.info(myPostResponse.toString());

@@ -6,6 +6,7 @@ import com.codingchosun.backend.domain.User;
 import com.codingchosun.backend.repository.postuserrepository.DataJpaPostUserRepository;
 import com.codingchosun.backend.response.MyPostResponse;
 import jakarta.transaction.Transactional;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -13,6 +14,7 @@ import java.util.List;
 
 @Service
 @Transactional
+@Slf4j
 public class MyPostService {
 
     private final DataJpaPostUserRepository postUserRepository;
@@ -21,6 +23,7 @@ public class MyPostService {
     public List<MyPostResponse> getMyPost(User user)  {
 
         List<PostUser> postUsers = postUserRepository.findAllByUser(user);
+        log.info(postUsers.toString());
         List<MyPostResponse> myPostResponses = new ArrayList<>();
 
         for (PostUser postUser : postUsers) {
