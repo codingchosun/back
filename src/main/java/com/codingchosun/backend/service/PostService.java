@@ -5,6 +5,7 @@ import com.codingchosun.backend.constants.StateCode;
 import com.codingchosun.backend.domain.*;
 import com.codingchosun.backend.exception.ObjectNotFound;
 import com.codingchosun.backend.exception.invalidrequest.InvalidEditorException;
+import com.codingchosun.backend.exception.invalidrequest.IsNotPostHash;
 import com.codingchosun.backend.exception.invalidtime.TimeBeforeCurrentException;
 import com.codingchosun.backend.exception.notfoundfromdb.HashtagNotFoundFromDB;
 import com.codingchosun.backend.exception.notfoundfromdb.PostNotFoundFromDB;
@@ -256,7 +257,7 @@ public class PostService {
             Hashtag hashtag = dataJpaHashtagRepository.findByHashtagName(removeTag).orElseThrow(
                     () -> new HashtagNotFoundFromDB("없는 해쉬태그"));
             PostHash postHash = dataJpaPostHashRepository.findByPostAndHashtag(post, hashtag)
-                    .orElseThrow(() -> new RuntimeException("이 글에 달린 태그가 아님"));
+                    .orElseThrow(() -> new IsNotPostHash("이 글에 달린 태그가 아님"));
 
             dataJpaPostHashRepository.delete(postHash); //태그 지우기
         }
