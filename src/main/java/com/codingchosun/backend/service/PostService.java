@@ -94,8 +94,18 @@ public class PostService {
         //PostHash에 등록하는 과정
         List<String> hashtagStrings = registerPostRequest.getHashtags();
         for (String hashtagString : hashtagStrings) {
-            Hashtag hashtag = dataJpaHashtagRepository.findByHashtagName(hashtagString)
-                    .orElseThrow( () ->  new HashtagNotFoundFromDB(hashtagString));
+            Hashtag hashtag;
+
+            Optional<Hashtag> optionalHashtag = dataJpaHashtagRepository.findByHashtagName(hashtagString);
+            if(optionalHashtag.isPresent()){    //findby해서 있으면 가져오고
+                hashtag = optionalHashtag.get();
+            }
+            else {  //없으면 새 해쉬태그 만들기
+                Hashtag newHashtag = new Hashtag();
+                newHashtag.setHashtagName(hashtagString);
+                hashtag = dataJpaHashtagRepository.save(newHashtag);
+            }
+
             PostHash postHash = new PostHash();
             postHash.setPost(save);
             postHash.setHashtag(hashtag);
