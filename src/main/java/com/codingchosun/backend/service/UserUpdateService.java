@@ -33,7 +33,7 @@ public class UserUpdateService {
     public void updateUser(User user, UserUpdateRequest updateRequest) {
         user = userRepository.findById(user.getUserId()).orElseThrow(()
                 -> new IllegalArgumentException("해당하는 아이디가 없습니다 id : "));
-
+        List<String> hashList = updateRequest.getHashList();
         updateRequest = UserUpdateRequest.builder()
                 .password(updateRequest.getPassword() != null ? updateRequest.getPassword() : user.getPassword())
                 .email(updateRequest.getEmail() != null ? updateRequest.getEmail() : user.getEmail())
@@ -41,8 +41,8 @@ public class UserUpdateService {
                 .nickname(updateRequest.getNickname() != null ? updateRequest.getNickname() : user.getNickname())
                 .introduction(updateRequest.getIntroduction() != null ? updateRequest.getIntroduction() : user.getIntroduction())
                 .build();
+        updateUserHashtag(user, hashList);
         user.setUpdateRequest(updateRequest);
-        log.info("request = {}", updateRequest);
         userRepository.save(user);
     }
 
@@ -50,6 +50,7 @@ public class UserUpdateService {
         //해시태그 수정하기위해 그냥 이 유저의 userhash를 전부삭제
         List<UserHash> userHashes = userHashRepository.findHashtagsByUser_UserId(user.getUserId());
         userHashRepository.deleteAll(userHashes);
+        log.info("hashList = {}", hashList);
         //새롭게 등록할 해시태그의 개수만큼 반복문
         for (String hashtagString : hashList) {
             Optional<Hashtag> optionalHashtag = hashtagRepository.findByHashtagName(hashtagString);

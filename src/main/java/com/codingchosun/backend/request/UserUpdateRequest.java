@@ -5,6 +5,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -28,6 +30,9 @@ public class UserUpdateRequest {
 
     @JsonProperty("introduction")
     private String introduction;
+
+    @JsonProperty("hashList")
+    private List<String> hashList;
 
     @Builder
     public UserUpdateRequest(String password, String email, String nickname, String introduction, GenderCode genderCode) {
