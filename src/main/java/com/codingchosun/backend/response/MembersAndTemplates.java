@@ -1,5 +1,6 @@
 package com.codingchosun.backend.response;
 
+
 import lombok.*;
 
 import java.util.List;
@@ -11,7 +12,7 @@ import java.util.List;
 @Setter
 public class MembersAndTemplates {
     String writer;
-    List<String> members;
+    List<UserIdAndNickName> userInform;
     List<String> templateNames;
 
 }

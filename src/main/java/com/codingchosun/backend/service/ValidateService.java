@@ -13,6 +13,7 @@ import com.codingchosun.backend.request.UserValidate;
 import com.codingchosun.backend.request.ValidateRequest;
 import com.codingchosun.backend.response.MembersAndTemplates;
 import com.codingchosun.backend.response.UpdateUsersManner;
+import com.codingchosun.backend.response.UserIdAndNickName;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,7 +31,7 @@ public class ValidateService {
     private final DataJpaPostRepository dataJpaPostRepository;
     private final TemplateRepository templateRepository;
     private final DataJpaPostUserRepository dataJpaPostUserRepository;
-    //ToDo 들어온 유저 갯수 == postUser - 1
+
     // 평가하기 했을 때 저장되는 경우
     @Transactional
     public List<UpdateUsersManner> saveValidate(Long postId, Long fromUserId, ValidateRequest validateRequest) {
@@ -50,8 +51,8 @@ public class ValidateService {
                 .toUser(toUser)
                 .template(template)
                 .build());
-    }
-}
+            }
+        }
         return calculateManner(postId, validateRequest);
     }
 
@@ -119,6 +120,7 @@ public class ValidateService {
 //    }
 
 
+
     // 포스트 아이디를 받아서 포함된 멈버를 다 가져오고, 템플릿도 모두 받아와서 보내준다
     public MembersAndTemplates getParticipateMember(Long postId) {
 
@@ -126,11 +128,10 @@ public class ValidateService {
         Post post = dataJpaPostRepository.findById(postId)
                 .orElseThrow(() -> new ObjectNotFound("아이디에 해당하는 포스트가 없음"));
         User writer = post.getUser();
-        List<String> userNickNames = dataJpaPostRepository.findById(postId)
-                .orElseThrow(() -> new ObjectNotFound("아이디에 해당하는 포스트가 없음"))
-                .getPostUsers().stream()
+
+        List<UserIdAndNickName> userIdAndNicknames = post.getPostUsers().stream()
                 .filter(p -> p != null && !p.getUser().equals(writer))
-                .map(p -> p.getUser().getName())
+                .map(p -> new UserIdAndNickName(p.getUser().getUserId().toString(), p.getUser().getName()))
                 .toList();
 
         List<String> templateNames = templateRepository.findAll().stream()
@@ -138,20 +139,20 @@ public class ValidateService {
                 .map(Template::getContent)
                 .toList();
 
-        return MembersAndTemplates.builder().writer(writer.getNickname()).members(userNickNames).templateNames(templateNames).build();
+        return MembersAndTemplates.builder().writer(writer.getNickname()).userInform(userIdAndNicknames).templateNames(templateNames).build();
 
     }
 
-    // 모임 시작됐을 때 저장되는 경우
-    public void saveValidate2(Long postId, Long fromUserId) {
-        Post post = dataJpaPostRepository.findById(postId).get();
-        User fromUser = dataJpaUserRepository.findById(fromUserId).get();
-
-        validateRepository.save(Validate.builder()
-                        .post(post)
-                        .fromUser(fromUser)
-                        .build());
-
-    }
+//    // 모임 시작됐을 때 저장되는 경우
+//    public void saveValidate2(Long postId, Long fromUserId) {
+//        Post post = dataJpaPostRepository.findById(postId).get();
+//        User fromUser = dataJpaUserRepository.findById(fromUserId).get();
+//
+//        validateRepository.save(Validate.builder()
+//                        .post(post)
+//                        .fromUser(fromUser)
+//                        .build());
+//
+//    }
 
 }

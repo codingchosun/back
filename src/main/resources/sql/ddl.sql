@@ -6,11 +6,11 @@ INSERT INTO post (state_code, view_count, created_at, end_time, start_time, user
 # INSERT INTO template (score, content) VALUES (2, '이 집 잘하네');
 # INSERT INTO template (score, content) VALUES (10, '밥경찰');
 
-INSERT INTO Hashtag (hashtag_name) VALUES ('#푸바오');
-INSERT INTO Hashtag (hashtag_name) VALUES ('#리자몽');
-INSERT INTO Hashtag (hashtag_name) VALUES ('#한글태그');
-INSERT INTO Hashtag (hashtag_name) VALUES ('#서울');
-INSERT INTO Hashtag (hashtag_name) VALUES ('#사랑');
+# INSERT INTO Hashtag (hashtag_name) VALUES ('#푸바오');
+# INSERT INTO Hashtag (hashtag_name) VALUES ('#리자몽');
+# INSERT INTO Hashtag (hashtag_name) VALUES ('#한글태그');
+# INSERT INTO Hashtag (hashtag_name) VALUES ('#서울');
+# INSERT INTO Hashtag (hashtag_name) VALUES ('#사랑');
 
 INSERT INTO post_hash(post_id, hashtag_id) VALUES (1, 1);
 INSERT INTO post_hash (post_id, hashtag_id) VALUES (1, 2);
