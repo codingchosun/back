@@ -19,25 +19,6 @@ Content-Type: application/json
 
 ###
 
-#POST /bridge/validate/post/4/vote
-#Host: localhost:8090
-#Content-Type: application/json
-#
-#{
-#		"validated_user_list" :[
-#														{
-#														 "user_name" : "kim",
-#														 "script_title" : "이 집 잘하네"
-#														},
-#												    {
-#														 "user_name" : "ads",
-#														 "script_title" : "밥경찰"
-#														}
-#													]
-#}
-###
-
-
 GET /bridge/validate/post/4/members
 Host: localhost:8090
 Content-Type: application/json

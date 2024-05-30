@@ -38,7 +38,6 @@ public class ValidateController {
 
 
     // 포스트 아이디를 받아서 포함된 멈버를 다 가져오고, 템플릿도 모두 받아와서 보내준다
-    // ToDo 약속장 고려해야 함
     @GetMapping("/members")
     public HttpEntity<MembersAndTemplates> getParticipateMember(@PathVariable(name = "postId") Long postId) {
         return new ResponseEntity<>(validateService.getParticipateMember(postId), HttpStatus.OK);
