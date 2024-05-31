@@ -8,6 +8,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
+
 @Transactional
 @Repository
 public interface DataJpaPostUserRepository extends JpaRepository<PostUser, Long> {
@@ -17,5 +19,5 @@ public interface DataJpaPostUserRepository extends JpaRepository<PostUser, Long>
     List<PostUser> findAllByUser(User user);
 
     //모임 탈퇴 만들때 쓰려고 만듦
-    PostUser findByUserAndPost(User user, Post post);
+    Optional<PostUser> findByUserAndPost(User user, Post post);
 }

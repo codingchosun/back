@@ -5,8 +5,13 @@ import com.codingchosun.backend.constants.PagingConstants;
 import com.codingchosun.backend.domain.Post;
 import com.codingchosun.backend.domain.User;
 import com.codingchosun.backend.exception.LoggedInUserNotFound;
+import com.codingchosun.backend.exception.invalidrequest.YouAreNotAdmin;
+import com.codingchosun.backend.exception.notfoundfromdb.EntityNotFoundFromDB;
+import com.codingchosun.backend.exception.notfoundfromdb.PostNotFoundFromDB;
+import com.codingchosun.backend.repository.userrepository.DataJpaUserRepository;
 import com.codingchosun.backend.request.PostUpdateRequest;
 import com.codingchosun.backend.request.RegisterPostRequest;
+import com.codingchosun.backend.request.RemoveUserFromPostRequest;
 import com.codingchosun.backend.response.*;
 import com.codingchosun.backend.service.CommentService;
 import com.codingchosun.backend.service.ImageService;
@@ -39,6 +44,7 @@ public class PostController {
     private final CommentService commentService;
     private final ImageService imageService;
     private final PostUserService postUserService;
+    private final DataJpaUserRepository dataJpaUserRepository;
 
     //작성한 모임글의 내용만 가져오는 컨트롤러 todo 예외 처리
     @GetMapping("/{postId}")
@@ -110,9 +116,65 @@ public class PostController {
     //post의 모임참가
     @PostMapping("/{postId}/participant")
     public ApiResponse<Long> particaptePost(@PathVariable Long postId, @Login User user){
+
+        //로그인 검사
+        if(user == null){
+            throw new LoggedInUserNotFound("로그인해주세요");
+        }
+
         User participant = postUserService.participate(postId, user);
         return new ApiResponse<>(HttpStatus.OK, true, participant.getUserId());
     }
+
+    //post 모임 탈퇴(참가자 스스로 탈퇴)
+    @PostMapping("/{postId}/leave")
+    public ApiResponse<Long> leavePost(@PathVariable Long postId, @Login User user){
+
+        //로그인 검사
+        if(user == null){
+            throw new LoggedInUserNotFound("로그인해주세요");
+        }
+
+        Post post = postService.getPost(postId).orElseThrow(() -> new PostNotFoundFromDB("post 못찾음"));
+
+        Post leavePost = postUserService.leavePost(post, user);
+
+        return new ApiResponse<>(HttpStatus.OK, true, leavePost.getPostId());   //혹시 모임페이지로 돌아갈수있으니 postId리턴
+    }
+
+    //post 모임 추방(방장이 추방)
+    @PostMapping("/{postId}/admin/remove")
+    public ApiResponse<Long> removePost(@RequestBody RemoveUserFromPostRequest removeUserFromPostRequest,
+                                        @PathVariable Long postId,
+                                        @Login User user){
+        //로그인 검사
+        if(user == null){
+            throw new LoggedInUserNotFound("로그인해주세요");
+        }
+
+        Post post = postService.getPost(postId).orElseThrow(() -> new PostNotFoundFromDB("post 못찾음"));
+
+        //글 작성자가 맞는지 검사
+        if( !(post.getUser().getUserId().equals(user.getUserId())) ){
+            throw new YouAreNotAdmin("방장만이 탈퇴시킬수있습니다");
+        }
+
+        //삭제대상 가져오기
+        Long removeId = removeUserFromPostRequest.getRemoveId();
+        log.info("userId:{}", removeId);
+        if(removeId == null){
+            throw new EntityNotFoundFromDB("정확한 id를 입력해주세요");
+        }
+        User removeUser = dataJpaUserRepository.findById(removeId)
+                .orElseThrow(() -> new EntityNotFoundFromDB("삭제하려는 유저를 찾지못했습니다"));
+
+        //삭제
+        Post returnPost = postUserService.leavePost(post, removeUser);
+
+        return new ApiResponse<>(HttpStatus.OK, true, returnPost.getPostId());
+    }
+
+
 
     @Data
     public static class PostAndComments{
