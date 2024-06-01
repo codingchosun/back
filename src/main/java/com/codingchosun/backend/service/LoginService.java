@@ -9,6 +9,8 @@ import jakarta.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 @Slf4j
 public class LoginService {
@@ -19,9 +21,8 @@ public class LoginService {
     }
 
     public User login(LoginRequest request) {
-        User user = dataJpaUserRepository.findByLoginId(request.getLoginId());
-        if (user != null && user.getPassword().equals(request.getPassword())) {return user;}
-        return null;
+        Optional<User> user = Optional.ofNullable(dataJpaUserRepository.findByLoginIdAndPassword(request.getLoginId(), request.getPassword()));
+        return user.orElse(null);
     }
 
     public void logout(HttpSession session) {

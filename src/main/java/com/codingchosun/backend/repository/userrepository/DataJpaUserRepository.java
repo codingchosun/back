@@ -13,4 +13,6 @@ public interface DataJpaUserRepository extends JpaRepository<User,Long> {
     User findByLoginId(String loginId);
     User findByNickname(String nickName);
     User findByUserId(long id);
+    User findByNameAndEmail(String name, String email);
+    User findByNameAndEmailAndLoginId(String name, String email, String loginId);
 }
