@@ -6,7 +6,7 @@ import com.codingchosun.backend.service.DeleteAccountService;
 import com.codingchosun.backend.web.argumentresolver.Login;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -19,7 +19,7 @@ public class DeleteAccountController {
         this.deleteAccountService = deleteAccountService;
     }
 
-    @PostMapping("/deleteAccount")
+    @GetMapping("/deleteAccount")
     public ApiResponse<String> deleteAccount(@Login User user) {
         deleteAccountService.deleteAccount(user);
         return new ApiResponse<>(HttpStatus.ACCEPTED, true, "회원탈퇴 성공");
