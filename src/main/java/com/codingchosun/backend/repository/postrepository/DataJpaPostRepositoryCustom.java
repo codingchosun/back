@@ -8,4 +8,6 @@ import java.util.List;
 
 public interface DataJpaPostRepositoryCustom {
     Page<Post> findPostsByHashTagId(List<Long> hashTagId, Pageable pageable);
+
+    Page<Post> findPostsByResearchQuery(List<String> titleQuery, List<String> hashQuery, Pageable pageable);
 }
