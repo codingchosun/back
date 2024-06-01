@@ -12,6 +12,10 @@ import com.codingchosun.backend.repository.userrepository.DataJpaUserRepository;
 import com.codingchosun.backend.request.PostUpdateRequest;
 import com.codingchosun.backend.request.RegisterPostRequest;
 import com.codingchosun.backend.request.RemoveUserFromPostRequest;
+import com.codingchosun.backend.repository.postrepository.DataJpaPostRepository;
+import com.codingchosun.backend.request.PostUpdateRequest;
+import com.codingchosun.backend.request.RegisterPostRequest;
+import com.codingchosun.backend.request.ResearchRequest;
 import com.codingchosun.backend.response.*;
 import com.codingchosun.backend.service.CommentService;
 import com.codingchosun.backend.service.ImageService;
@@ -32,6 +36,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -45,6 +50,8 @@ public class PostController {
     private final ImageService imageService;
     private final PostUserService postUserService;
     private final DataJpaUserRepository dataJpaUserRepository;
+
+    private final DataJpaPostRepository dataJpaPostRepository;
 
     //작성한 모임글의 내용만 가져오는 컨트롤러 todo 예외 처리
     @GetMapping("/{postId}")
@@ -80,16 +87,14 @@ public class PostController {
 
     // 로그인 안 했을 때 글 보기
     @GetMapping
-    public HttpEntity<NoLoginPostsHashtagsResponse> noLoginShowPosts(Pageable pageable
-                                                                    )
+    public HttpEntity<NoLoginPostsHashtagsResponse> noLoginShowPosts(Pageable pageable)
     {
         return new ResponseEntity<>(postService.noLoginGetPosts(pageable), HttpStatus.OK);
     }
     // 로그인 했을 때 글 보기
     @GetMapping("/login")
     public HttpEntity<LoginPostsHashtagResponse> loginShowPosts(@Login User user,
-                                                              Pageable pageable
-    )
+                                                              Pageable pageable)
     {
 
         return new ResponseEntity<>(postService.loginPostsRequests(user, pageable), HttpStatus.OK);
@@ -175,6 +180,13 @@ public class PostController {
     }
 
 
+
+    @GetMapping("/research")
+    public HttpEntity<Page<ResearchPostResponse>> researchPost(@RequestBody ResearchRequest researchRequest,
+                                                               Pageable pageable) {
+
+        return new ResponseEntity<>(postService.researchPost(researchRequest, pageable), HttpStatus.OK);
+    }
 
     @Data
     public static class PostAndComments{

@@ -17,6 +17,7 @@ import com.codingchosun.backend.repository.postrepository.DataJpaPostRepository;
 import com.codingchosun.backend.repository.postuserrepository.DataJpaPostUserRepository;
 import com.codingchosun.backend.request.PostUpdateRequest;
 import com.codingchosun.backend.request.RegisterPostRequest;
+import com.codingchosun.backend.request.ResearchRequest;
 import com.codingchosun.backend.response.*;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -125,7 +126,6 @@ public class PostService {
     }
 
 
-    //ToDo 이미지 경로 추후 수정 바람
     public NoLoginPostsHashtagsResponse noLoginGetPosts(Pageable pageable) {
         List<Hashtag> hashtagList = dataJpaHashtagRepository.findRandomHashtags(5);
         List<HashtagDto> hashtagDtoList = hashtagList.stream().map(HashtagDto::new).toList();
@@ -144,6 +144,7 @@ public class PostService {
                 .build();
     }
 
+    //ToDo 해시태그 값이 널이면 최신 포스트 보내주자
     public LoginPostsHashtagResponse loginPostsRequests(User user, Pageable pageable) {
         List<UserHash> userHashList = dataJpaUserHashRepository.findHashtagsByUser_UserId(user.getUserId());
         List<Hashtag> hashtagList = new ArrayList<>();
@@ -170,6 +171,34 @@ public class PostService {
                 .build();
 
     }
+
+    public Page<ResearchPostResponse> researchPost(ResearchRequest researchQuery, Pageable pageable) {
+        List<String> titleQuery = new ArrayList<>();
+        List<String> hashQuery = new ArrayList<>();
+
+        String query = researchQuery.getResearchQuery();
+        String[] querys = query.split(" ");
+
+        for (String q : querys) {
+            if (q.contains("#")) {
+                hashQuery.add(q);
+            } else {
+                titleQuery.add(q);
+            }
+        }
+
+        Page<Post> posts = dataJpaPostRepository.findPostsByResearchQuery(titleQuery, hashQuery, pageable);
+        return posts.map(
+                m -> new ResearchPostResponse().builder()
+                        .id(m.getPostId())
+                        .title(m.getTitle())
+                        .contents(m.getContent())
+                        .path(dataJpaImageRepository.findFirstByPost(m).orElse(new Image()).getUrl())
+                        .build()
+        );
+    }
+
+
 
     public Post editPost(Long postId, User user, PostUpdateRequest postUpdateRequest){
         Post post = dataJpaPostRepository.findById(postId)
