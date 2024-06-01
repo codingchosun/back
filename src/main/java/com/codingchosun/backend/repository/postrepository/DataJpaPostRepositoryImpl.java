@@ -59,7 +59,6 @@ public class DataJpaPostRepositoryImpl implements DataJpaPostRepositoryCustom {
             builder.and(post.title.contains(t));
         }
 
-        // 해시태그 조건 서브쿼리 작성
         if (hashQuery != null && !hashQuery.isEmpty()) {
             BooleanBuilder hashTagBuilder = new BooleanBuilder();
             for (String h : hashQuery) {
