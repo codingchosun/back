@@ -54,3 +54,12 @@ INSERT INTO image(post_id, url, name) VALUES  (2,'/first/sample/path', 'apple');
 INSERT INTO image(post_id, url, name) VALUES  (2,'/second/sample/path', 'banana');
 INSERT INTO image(post_id, url, name) VALUES  (3,'/first/sample/path', 'apple');
 INSERT INTO image(post_id, url, name) VALUES  (3,'/second/sample/path', 'banana');
+
+
+##템플릿##
+INSERT INTO template(content, score) VALUES ('약속을 잘 지켜요',1);
+INSERT INTO template(content, score) VALUES ('매너가 좋아요',2);
+INSERT INTO template(content, score) VALUES ('완벽해요',3);
+INSERT INTO template(content, score) VALUES ('약속을 잘 안지켜요',-1);
+INSERT INTO template(content, score) VALUES ('성격이 안좋아요',-2);
+INSERT INTO template(content, score) VALUES ('금쪽이에요',-3);

@@ -10,11 +10,13 @@ import com.codingchosun.backend.repository.templaterepository.TemplateRepository
 import com.codingchosun.backend.repository.userrepository.DataJpaUserRepository;
 import com.codingchosun.backend.repository.validaterepository.ValidateRepository;
 import com.codingchosun.backend.request.UserValidate;
+import com.codingchosun.backend.request.UserValidationRequest;
 import com.codingchosun.backend.request.ValidateRequest;
 import com.codingchosun.backend.response.MembersAndTemplates;
 import com.codingchosun.backend.response.UpdateUsersManner;
 import com.codingchosun.backend.response.UserIdAndNickName;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,8 +25,9 @@ import java.util.List;
 import java.util.Objects;
 
 @Service
-@Transactional(readOnly = true)
+@Transactional
 @RequiredArgsConstructor
+@Slf4j
 public class ValidateService {
     private final ValidateRepository validateRepository;
     private final DataJpaUserRepository dataJpaUserRepository;
@@ -154,5 +157,33 @@ public class ValidateService {
 //                        .build());
 //
 //    }
+
+    //유저 평가를 받아서 저장하기
+    public int validateUser(Post post, User fromUser, List<UserValidationRequest> userValidates) {
+
+        log.info("user validates={}", userValidates);
+
+        for (UserValidationRequest userValidate : userValidates) {
+
+            //toUser 찾기
+            User toUser = dataJpaUserRepository.findById(userValidate.getUserId())
+                    .orElseThrow(() -> new ObjectNotFound("user:" + userValidate.getUserId() + "를 찾지 못했습니다"));
+
+            //평가 찾기
+            Validate validate = validateRepository.findByPostAndAndFromUserAndToUser(post, fromUser, toUser)
+                    .orElseThrow(() -> new ObjectNotFound("validate 못 찾음 postId:" + post.getPostId()
+                            + "from:" + fromUser.getUserId() + "to:" + toUser.getUserId()));
+
+            //template찾기
+            Template template = templateRepository.findById(userValidate.getValidateId())
+                    .orElseThrow(() -> new ObjectNotFound("적절한 templateId:" + userValidate.getValidateId() + " 가 아닙니다"));
+
+            log.info("template={}", template.getContent());
+
+            //평가 업데이트 하기
+            validate.setTemplate(template);
+        }
+        return userValidates.size();
+    }
 
 }

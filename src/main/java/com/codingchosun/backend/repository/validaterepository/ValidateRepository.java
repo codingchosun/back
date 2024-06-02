@@ -1,9 +1,13 @@
 package com.codingchosun.backend.repository.validaterepository;
 
 
+import com.codingchosun.backend.domain.Post;
+import com.codingchosun.backend.domain.User;
 import com.codingchosun.backend.domain.Validate;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface ValidateRepository extends JpaRepository<Validate, Long> {
+import java.util.Optional;
 
+public interface ValidateRepository extends JpaRepository<Validate, Long> {
+    Optional<Validate> findByPostAndAndFromUserAndToUser(Post post, User fromUser, User toUser);
 }
