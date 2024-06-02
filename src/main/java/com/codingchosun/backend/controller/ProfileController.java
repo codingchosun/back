@@ -1,6 +1,8 @@
 package com.codingchosun.backend.controller;
 
+import com.codingchosun.backend.constants.StateCode;
 import com.codingchosun.backend.domain.User;
+import com.codingchosun.backend.exception.invalidrequest.DeletedUserException;
 import com.codingchosun.backend.repository.userrepository.DataJpaUserRepository;
 import com.codingchosun.backend.request.ProfileResponse;
 import com.codingchosun.backend.request.UserUpdateRequest;
@@ -35,6 +37,8 @@ public class ProfileController {
     @GetMapping("/profile/{loginId}")
     @ResponseBody
     public ProfileResponse viewProfile(@PathVariable String loginId, Model model) {
+        User user = userRepository.findByStateAndLoginId(StateCode.ACTIVE, loginId);
+        if(user == null) {throw new DeletedUserException("탈퇴된 유저 입니다.");}
         return profileService.getProfile(loginId);
     }
 

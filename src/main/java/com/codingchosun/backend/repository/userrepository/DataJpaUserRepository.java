@@ -1,6 +1,7 @@
 package com.codingchosun.backend.repository.userrepository;
 
 
+import com.codingchosun.backend.constants.StateCode;
 import com.codingchosun.backend.domain.User;
 import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -15,4 +16,5 @@ public interface DataJpaUserRepository extends JpaRepository<User,Long> {
     User findByUserId(long id);
     User findByNameAndEmail(String name, String email);
     User findByNameAndEmailAndLoginId(String name, String email, String loginId);
+    User findByStateAndLoginId(StateCode state, String loginId);
 }
