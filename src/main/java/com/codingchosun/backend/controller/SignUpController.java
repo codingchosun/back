@@ -3,7 +3,7 @@ package com.codingchosun.backend.controller;
 
 import com.codingchosun.backend.domain.User;
 import com.codingchosun.backend.request.RegisterUserRequest;
-import com.codingchosun.backend.service.RegisterService;
+import com.codingchosun.backend.service.SignUpService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -17,9 +17,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 @Slf4j
 @RequiredArgsConstructor
 @Controller
-public class RegisterController {
+public class SignUpController {
 
-    private final RegisterService registerService;
+    private final SignUpService signUpService;
 
     @PostMapping("/register")
     public ResponseEntity<String> register(@RequestBody @Valid RegisterUserRequest registerUserRequest
@@ -29,7 +29,7 @@ public class RegisterController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("validation fail");
         }
 
-        User signUpSuccessful = registerService.signUp(registerUserRequest);
+        User signUpSuccessful = signUpService.signUp(registerUserRequest);
 
         if (signUpSuccessful != null) { // 회원가입 성공
             log.info("register success");
