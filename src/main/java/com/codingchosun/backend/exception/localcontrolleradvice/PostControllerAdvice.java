@@ -1,6 +1,7 @@
 package com.codingchosun.backend.exception.localcontrolleradvice;
 
 import com.codingchosun.backend.constants.ExceptionConstants;
+import com.codingchosun.backend.controller.PostController;
 import com.codingchosun.backend.exception.GlobalControllerAdvice;
 import com.codingchosun.backend.exception.invalidrequest.AlreadyJoinedPost;
 import com.codingchosun.backend.exception.invalidrequest.IsNotPostHash;
@@ -12,14 +13,14 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 @Slf4j
-@RestControllerAdvice(basePackages = "com.codingchosun.backend.controller")    //컨트롤러를 패키지 단위로 관리하면 좋을듯 todo 다 같이 모였을때 이야기
+@RestControllerAdvice(basePackageClasses = PostController.class)
 public class PostControllerAdvice {
 
     @ExceptionHandler(value = IsNotPostHash.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ApiResponse<GlobalControllerAdvice.ExceptionDto> isNotPostHashHandler(IsNotPostHash e) {
         log.warn(ExceptionConstants.PROCESSED);
-        GlobalControllerAdvice.ExceptionDto exceptionDto = new GlobalControllerAdvice.ExceptionDto("포스트에 존재하지 않는 해쉬태그입니다", e.getMessage(), e);
+        GlobalControllerAdvice.ExceptionDto exceptionDto = new GlobalControllerAdvice.ExceptionDto("포스트에 존재하지 않는 해쉬태그입니다", e.getMessage());
         return new ApiResponse<>(HttpStatus.BAD_REQUEST, false, exceptionDto);
     }
 
@@ -27,7 +28,7 @@ public class PostControllerAdvice {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ApiResponse<GlobalControllerAdvice.ExceptionDto> alreadyJoinedPostHandler(AlreadyJoinedPost e) {
         log.warn(ExceptionConstants.PROCESSED);
-        GlobalControllerAdvice.ExceptionDto exceptionDto = new GlobalControllerAdvice.ExceptionDto("중복 참가",e.getMessage(),e);
+        GlobalControllerAdvice.ExceptionDto exceptionDto = new GlobalControllerAdvice.ExceptionDto("중복 참가",e.getMessage());
         return new ApiResponse<>(HttpStatus.BAD_REQUEST, false, exceptionDto);
     }
 }

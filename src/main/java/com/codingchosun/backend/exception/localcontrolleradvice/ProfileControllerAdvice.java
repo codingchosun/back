@@ -19,7 +19,7 @@ public class ProfileControllerAdvice {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ApiResponse<GlobalControllerAdvice.ExceptionDto> deletedUserExceptionHandler(DeletedUserException e) {
         log.warn(ExceptionConstants.PROCESSED);
-        GlobalControllerAdvice.ExceptionDto dto = new GlobalControllerAdvice.ExceptionDto("탈퇴한 유저 입니다.", e.getMessage(), e);
+        GlobalControllerAdvice.ExceptionDto dto = new GlobalControllerAdvice.ExceptionDto("탈퇴한 유저 입니다.", e.getMessage());
         return new ApiResponse<>(HttpStatus.BAD_REQUEST, false, dto);
     }
 }
