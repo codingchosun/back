@@ -22,7 +22,7 @@ public class GlobalControllerAdvice {
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ApiResponse<ExceptionDto> illegalStateExceptionHandler(IllegalStateException e) {
         log.warn(ExceptionConstants.PROCESSED);
-        ExceptionDto exceptionDto = new ExceptionDto("illegalStateException 발생", e.getMessage(), e);
+        ExceptionDto exceptionDto = new ExceptionDto("illegalStateException 발생", e.getMessage());
         return new ApiResponse<>(HttpStatus.NOT_FOUND, false, exceptionDto);
     }
 
@@ -30,7 +30,7 @@ public class GlobalControllerAdvice {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ApiResponse<ExceptionDto> loggedInUserNotFoundHandler(LoggedInUserNotFound e){
         log.warn(ExceptionConstants.LOGGED_IN_USER_NOT_FOUND);
-        ExceptionDto exceptionDto = new ExceptionDto("login여부를 확인하세요", e.getMessage(), e);
+        ExceptionDto exceptionDto = new ExceptionDto("login여부를 확인하세요", e.getMessage());
         return new ApiResponse<>(HttpStatus.BAD_REQUEST, false, exceptionDto);
     }
 
@@ -38,7 +38,7 @@ public class GlobalControllerAdvice {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ApiResponse<ExceptionDto> emptyRequestExceptionHandler(EmptyRequestException e){
         log.warn(ExceptionConstants.EMPTY_CONTENTS);
-        ExceptionDto exceptionDto = new ExceptionDto("요청이 비어있습니다.", e.getMessage(), e);
+        ExceptionDto exceptionDto = new ExceptionDto("요청이 비어있습니다.", e.getMessage());
         return new ApiResponse<>(HttpStatus.BAD_REQUEST, false,exceptionDto);
     }
 
@@ -48,14 +48,14 @@ public class GlobalControllerAdvice {
     protected ApiResponse<ExceptionDto> entityNotFoundHandler(EntityNotFoundFromDB e) {
         //log.warn("Exception: ", e);   //에러 메시지 너무 많이 나옴
         log.warn(ExceptionConstants.PROCESSED);
-        ExceptionDto exceptionDto = new ExceptionDto("db에 없는 데이터입니다.", e.getMessage(), e);
+        ExceptionDto exceptionDto = new ExceptionDto("db에 없는 데이터입니다.", e.getMessage());
         return new ApiResponse<>(HttpStatus.NOT_FOUND, false, exceptionDto);
     }
 
     @ExceptionHandler( { TimeBeforeCurrentException.class } )
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     protected ApiResponse<ExceptionDto> timeBeforeCurrentExceptionHandler(TimeBeforeCurrentException e) {
-        ExceptionDto exceptionDto = new ExceptionDto("현재시간보다 이른 약속시간을 설정할수없습니다.", e.getMessage(), e);
+        ExceptionDto exceptionDto = new ExceptionDto("현재시간보다 이른 약속시간을 설정할수없습니다.", e.getMessage());
         log.warn(ExceptionConstants.PROCESSED);
         return new ApiResponse<>(HttpStatus.BAD_REQUEST, false, exceptionDto);
     }
@@ -63,7 +63,7 @@ public class GlobalControllerAdvice {
     @ExceptionHandler( { MissingValueException.class})
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     protected ApiResponse<ExceptionDto> wrongRequestEntity(MissingValueException e) {
-        ExceptionDto exceptionDto = new ExceptionDto(e.getMessage(), e.getMessage(), e);
+        ExceptionDto exceptionDto = new ExceptionDto(e.getMessage(), e.getMessage());
         log.warn(ExceptionConstants.PROCESSED);
         return new ApiResponse<>(HttpStatus.BAD_REQUEST, false, exceptionDto);
     }
@@ -71,7 +71,7 @@ public class GlobalControllerAdvice {
     @ExceptionHandler( { ObjectNotFound.class})
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     protected ApiResponse<ExceptionDto> objectNotFound(ObjectNotFound e) {
-        ExceptionDto exceptionDto = new ExceptionDto(e.getMessage(), e.getMessage(), e);
+        ExceptionDto exceptionDto = new ExceptionDto(e.getMessage(), e.getMessage());
         log.warn(ExceptionConstants.PROCESSED);
         return new ApiResponse<>(HttpStatus.NOT_FOUND, false, exceptionDto);
     }
@@ -79,7 +79,7 @@ public class GlobalControllerAdvice {
     @ExceptionHandler( { NotEqualsUserSize.class})
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     protected ApiResponse<ExceptionDto> notEqualsUserSize(ObjectNotFound e) {
-        ExceptionDto exceptionDto = new ExceptionDto(e.getMessage(), e.getMessage(), e);
+        ExceptionDto exceptionDto = new ExceptionDto(e.getMessage(), e.getMessage());
         log.warn(ExceptionConstants.PROCESSED);
         return new ApiResponse<>(HttpStatus.BAD_REQUEST, false, exceptionDto);
     }
@@ -87,7 +87,7 @@ public class GlobalControllerAdvice {
     @ExceptionHandler( {InvalidEditorException.class} )
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     protected ApiResponse<ExceptionDto> invalidEditorException(InvalidEditorException e) {
-        ExceptionDto exceptionDto = new ExceptionDto(e.getMessage(), e.getMessage(), e);
+        ExceptionDto exceptionDto = new ExceptionDto(e.getMessage(), e.getMessage());
         log.warn(ExceptionConstants.PROCESSED);
         return new ApiResponse<>(HttpStatus.BAD_REQUEST, false, exceptionDto);
     }
@@ -100,7 +100,5 @@ public class GlobalControllerAdvice {
 
         //예외의 메시지
         private String exceptionMessage;
-
-        private Exception exception;
     }
 }
