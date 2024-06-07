@@ -28,7 +28,9 @@ public class MyPostService {
 
         for (PostUser postUser : postUsers) {
             Post post = postUser.getPost();
+            Long id = postUser.getPost().getPostId();
             myPostResponses.add(MyPostResponse.builder()
+                    .postId(id)
                     .title(post.getTitle())
                     .createAt(post.getCreatedAt())
                     .author(post.getUser().getNickname())

@@ -1,6 +1,7 @@
 package com.codingchosun.backend.controller;
 
 import com.codingchosun.backend.domain.User;
+import com.codingchosun.backend.exception.notfoundfromdb.PostNotFoundFromDB;
 import com.codingchosun.backend.response.ApiResponse;
 import com.codingchosun.backend.response.MyPostResponse;
 import com.codingchosun.backend.service.MyPostService;
@@ -29,6 +30,11 @@ public class MypostController {
     public ApiResponse<List<MyPostResponse>> mypost(@Login User user, Model model) {
         log.info("login user:{}", user);
         List<MyPostResponse> responseList = myPostService.getMyPost(user);
+
+        if (responseList == null || responseList.isEmpty()) {
+            throw new PostNotFoundFromDB("참여한 모임이 없습니다");
+        }
+
         return new ApiResponse<>(HttpStatus.OK, true, responseList);
     }
 }
