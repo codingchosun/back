@@ -10,6 +10,8 @@ public class ImageResponse {
 
     public ImageResponse(Image image){
         this.imageId = image.getImageId();
-        this.url = image.getUrl();
+
+        String[] split = image.getUrl().split("/");
+        this.url = split[split.length - 1];
     }
 }
