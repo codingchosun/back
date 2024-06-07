@@ -11,12 +11,14 @@ import java.time.LocalDateTime;
 @Setter
 @ToString
 public class MyPostResponse {
+    private Long postId;
     private String title;
     private LocalDateTime createAt;
     private String author;
 
     @Builder
-    public MyPostResponse(String title, LocalDateTime createAt, String author) {
+    public MyPostResponse(Long postId, String title, LocalDateTime createAt, String author) {
+        this.postId = postId;
         this.title = title;
         this.createAt = createAt;
         this.author = author;
