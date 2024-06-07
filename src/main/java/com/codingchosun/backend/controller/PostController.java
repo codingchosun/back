@@ -101,7 +101,7 @@ public class PostController {
     }
 
     //post 수정
-    @GetMapping("/{postId}/edit")
+    @PostMapping("/{postId}/edit")
     public  ApiResponse<Long> editPost(@PathVariable Long postId,
                                        @RequestBody PostUpdateRequest postUpdateRequest,
                                        @Login User user){
