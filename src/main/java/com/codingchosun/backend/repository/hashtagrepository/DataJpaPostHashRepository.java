@@ -13,4 +13,6 @@ public interface DataJpaPostHashRepository extends JpaRepository<PostHash, Long>
     List<PostHash> findAllByHashtag_HashtagId(Long hashtagId);
     List<PostHash> findAllByHashtag_HashtagName(String hashtagName);
     Optional<PostHash> findByPostAndHashtag(Post post, Hashtag hashtag);
+
+    List<PostHash> findAllByHashtagIn(List<Hashtag> hashtags);
 }

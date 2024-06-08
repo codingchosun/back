@@ -18,4 +18,11 @@ public interface DataJpaPostRepository extends JpaRepository<Post, Long>, DataJp
     List<Post> findAllByStartTimeBeforeAndStateCode(LocalDateTime startTime, StateCode stateCode);
 
     List<Post> findAllByEndTimeBeforeAndStateCode(LocalDateTime EndTime, StateCode stateCode);
+
+    Page<Post> findAllByTitleContainingAndStateCode(String title, Pageable pageable, StateCode stateCode);
+
+    List<Post> findAllByStateCodeAndTitleContaining(StateCode stateCode,String title);
+
+    Page<Post> findAllByStateCode(Pageable pageable, StateCode stateCode);
+
 }

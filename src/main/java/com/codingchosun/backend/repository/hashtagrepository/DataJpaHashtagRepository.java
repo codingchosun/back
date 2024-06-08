@@ -14,4 +14,6 @@ public interface DataJpaHashtagRepository extends JpaRepository<Hashtag, Long> {
     Optional<Hashtag> findByHashtagName(String hashtagName);
     @Query(value = "SELECT * FROM hashtag ORDER BY RAND() LIMIT :limit", nativeQuery = true)
     List<Hashtag> findRandomHashtags(@Param("limit") int limit);
+
+    List<Hashtag> findAllByHashtagNameIn(List<String> hashNames);
 }
