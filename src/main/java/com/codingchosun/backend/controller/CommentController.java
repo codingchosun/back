@@ -67,10 +67,11 @@ public class CommentController {
         return commentService.getPagedComments(pageable, postId);
     }
 
-//    @DeleteMapping("/posts/{postId}/comments/{commentId}")
-//    public HttpEntity<Integer> deleteComments(@PathVariable Long postId,
-//                                             @PathVariable Long commentId) {
-//        return new ResponseEntity<>(commentService.deleteComment(postId, commentId), HttpStatus.OK);
-//    }
+    @DeleteMapping("/posts/{postId}/comments/{commentId}")
+    public HttpEntity<String> deleteComments(@Login User user,
+                                              @PathVariable Long postId,
+                                             @PathVariable Long commentId) {
+        return new ResponseEntity<>(commentService.deleteComment(user, postId, commentId), HttpStatus.OK);
+    }
 
 }

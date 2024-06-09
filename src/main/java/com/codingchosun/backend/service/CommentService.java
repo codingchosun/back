@@ -32,9 +32,18 @@ public class CommentService {
         return dataJpaCommentRepository.save(comment);
     }
 
-//    public int deleteComment(Long postId, Long commentId) {
-//        return dataJpaCommentRepository.deleteCommentByPost_PostIdAndCommentId(postId, commentId);
-//    }
+    public String deleteComment(User user, Long postId, Long commentId) {
+        Comment comment = dataJpaCommentRepository.findCommentByPost_PostIdAndCommentId(postId, commentId);
+        if (comment.getUser().getUserId() != user.getUserId()) {
+            return "댓글 작성자가 아닙니다.";
+        }
+        int count = dataJpaCommentRepository.deleteCommentByPost_PostIdAndCommentId(postId, commentId);
+
+        if (count == 0) {
+            return "포스트아이디와 댓글아이디에 일치하는 댓글이 없습니다.";
+        }
+        return "댓글 " + count + "개가 삭제됐습니다.";
+    }
 
     public Page<CommentResponse> getPagedComments(Pageable pageable, Long postId){
         return dataJpaCommentRepository.findAllByPost_PostId(postId, pageable).map(CommentResponse::new);

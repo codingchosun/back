@@ -63,7 +63,7 @@ Content-Type: application/json
 
 ###
 
-DELETE /posts/1/comments/1
+DELETE /posts/1/comments/2
 Host: localhost:8090
 Content-Type: application/json
 
