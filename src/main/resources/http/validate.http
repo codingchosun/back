@@ -46,7 +46,7 @@ Host: localhost:8090
 
 ###
 
-GET /posts?page=1&size=2
+GET /posts?page=1&size=4
 Host: localhost:8090
 
 

@@ -35,7 +35,7 @@ public class DataJpaPostRepositoryImpl implements DataJpaPostRepositoryCustom {
                     .on(post.eq(postHash.post))
                     .where(postHash.hashtag.hashtagId.in(hashTagId))
                     .distinct()
-                    .orderBy(post.postId.desc())
+                    .orderBy(post.createdAt.desc())
                     .offset(pageable.getOffset())
                     .limit(pageable.getPageSize())
                     .fetch();
@@ -74,6 +74,7 @@ public class DataJpaPostRepositoryImpl implements DataJpaPostRepositoryCustom {
                 .innerJoin(postHash.hashtag, hashtag)
                 .where(builder)
                 .distinct()
+                .orderBy(post.createdAt.desc())
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();
