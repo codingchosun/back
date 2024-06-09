@@ -147,6 +147,9 @@ public class PostService {
     }
 
     public String splitImagePath(String path) {
+        if (path == null) {
+            return "";
+        }
         String[] split = path.split("/");
         return split[split.length - 1];
     }

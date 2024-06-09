@@ -32,6 +32,10 @@ public class CommentService {
         return dataJpaCommentRepository.save(comment);
     }
 
+//    public int deleteComment(Long postId, Long commentId) {
+//        return dataJpaCommentRepository.deleteCommentByPost_PostIdAndCommentId(postId, commentId);
+//    }
+
     public Page<CommentResponse> getPagedComments(Pageable pageable, Long postId){
         return dataJpaCommentRepository.findAllByPost_PostId(postId, pageable).map(CommentResponse::new);
     }
