@@ -16,9 +16,7 @@ import java.util.List;
 public interface DataJpaCommentRepository extends JpaRepository<Comment, Long> {
     Page<Comment> findAllByPost_PostId(Long postId, Pageable pageable);
     List<Comment> findAllByUser_UserId(Long userId, Pageable pageable);
+    int deleteCommentByPost_PostIdAndCommentId(Long postId, Long commentId);
 
-    @Modifying
-    @Query("DELETE FROM Comment c WHERE c.post.postId = :postId AND c.content = :commentId")
-    int deleteCommentByPost_PostIdAndCommentId(@Param("postId") Long postId, @Param("commentId") Long commentId);
-//    Comment deleteCommentByPost_PostIdAndCommentId(Long postId, Long commentId);
+    Comment findCommentByPost_PostIdAndCommentId(Long postId, Long commentId);
 }
