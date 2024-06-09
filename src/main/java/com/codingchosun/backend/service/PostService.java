@@ -1,6 +1,7 @@
 package com.codingchosun.backend.service;
 
 
+import com.codingchosun.backend.constants.DeleteConstants;
 import com.codingchosun.backend.constants.StateCode;
 import com.codingchosun.backend.domain.*;
 import com.codingchosun.backend.exception.ObjectNotFound;
@@ -244,6 +245,22 @@ public class PostService {
         return post;
     }
 
+    public String deletePost(Post post, User user){
+
+        //post시간 검사
+        if(post.getStartTime().isBefore(LocalDateTime.now())){
+            return DeleteConstants.AFTER_START_TIME;
+        }
+
+        //작성자 검사
+        if(!(post.getUser().getUserId().equals(user.getUserId()))){
+            return DeleteConstants.YOU_CANT_DELETE;
+        }
+
+        //삭제
+        post.setStateCode(StateCode.INACTIVE);
+        return DeleteConstants.DELETE_COMPLETE;
+    }
 
 
 
