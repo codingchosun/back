@@ -1,3 +1,17 @@
+POST /posts/1/edit
+Host: localhost:8090
+Content-Type: application/json
+
+{
+  "title": "제목 수정",
+  "content": "피곤하다. 매우 피곤하다",
+  "start_time": "2024-10-01T10:30:00",
+  "add_tags": ["#리자몽"],
+  "remove_tags": ["#푸바오", "#한글태그", "#서울"],
+  "remove_images": []
+}
+
+###
 
 POST /bridge/validate/post/4/user/1
 Host: localhost:8090
@@ -44,7 +58,7 @@ Host: localhost:8090
 Content-Type: application/json
 
 {
-    "researchQuery" : "qwe #푸바오 #리자몽"
+    "researchQuery" : "first post #서울"
 }
 
 ###
