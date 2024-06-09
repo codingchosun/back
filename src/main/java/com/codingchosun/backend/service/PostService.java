@@ -130,7 +130,7 @@ public class PostService {
     public NoLoginPostsHashtagsResponse noLoginGetPosts(Pageable pageable) {
         List<Hashtag> hashtagList = dataJpaHashtagRepository.findRandomHashtags(5);
         List<HashtagDto> hashtagDtoList = hashtagList.stream().map(HashtagDto::new).toList();
-        Page<Post> posts = dataJpaPostRepository.findAllByOrderByCreatedAtDesc(pageable);
+        Page<Post> posts = dataJpaPostRepository.findAllActiveByOrderByCreatedAtDesc(pageable);
 //        String[] split = dataJpaImageRepository.findFirstByPost(m).orElse(new Image()).getUrl().split("/");
 
         Page<NoLoginPostsResponse> noLoginPostsResponses = posts.map(
@@ -184,21 +184,26 @@ public class PostService {
     }
 
     public Page<ResearchPostResponse> researchPost(ResearchRequest researchQuery, Pageable pageable) {
-        List<String> titleQuery = new ArrayList<>();
-        List<String> hashQuery = new ArrayList<>();
+        Page<Post> posts = null;
+        if (researchQuery.getResearchQuery().isEmpty()) {
+            posts = dataJpaPostRepository.findAllActiveByOrderByCreatedAtDesc(pageable);
+        } else {
+            List<String> titleQuery = new ArrayList<>();
+            List<String> hashQuery = new ArrayList<>();
 
-        String query = researchQuery.getResearchQuery();
-        String[] querys = query.split(" ");
+            String query = researchQuery.getResearchQuery();
+            String[] querys = query.split(" ");
 
-        for (String q : querys) {
-            if (q.contains("#")) {
-                hashQuery.add(q);
-            } else {
-                titleQuery.add(q);
+            for (String q : querys) {
+                if (q.contains("#")) {
+                    hashQuery.add(q);
+                } else {
+                    titleQuery.add(q);
+                }
             }
+            posts = dataJpaPostRepository.findPostsByResearchQuery(titleQuery, hashQuery, pageable);
         }
 
-        Page<Post> posts = dataJpaPostRepository.findPostsByResearchQuery(titleQuery, hashQuery, pageable);
         return posts.map(
                 m -> new ResearchPostResponse().builder()
                         .id(m.getPostId())

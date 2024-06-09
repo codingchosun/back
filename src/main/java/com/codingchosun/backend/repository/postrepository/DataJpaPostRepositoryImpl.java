@@ -1,5 +1,6 @@
 package com.codingchosun.backend.repository.postrepository;
 
+import com.codingchosun.backend.constants.StateCode;
 import com.codingchosun.backend.domain.Post;
 import com.codingchosun.backend.domain.QHashtag;
 import com.codingchosun.backend.domain.QPost;
@@ -33,7 +34,8 @@ public class DataJpaPostRepositoryImpl implements DataJpaPostRepositoryCustom {
             List<Post> contents = jpaQueryFactory.selectFrom(post)
                     .innerJoin(postHash)
                     .on(post.eq(postHash.post))
-                    .where(postHash.hashtag.hashtagId.in(hashTagId))
+                    .where(postHash.hashtag.hashtagId.in(hashTagId)
+                    .and(post.stateCode.eq(StateCode.ACTIVE)))
                     .distinct()
                     .orderBy(post.createdAt.desc())
                     .offset(pageable.getOffset())
@@ -63,7 +65,8 @@ public class DataJpaPostRepositoryImpl implements DataJpaPostRepositoryCustom {
                         .from(postHash)
                         .innerJoin(postHash.hashtag, hashtag)
                         .where(postHash.post.eq(post)
-                                .and(hashtag.hashtagName.eq(h)))
+                                .and(hashtag.hashtagName.eq(h))
+                                .and(post.stateCode.eq(StateCode.ACTIVE)))
                         .exists();
                 builder.and(hashExpression); // 모든 해시태그 조건을 and로 결합
             }

@@ -58,7 +58,7 @@ Host: localhost:8090
 Content-Type: application/json
 
 {
-    "researchQuery" : "first post #서울"
+    "researchQuery" : ""
 }
 
 ###
