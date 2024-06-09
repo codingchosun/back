@@ -183,15 +183,15 @@ public class PostService {
 
     }
 
-    public Page<ResearchPostResponse> researchPost(ResearchRequest researchQuery, Pageable pageable) {
+    public Page<ResearchPostResponse> researchPost(String researchQuery, Pageable pageable) {
         Page<Post> posts = null;
-        if (researchQuery.getResearchQuery().isEmpty()) {
+        if (researchQuery.isEmpty()) {
             posts = dataJpaPostRepository.findAllActiveByOrderByCreatedAtDesc(pageable);
         } else {
             List<String> titleQuery = new ArrayList<>();
             List<String> hashQuery = new ArrayList<>();
 
-            String query = researchQuery.getResearchQuery();
+            String query = researchQuery;
             String[] querys = query.split(" ");
 
             for (String q : querys) {
