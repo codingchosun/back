@@ -1,6 +1,7 @@
 package com.codingchosun.backend.controller;
 
 
+import com.codingchosun.backend.constants.DeleteConstants;
 import com.codingchosun.backend.constants.PagingConstants;
 import com.codingchosun.backend.domain.Post;
 import com.codingchosun.backend.domain.User;
@@ -187,6 +188,28 @@ public class PostController {
 
         return new ResponseEntity<>(postService.researchPost(researchRequest, pageable), HttpStatus.OK);
     }
+
+    @PostMapping("/{postId}/delete")
+    public HttpEntity<ApiResponse<String>> deletePost(@PathVariable Long postId, @Login User user){
+        if(user == null){
+            throw new LoggedInUserNotFound("수정 중 로그인불량");
+        }
+
+        Post post = postService.getPost(postId)
+                .orElseThrow(() -> new PostNotFoundFromDB("postId:" + postId + "not found"));
+
+        String rtnValue = postService.deletePost(post, user);
+
+        if(rtnValue.equals(DeleteConstants.DELETE_COMPLETE)){
+            return new ResponseEntity<>(new ApiResponse<>(HttpStatus.OK,true, rtnValue), HttpStatus.OK);
+        } else if (rtnValue.equals(DeleteConstants.YOU_CANT_DELETE)) {
+            return new ResponseEntity<>(new ApiResponse<>(HttpStatus.BAD_REQUEST, false, rtnValue), HttpStatus.BAD_REQUEST);
+        } else if(rtnValue.equals(DeleteConstants.AFTER_START_TIME)){
+            return new ResponseEntity<>(new ApiResponse<>(HttpStatus.BAD_REQUEST, false, rtnValue), HttpStatus.BAD_REQUEST);
+        }
+        return null;
+    }
+
 
     @Data
     public static class PostAndComments{
