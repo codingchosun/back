@@ -54,42 +54,82 @@ public class DataJpaPostRepositoryImpl implements DataJpaPostRepositoryCustom {
     @Override
     public Page<Post> findPostsByResearchQuery(List<String> titleQuery, List<String> hashQuery, Pageable pageable) {
 
-        BooleanBuilder builder = new BooleanBuilder();
-        for (String t : titleQuery) {
-            builder.and(post.title.contains(t));
-        }
+//        BooleanBuilder builder = new BooleanBuilder();
+//        for (String t : titleQuery) {
+//            builder.and(post.title.contains(t));
+//        }
+//
+//        if (hashQuery != null && !hashQuery.isEmpty()) {
+//            BooleanBuilder hashTagBuilder = new BooleanBuilder();
+//            for (String h : hashQuery) {
+//                BooleanExpression hashExpression = JPAExpressions
+//                        .selectOne()
+//                        .from(postHash)
+//                        .innerJoin(postHash.hashtag, hashtag) // postHash와 hashtag 조인
+//                        .where(postHash.post.eq(post)
+//                                .and(hashtag.hashtagName.eq(h)))
+//                        .exists();
+//                hashTagBuilder.or(hashExpression);
+//            }
+//            builder.and(hashTagBuilder);
+//        }
+//
+//        List<Post> contents = jpaQueryFactory.selectFrom(post)
+//                .innerJoin(postHash).on(post.postId.eq(postHash.post.postId)) // post와 postHash 조인 조건 추가
+//                .innerJoin(postHash.hashtag, hashtag) // postHash와 hashtag 조인 조건 추가
+//                .where(builder)
+//                .distinct()
+//                .offset(pageable.getOffset())
+//                .limit(pageable.getPageSize())
+//                .fetch();
+//
+//        JPAQuery<Long> countQuery = jpaQueryFactory
+//                .select(post.postId.countDistinct())
+//                .from(post)
+//                .innerJoin(postHash).on(post.postId.eq(postHash.post.postId)) // post와 postHash 조인 조건 추가
+//                .innerJoin(postHash.hashtag, hashtag) // postHash와 hashtag 조인 조건 추가
+//                .where(builder);
+//
+//        return PageableExecutionUtils.getPage(contents, pageable, countQuery::fetchOne);
 
-        if (hashQuery != null && !hashQuery.isEmpty()) {
-            BooleanBuilder hashTagBuilder = new BooleanBuilder();
-            for (String h : hashQuery) {
-                BooleanExpression hashExpression = JPAExpressions
-                        .selectOne()
-                        .from(postHash)
-                        .innerJoin(postHash.hashtag, hashtag) // postHash와 hashtag 조인
-                        .where(postHash.post.eq(post)
-                                .and(hashtag.hashtagName.eq(h)))
-                        .exists();
-                hashTagBuilder.or(hashExpression);
+
+
+            BooleanBuilder builder = new BooleanBuilder();
+            for (String t : titleQuery) {
+                builder.and(post.title.contains(t));
             }
-            builder.and(hashTagBuilder);
-        }
 
-        List<Post> contents = jpaQueryFactory.selectFrom(post)
-                .innerJoin(postHash).on(post.postId.eq(postHash.post.postId)) // post와 postHash 조인 조건 추가
-                .innerJoin(postHash.hashtag, hashtag) // postHash와 hashtag 조인 조건 추가
-                .where(builder)
-                .distinct()
-                .offset(pageable.getOffset())
-                .limit(pageable.getPageSize())
-                .fetch();
+            if (hashQuery != null && !hashQuery.isEmpty()) {
+                for (String h : hashQuery) {
+                    BooleanExpression hashExpression = JPAExpressions
+                            .selectOne()
+                            .from(postHash)
+                            .innerJoin(postHash.hashtag, hashtag)
+                            .where(postHash.post.eq(post)
+                                    .and(hashtag.hashtagName.eq(h)))
+                            .exists();
+                    builder.and(hashExpression); // 모든 해시태그 조건을 and로 결합
+                }
+            }
 
-        JPAQuery<Long> countQuery = jpaQueryFactory
-                .select(post.postId.countDistinct())
-                .from(post)
-                .innerJoin(postHash).on(post.postId.eq(postHash.post.postId)) // post와 postHash 조인 조건 추가
-                .innerJoin(postHash.hashtag, hashtag) // postHash와 hashtag 조인 조건 추가
-                .where(builder);
+            List<Post> contents = jpaQueryFactory.selectFrom(post)
+                    .innerJoin(postHash).on(post.postId.eq(postHash.post.postId))
+                    .innerJoin(postHash.hashtag, hashtag)
+                    .where(builder)
+                    .distinct()
+                    .offset(pageable.getOffset())
+                    .limit(pageable.getPageSize())
+                    .fetch();
 
-        return PageableExecutionUtils.getPage(contents, pageable, countQuery::fetchOne);
+            JPAQuery<Long> countQuery = jpaQueryFactory
+                    .select(post.postId.countDistinct())
+                    .from(post)
+                    .innerJoin(postHash).on(post.postId.eq(postHash.post.postId))
+                    .innerJoin(postHash.hashtag, hashtag)
+                    .where(builder);
+
+            return PageableExecutionUtils.getPage(contents, pageable, countQuery::fetchOne);
+
+
     }
 }

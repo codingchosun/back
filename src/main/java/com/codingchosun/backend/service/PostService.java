@@ -130,11 +130,13 @@ public class PostService {
         List<Hashtag> hashtagList = dataJpaHashtagRepository.findRandomHashtags(5);
         List<HashtagDto> hashtagDtoList = hashtagList.stream().map(HashtagDto::new).toList();
         Page<Post> posts = dataJpaPostRepository.findAllByOrderByCreatedAtDesc(pageable);
+//        String[] split = dataJpaImageRepository.findFirstByPost(m).orElse(new Image()).getUrl().split("/");
+
         Page<NoLoginPostsResponse> noLoginPostsResponses = posts.map(
                 m -> new NoLoginPostsResponse().builder()
                                                 .id(m.getPostId())
                                                 .contents(m.getContent())
-                                                .path(dataJpaImageRepository.findFirstByPost(m).orElse(new Image()).getUrl())
+                                                .path(splitImagePath(dataJpaImageRepository.findFirstByPost(m).orElse(new Image()).getUrl()))
                                                 .title(m.getTitle())
                                                 .build());
 
@@ -142,6 +144,11 @@ public class PostService {
                 .noLoginPostsResponses(noLoginPostsResponses)
                 .hashtagDtoList(hashtagDtoList)
                 .build();
+    }
+
+    public String splitImagePath(String path) {
+        String[] split = path.split("/");
+        return split[split.length - 1];
     }
 
     //ToDo 해시태그 값이 널이면 최신 포스트 보내주자
@@ -161,7 +168,7 @@ public class PostService {
                 m -> new LoginPostsResponse().builder()
                         .id(m.getPostId())
                         .contents(m.getContent())
-                        .path(dataJpaImageRepository.findFirstByPost(m).orElse(new Image()).getUrl())
+                        .path(splitImagePath(dataJpaImageRepository.findFirstByPost(m).orElse(new Image()).getUrl()))
                         .title(m.getTitle())
                         .build());
 
