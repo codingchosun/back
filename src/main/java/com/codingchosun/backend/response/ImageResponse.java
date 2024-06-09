@@ -11,7 +11,12 @@ public class ImageResponse {
     public ImageResponse(Image image){
         this.imageId = image.getImageId();
 
-        String[] split = image.getUrl().split("/");
-        this.url = split[split.length - 1];
+        if(image.getUrl() != null){
+            String[] split = image.getUrl().split("/");
+            this.url = split[split.length - 1];
+        }
+        else{
+            this.url = "";
+        }
     }
 }
