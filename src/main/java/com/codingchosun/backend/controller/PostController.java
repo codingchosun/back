@@ -183,10 +183,10 @@ public class PostController {
 
 
     @GetMapping("/research")
-    public HttpEntity<Page<ResearchPostResponse>> researchPost(@RequestBody ResearchRequest researchRequest,
+    public HttpEntity<Page<ResearchPostResponse>> researchPost(@RequestParam(value = "researchQuery", required = false, defaultValue = "") String researchQuery,
                                                                Pageable pageable) {
 
-        return new ResponseEntity<>(postService.researchPost(researchRequest, pageable), HttpStatus.OK);
+        return new ResponseEntity<>(postService.researchPost(researchQuery, pageable), HttpStatus.OK);
     }
 
     @PostMapping("/{postId}/delete")
