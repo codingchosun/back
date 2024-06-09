@@ -47,14 +47,10 @@ public class DataJpaPostRepositoryImpl implements DataJpaPostRepositoryCustom {
                     .where(postHash.hashtag.hashtagId.in(hashTagId));
 
             return PageableExecutionUtils.getPage(contents, pageable, countQuery::fetchOne);
-
-
     }
 
     @Override
     public Page<Post> findPostsByResearchQuery(List<String> titleQuery, List<String> hashQuery, Pageable pageable) {
-
-
         BooleanBuilder builder = new BooleanBuilder();
         for (String t : titleQuery) {
             builder.and(post.title.contains(t));
