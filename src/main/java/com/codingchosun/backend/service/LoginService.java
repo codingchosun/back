@@ -22,6 +22,7 @@ public class LoginService {
 
     public User login(LoginRequest request) {
         Optional<User> user = Optional.ofNullable(dataJpaUserRepository.findByLoginIdAndPassword(request.getLoginId(), request.getPassword()));
+        log.info("login user{}",user);
         return user.orElse(null);
     }
 
