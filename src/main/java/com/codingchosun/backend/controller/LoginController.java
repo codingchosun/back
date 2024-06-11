@@ -28,7 +28,8 @@ public class LoginController {
     @PostMapping("/login")
     public ResponseEntity<String> login(
             @RequestBody LoginRequest loginRequest,
-            BindingResult bindingResult, HttpServletRequest request)
+            BindingResult bindingResult,
+            HttpServletRequest request)
     {
         //log.info("Received login request: loginId={}, password={}", loginRequest.getLoginId(), loginRequest.getPassword());
         if (bindingResult.hasErrors()) {
