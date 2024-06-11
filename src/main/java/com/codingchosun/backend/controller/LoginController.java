@@ -47,6 +47,8 @@ public class LoginController {
             HttpSession session = request.getSession();
             log.info(String.valueOf(session.getCreationTime()));
             session.setAttribute(SessionConst.LOGIN_USER, loginUser);
+
+            log.info("login success! session: {}", session.getId());
         }
         return new ResponseEntity<>(HttpStatus.OK);
     }
