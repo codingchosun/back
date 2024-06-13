@@ -7,6 +7,7 @@ import com.codingchosun.backend.domain.User;
 import com.codingchosun.backend.exception.LoggedInUserNotFound;
 import com.codingchosun.backend.exception.emptyrequest.EmptyCommentException;
 import com.codingchosun.backend.exception.notfoundfromdb.PostNotFoundFromDB;
+import com.codingchosun.backend.repository.userrepository.DataJpaUserRepository;
 import com.codingchosun.backend.request.RegisterCommentRequest;
 import com.codingchosun.backend.response.ApiResponse;
 import com.codingchosun.backend.response.CommentResponse;
@@ -22,6 +23,8 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -33,15 +36,18 @@ public class CommentController {
 
     private final CommentService commentService;
     private final PostService postService;
+    private final DataJpaUserRepository dataJpaUserRepository;
 
     @PostMapping("/posts/{postId}/comments")
-    public ApiResponse<Long> registerComment(@Login User user, @PathVariable Long postId,
+    public ApiResponse<Long> registerComment(@AuthenticationPrincipal UserDetails userDetails,
+                                             @PathVariable Long postId,
                                              @RequestBody RegisterCommentRequest registerCommentRequest){
 
         //user 못 가져올경우
-        if(user == null){
+        if(userDetails == null){
             throw new LoggedInUserNotFound("로그인을 해야 댓글을 작성할수있습니다");
         }
+        User user = this.getUserFromUserDetails(userDetails);
 
         //빈 댓글 예외처리
         if(registerCommentRequest.getContents() == null){
@@ -72,6 +78,12 @@ public class CommentController {
                                               @PathVariable Long postId,
                                              @PathVariable Long commentId) {
         return new ResponseEntity<>(commentService.deleteComment(user, postId, commentId), HttpStatus.OK);
+    }
+
+
+
+    public User getUserFromUserDetails(UserDetails userDetails){
+        return dataJpaUserRepository.findByLoginId(userDetails.getUsername());
     }
 
 }
