@@ -34,6 +34,8 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
@@ -78,10 +80,13 @@ public class PostController {
     //게시글 작성
     @PostMapping("/register")
     public ApiResponse<Long> registerPost(@RequestBody RegisterPostRequest registerPostRequest, BindingResult bindingResult,
-                                    @Login User user){
-        if(user == null){
+                                          @AuthenticationPrincipal UserDetails userDetails){
+        //로그인 유저 찾아오기
+        if(userDetails == null){
             throw new LoggedInUserNotFound("로그인을 해야 글을 쓸수있습니다.");
         }
+        User user = this.getUserFromUserDetails(userDetails);
+
         Post registeredPost = postService.registerPost(registerPostRequest, user);
         return new ApiResponse<>(HttpStatus.OK, true, registeredPost.getPostId());
     }
@@ -105,10 +110,13 @@ public class PostController {
     @PostMapping("/{postId}/edit")
     public  ApiResponse<Long> editPost(@PathVariable Long postId,
                                        @RequestBody PostUpdateRequest postUpdateRequest,
-                                       @Login User user){
-        if(user == null){
+                                       @AuthenticationPrincipal UserDetails userDetails){
+        //유저 찾아오기
+        if(userDetails == null){
             throw new LoggedInUserNotFound("수정 중 로그인불량");
         }
+        User user = this.getUserFromUserDetails(userDetails);
+
         Post editedPost = postService.editPost(postId, user, postUpdateRequest);
         return new ApiResponse<>(HttpStatus.OK, true, editedPost.getPostId());
     }
@@ -121,12 +129,13 @@ public class PostController {
 
     //post의 모임참가
     @PostMapping("/{postId}/participant")
-    public ApiResponse<Long> particaptePost(@PathVariable Long postId, @Login User user){
-
+    public ApiResponse<Long> particaptePost(@PathVariable Long postId,
+                                            @AuthenticationPrincipal UserDetails userDetails){
         //로그인 검사
-        if(user == null){
+        if(userDetails == null){
             throw new LoggedInUserNotFound("로그인해주세요");
         }
+        User user = this.getUserFromUserDetails(userDetails);
 
         User participant = postUserService.participate(postId, user);
         return new ApiResponse<>(HttpStatus.OK, true, participant.getUserId());
@@ -134,12 +143,13 @@ public class PostController {
 
     //post 모임 탈퇴(참가자 스스로 탈퇴)
     @PostMapping("/{postId}/leave")
-    public ApiResponse<Long> leavePost(@PathVariable Long postId, @Login User user){
-
+    public ApiResponse<Long> leavePost(@PathVariable Long postId,
+                                       @AuthenticationPrincipal UserDetails userDetails){
         //로그인 검사
-        if(user == null){
+        if(userDetails == null){
             throw new LoggedInUserNotFound("로그인해주세요");
         }
+        User user = this.getUserFromUserDetails(userDetails);
 
         Post post = postService.getPost(postId).orElseThrow(() -> new PostNotFoundFromDB("post 못찾음"));
 
@@ -152,11 +162,12 @@ public class PostController {
     @PostMapping("/{postId}/admin/remove")
     public ApiResponse<Long> removePost(@RequestBody RemoveUserFromPostRequest removeUserFromPostRequest,
                                         @PathVariable Long postId,
-                                        @Login User user){
+                                        @AuthenticationPrincipal UserDetails userDetails){
         //로그인 검사
-        if(user == null){
+        if(userDetails == null){
             throw new LoggedInUserNotFound("로그인해주세요");
         }
+        User user = this.getUserFromUserDetails(userDetails);
 
         Post post = postService.getPost(postId).orElseThrow(() -> new PostNotFoundFromDB("post 못찾음"));
 
@@ -190,10 +201,14 @@ public class PostController {
     }
 
     @PostMapping("/{postId}/delete")
-    public HttpEntity<ApiResponse<String>> deletePost(@PathVariable Long postId, @Login User user){
-        if(user == null){
+    public HttpEntity<ApiResponse<String>> deletePost(@PathVariable Long postId,
+                                                      @AuthenticationPrincipal UserDetails userDetails){
+
+        //로그인 검사
+        if(userDetails == null){
             throw new LoggedInUserNotFound("수정 중 로그인불량");
         }
+        User user = this.getUserFromUserDetails(userDetails);
 
         Post post = postService.getPost(postId)
                 .orElseThrow(() -> new PostNotFoundFromDB("postId:" + postId + "not found"));
@@ -208,6 +223,11 @@ public class PostController {
             return new ResponseEntity<>(new ApiResponse<>(HttpStatus.BAD_REQUEST, false, rtnValue), HttpStatus.BAD_REQUEST);
         }
         return null;
+    }
+
+
+    public User getUserFromUserDetails(UserDetails userDetails){
+        return dataJpaUserRepository.findByLoginId(userDetails.getUsername());
     }
 
 
