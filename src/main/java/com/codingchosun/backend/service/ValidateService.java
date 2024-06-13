@@ -4,6 +4,7 @@ package com.codingchosun.backend.service;
 import com.codingchosun.backend.domain.*;
 import com.codingchosun.backend.exception.NotEqualsUserSize;
 import com.codingchosun.backend.exception.ObjectNotFound;
+import com.codingchosun.backend.exception.invalidrequest.AlreadyValidated;
 import com.codingchosun.backend.repository.postrepository.DataJpaPostRepository;
 import com.codingchosun.backend.repository.postuserrepository.DataJpaPostUserRepository;
 import com.codingchosun.backend.repository.templaterepository.TemplateRepository;
@@ -181,7 +182,14 @@ public class ValidateService {
             log.info("template={}", template.getContent());
 
             //평가 업데이트 하기
+            if(validate.getTemplate() != null ){
+                log.info("validate id :{}은 이미 평가되었습니다",validate.getValidateId());
+                throw new AlreadyValidated("validate id :" + validate.getValidateId() +"은 이미 평가되었습니다");
+            }
             validate.setTemplate(template);
+
+            //평가 받는 유저의 점수 업데이트
+            toUser.setScore(toUser.getScore() + template.getScore());
         }
         return userValidates.size();
     }
