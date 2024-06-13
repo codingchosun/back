@@ -34,6 +34,7 @@ public class SecurityConfig {
 
         http.formLogin(formConfig -> {
             formConfig.usernameParameter("loginId");
+            formConfig.loginPage("/login");
             formConfig.successHandler(authenticationSuccessHandler());
             formConfig.failureHandler(authenticationFailureHandler());
         });
