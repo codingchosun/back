@@ -23,9 +23,6 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
-import java.util.Arrays;
-import java.util.List;
-
 @EnableWebSecurity
 @EnableMethodSecurity
 @Configuration
@@ -118,10 +115,11 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(List.of("http://codingchosun.site")); // 허용할 출처 설정
-        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS")); // 허용할 HTTP 메서드 설정
-        configuration.setAllowedHeaders(List.of("*")); // 허용할 헤더 설정
-        configuration.setExposedHeaders(List.of("*")); // 노출할 헤더 설정
+        configuration.addAllowedOrigin("http://13.124.154.185"); // 로컬
+        configuration.addAllowedOrigin("http://codingchosun.com"); // 프론트 IPv4 주소
+        configuration.addAllowedMethod("*"); // 모든 메소드 허용.
+        configuration.addAllowedHeader("*");
+        configuration.setAllowCredentials(true);
         configuration.setAllowCredentials(true); // 인증 정보를 서버로 전달할지 여부 설정
         configuration.setMaxAge(3600L); // Preflight 요청의 유효 기간 설정 (초 단위)
 
