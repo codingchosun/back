@@ -19,6 +19,12 @@ import org.springframework.security.web.authentication.AuthenticationSuccessHand
 import org.springframework.security.web.authentication.HttpStatusEntryPoint;
 import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+
+import java.util.Arrays;
+import java.util.List;
 
 @EnableWebSecurity
 @EnableMethodSecurity
@@ -107,6 +113,22 @@ public class SecurityConfig {
 
     private AuthenticationFailureHandler authenticationFailureHandler() {
         return (request, response, exception) -> response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+    }
+
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
+        configuration.setAllowedOrigins(List.of("http://codingchosun.site")); // 허용할 출처 설정
+        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS")); // 허용할 HTTP 메서드 설정
+        configuration.setAllowedHeaders(List.of("*")); // 허용할 헤더 설정
+        configuration.setExposedHeaders(List.of("*")); // 노출할 헤더 설정
+        configuration.setAllowCredentials(true); // 인증 정보를 서버로 전달할지 여부 설정
+        configuration.setMaxAge(3600L); // Preflight 요청의 유효 기간 설정 (초 단위)
+
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration); // 모든 경로에 대해 CORS 설정 적용
+
+        return source;
     }
 }
 
