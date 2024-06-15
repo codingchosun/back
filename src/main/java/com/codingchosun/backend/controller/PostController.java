@@ -132,7 +132,7 @@ public class PostController {
 
     //post의 모임참가
     @PostMapping("/{postId}/participant")
-    public ApiResponse<Long> particaptePost(@PathVariable Long postId,
+    public ApiResponse<Long> participatePost(@PathVariable Long postId,
                                             @AuthenticationPrincipal UserDetails userDetails){
         //로그인 검사
         if(userDetails == null){
