@@ -53,7 +53,7 @@ Host: localhost:8090
 ###
 
 
-GET /posts/research?researchQuery=#광주광역시&page=1&size=2
+GET /posts/research?researchQuery= &page=1&size=2
 Host: localhost:8090
 Content-Type: application/json
 

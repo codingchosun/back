@@ -99,10 +99,13 @@ public class PostController {
     }
     // 로그인 했을 때 글 보기
     @GetMapping("/login")
-    public HttpEntity<LoginPostsHashtagResponse> loginShowPosts(@Login User user,
+    public HttpEntity<LoginPostsHashtagResponse> loginShowPosts(@AuthenticationPrincipal UserDetails userDetails,
                                                               Pageable pageable)
     {
-
+        if(userDetails == null){
+            throw new LoggedInUserNotFound("로그인해주세요");
+        }
+        User user = this.getUserFromUserDetails(userDetails);
         return new ResponseEntity<>(postService.loginPostsRequests(user, pageable), HttpStatus.OK);
     }
 
