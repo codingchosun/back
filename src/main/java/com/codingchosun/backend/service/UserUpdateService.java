@@ -9,6 +9,7 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -23,19 +24,22 @@ public class UserUpdateService {
     private DataJpaUserRepository userRepository;
     private DataJpaUserHashRepository userHashRepository;
     private DataJpaHashtagRepository hashtagRepository;
+    private final PasswordEncoder passwordEncoder;
     @Autowired
-    public UserUpdateService(DataJpaUserRepository userRepository, DataJpaUserHashRepository userHashRepository, DataJpaHashtagRepository hashtagRepository) {
+    public UserUpdateService(DataJpaUserRepository userRepository, DataJpaUserHashRepository userHashRepository, DataJpaHashtagRepository hashtagRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.userHashRepository = userHashRepository;
         this.hashtagRepository = hashtagRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     public void updateUser(User user, UserUpdateRequest updateRequest) {
         user = userRepository.findById(user.getUserId()).orElseThrow(()
                 -> new IllegalArgumentException("해당하는 아이디가 없습니다 id : "));
         List<String> hashList = updateRequest.getHashList();
+        String encodedPassword = passwordEncoder.encode(updateRequest.getPassword());
         updateRequest = UserUpdateRequest.builder()
-                .password(updateRequest.getPassword() != null ? updateRequest.getPassword() : user.getPassword())
+                .password(updateRequest.getPassword() != null ? encodedPassword : user.getPassword())
                 .email(updateRequest.getEmail() != null ? updateRequest.getEmail() : user.getEmail())
                 .genderCode(updateRequest.getGenderCode() != null ? updateRequest.getGenderCode() : user.getGenderCode())
                 .nickname(updateRequest.getNickname() != null ? updateRequest.getNickname() : user.getNickname())
