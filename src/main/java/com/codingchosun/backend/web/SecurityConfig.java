@@ -106,9 +106,10 @@ public class SecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.addAllowedOrigin("http://13.124.154.185"); // 로컬
-        configuration.addAllowedOrigin("http://codingchosun.com");// 프론트 IPv4 주소
+        configuration.addAllowedOrigin("http://codingchosun.site");// 프론트 IPv4 주소
         configuration.addAllowedOrigin("http://localhost:8080");
         configuration.addAllowedOrigin("http://localhost:8090");
+        configuration.addAllowedOrigin("http://localhost:3000");
         configuration.addAllowedMethod("*"); // 모든 메소드 허용.
         configuration.addAllowedHeader("*");
         configuration.setAllowCredentials(true);

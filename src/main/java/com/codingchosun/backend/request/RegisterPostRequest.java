@@ -24,4 +24,14 @@ public class RegisterPostRequest {
     private LocalDateTime startTime;
 
     private List<String> hashtags = new ArrayList<>();
+
+    @Override
+    public String toString() {
+        return "RegisterPostRequest{" +
+                "title='" + title + '\'' +
+                ", content='" + content + '\'' +
+                ", startTime=" + startTime +
+                ", hashtags=" + hashtags +
+                '}';
+    }
 }
