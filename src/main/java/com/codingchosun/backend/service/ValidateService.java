@@ -176,8 +176,9 @@ public class ValidateService {
                             + "from:" + fromUser.getUserId() + "to:" + toUser.getUserId()));
 
             //template찾기
-            Template template = templateRepository.findById(userValidate.getValidateId())
-                    .orElseThrow(() -> new ObjectNotFound("적절한 templateId:" + userValidate.getValidateId() + " 가 아닙니다"));
+            Template template = templateRepository.findTemplateByContent(userValidate.getTemplateContent())
+                    .orElseThrow(
+                            () -> new ObjectNotFound("받은 template content:" + userValidate.getTemplateContent() +"를 못 찾았습니다."));
 
             log.info("template={}", template.getContent());
 
