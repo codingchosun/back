@@ -13,5 +13,5 @@ public class UserValidationRequest {
     @NotEmpty
     private Long userId;
     @NotEmpty
-    private Long validateId;
+    private String templateContent;
 }
