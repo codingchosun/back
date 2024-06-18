@@ -87,6 +87,10 @@ public class PostController {
         }
         User user = this.getUserFromUserDetails(userDetails);
 
+        //2024.06.18 타임존 설정에 실패하고 시간에 +9를 더하기로 결정
+        registerPostRequest.setStartTime(registerPostRequest.getStartTime().plusHours(9));
+        log.info("register post request: {}", registerPostRequest);
+
         Post registeredPost = postService.registerPost(registerPostRequest, user);
         return new ApiResponse<>(HttpStatus.OK, true, registeredPost.getPostId());
     }
@@ -119,6 +123,10 @@ public class PostController {
             throw new LoggedInUserNotFound("수정 중 로그인불량");
         }
         User user = this.getUserFromUserDetails(userDetails);
+
+        //2024.06.18 타임존 설정에 실패하고 시간에 +9를 더하기로 결정
+        postUpdateRequest.setStartTime(postUpdateRequest.getStartTime().plusHours(9));
+        log.info("edit post request: {}", postUpdateRequest);
 
         Post editedPost = postService.editPost(postId, user, postUpdateRequest);
         return new ApiResponse<>(HttpStatus.OK, true, editedPost.getPostId());
