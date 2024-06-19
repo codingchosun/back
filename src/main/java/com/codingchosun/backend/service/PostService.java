@@ -91,7 +91,7 @@ public class PostService {
         //작성자는 참여자이기도 하므로 참여인원에 등록
         PostUser postUser = new PostUser();
         postUser.setUser(user);
-        postUser.setPost(post);
+        postUser.setPost(save);
         dataJpaPostUserRepository.save(postUser);
 
 

@@ -34,14 +34,14 @@ public class EventScheduler {
     */
     @Scheduled(cron = "0 */5 * * * *")
     public void postEventScheduler(){
-        log.info("post event scheduler started at {}", LocalDateTime.now().plusHours(9));
+        log.info("post event scheduler started at {}", LocalDateTime.now());
         updateStartTimeEvent();
         updateEndTimeEvent();
     }
 
     private void updateEndTimeEvent(){
         List<Post> targetPostList = dataJpaPostRepository
-                .findAllByStartTimeBeforeAndStateCode(LocalDateTime.now().plusHours(9), StateCode.ACTIVE);
+                .findAllByStartTimeBeforeAndStateCode(LocalDateTime.now(), StateCode.ACTIVE);
 
         //확인용
         List<Long> postIdList = targetPostList.stream()
@@ -56,7 +56,7 @@ public class EventScheduler {
 
     private void updateStartTimeEvent(){
         List<Post> targetPostList = dataJpaPostRepository
-                .findAllByStartTimeBeforeAndStateCode(LocalDateTime.now().plusHours(9), StateCode.ACTIVE);
+                .findAllByStartTimeBeforeAndStateCode(LocalDateTime.now(), StateCode.ACTIVE);
 
         //확인용
         List<Long> postIdList = targetPostList.stream()
