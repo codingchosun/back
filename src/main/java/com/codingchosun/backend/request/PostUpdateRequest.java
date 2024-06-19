@@ -18,9 +18,7 @@ public class PostUpdateRequest {
     @NotEmpty
     private LocalDateTime startTime;    //약속시간
 
-    private List<String> addTags;   //글에 추가될 태그들
-    private List<String> removeTags;   //삭제될 태그들
+    @NotEmpty
+    private String alterTags; //스페이스로 구분한 해쉬태그
 
-    // 이미지 추가는 posts/{postId}/images로 추가하길 바람
-    private List<Long> removeImages;    //삭제될 이미지 id의 리스트
 }

@@ -30,6 +30,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -237,18 +238,18 @@ public class PostService {
         post.setEndTime(postUpdateRequest.getStartTime().plusDays(1));
 
         //해쉬태그 수정
-            //삭제
-        deleteHashtagFromPost(postUpdateRequest, post);
-            //추가
-        addHashtagToPost(postUpdateRequest, post);
+            //기존 해쉬태그 삭제
+        List<PostHash> oldPostHashes = post.getPostHashes();
+        dataJpaPostHashRepository.deleteAll(oldPostHashes);
 
-        //이미지 수정
-        for (Long removeImage : postUpdateRequest.getRemoveImages()) {
-            dataJpaImageRepository.deleteById(removeImage);
-        }
+            //대체될 해쉬태그 추가
+        alterHashtagsToPost(postUpdateRequest, post);
+
 
         return post;
     }
+
+
 
     public String deletePost(Post post, User user){
 
@@ -283,46 +284,35 @@ public class PostService {
 
 
 //기타 메서드들
+private void alterHashtagsToPost(PostUpdateRequest postUpdateRequest, Post post) {
+    String[] tokens = postUpdateRequest.getAlterTags().split(" ");
+    for (String token : tokens) {
+        Optional<Hashtag> optionalHashtag = dataJpaHashtagRepository.findByHashtagName(token);
 
-
-    private void addHashtagToPost(PostUpdateRequest postUpdateRequest, Post post) {
-        for (String addTag : postUpdateRequest.getAddTags()) {
-            Optional<Hashtag> optionalHashtag = dataJpaHashtagRepository.findByHashtagName(addTag);
-
-            if( optionalHashtag.isPresent() ){  //이미 있는 해쉬태그의 경우
-                Hashtag hashtag = optionalHashtag.get();
-
-                PostHash postHash = new PostHash();
-                postHash.setPost(post);
-                postHash.setHashtag(hashtag);
-                dataJpaPostHashRepository.save(postHash);
-            }
-            else {
-                //해쉬태그 만들기
-                Hashtag hashtag = new Hashtag();
-                hashtag.setHashtagName(addTag);
-                Hashtag savedHashtag = dataJpaHashtagRepository.save(hashtag);
-
-                //해쉬태그 저장
-                PostHash postHash = new PostHash();
-                postHash.setPost(post);
-                postHash.setHashtag(savedHashtag);
-                dataJpaPostHashRepository.save(postHash);
-            }
-
+        //기존에 있던 해쉬태그
+        if(optionalHashtag.isPresent()){
+            Hashtag hashtag = optionalHashtag.get();
+            PostHash postHash = new PostHash();
+            postHash.setHashtag(hashtag);
+            postHash.setPost(post);
+            dataJpaPostHashRepository.save(postHash);
         }
-    }
+        //새로운 해쉬태그
+        else {
+            //1. 새 해쉬태그 만들기
+            Hashtag unsavedHashtag = new Hashtag();
+            unsavedHashtag.setHashtagName(token);
+            Hashtag savedHashtag = dataJpaHashtagRepository.save(unsavedHashtag);
 
-    private void deleteHashtagFromPost(PostUpdateRequest postUpdateRequest, Post post) {
-        for (String removeTag : postUpdateRequest.getRemoveTags()) {
-            Hashtag hashtag = dataJpaHashtagRepository.findByHashtagName(removeTag).orElseThrow(
-                    () -> new HashtagNotFoundFromDB("없는 해쉬태그"));
-            PostHash postHash = dataJpaPostHashRepository.findByPostAndHashtag(post, hashtag)
-                    .orElseThrow(() -> new IsNotPostHash("이 글에 달린 태그가 아님"));
-
-            dataJpaPostHashRepository.delete(postHash); //태그 지우기
+            //2. postHash 등록
+            PostHash postHash = new PostHash();
+            postHash.setHashtag(savedHashtag);
+            postHash.setPost(post);
+            dataJpaPostHashRepository.save(postHash);
         }
+
     }
+}
 
 
 }
