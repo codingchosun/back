@@ -30,9 +30,9 @@ public class EventScheduler {
     /*
     *   매 30분마다
     *   1. startTime이 지나간 post를 확인해서 post의 참가자를 validate 테이블에 넣어줌
-    *   2. endTime이 지나간 post를 확인해서 state를 INACTIVE로 바꿈
+    *   2. startTime이 지나간 post를 확인해서 state를 INACTIVE로 바꿈
     */
-    @Scheduled(cron = "0 0,30 * * * *")
+    @Scheduled(cron = "0 */5 * * * *")
     public void postEventScheduler(){
         log.info("post event scheduler started at {}", LocalDateTime.now());
         updateStartTimeEvent();
