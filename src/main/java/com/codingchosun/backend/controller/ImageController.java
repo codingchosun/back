@@ -7,8 +7,10 @@ import com.codingchosun.backend.exception.invalidrequest.IsNotPostAuthor;
 import com.codingchosun.backend.exception.notfoundfromdb.PostNotFoundFromDB;
 import com.codingchosun.backend.repository.postrepository.DataJpaPostRepository;
 import com.codingchosun.backend.repository.userrepository.DataJpaUserRepository;
+import com.codingchosun.backend.request.ImageDeleteRequest;
 import com.codingchosun.backend.response.ApiResponse;
 import com.codingchosun.backend.service.ImageService;
+import com.codingchosun.backend.service.PostService;
 import com.codingchosun.backend.web.argumentresolver.Login;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -57,6 +59,26 @@ public class ImageController {
         int count = imageService.uploadImages(files, post);    //저장된 파일 개수
 
         return new ApiResponse<>(HttpStatus.OK, true, count);
+    }
+
+    //이미지 삭제
+    @PostMapping(value = "/posts/{posdId}/deleteimage")
+    @ResponseBody
+    public ApiResponse<Long> dropImage(@PathVariable Long posdId,
+                                         @AuthenticationPrincipal UserDetails userDetails,
+                                         @RequestBody ImageDeleteRequest imageDeleteRequest){
+
+        if(userDetails==null){ //로그인 검사
+            throw new LoggedInUserNotFound("로그인 하세요");
+        }
+        User user = this.getUserFromUserDetails(userDetails);
+
+        //포스트 찾기
+        Post post = dataJpaPostRepository.findById(posdId)
+                .orElseThrow(() -> new PostNotFoundFromDB("postId = " + posdId + "를 찾지 못했습니다"));
+
+        Long deletedImageId = imageService.deleteImage(user, post, imageDeleteRequest.getDeleteImageId());
+        return new ApiResponse<>(HttpStatus.OK, true, deletedImageId);
     }
 
     public User getUserFromUserDetails(UserDetails userDetails){
