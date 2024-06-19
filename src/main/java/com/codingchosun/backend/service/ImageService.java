@@ -3,6 +3,10 @@ package com.codingchosun.backend.service;
 import com.codingchosun.backend.component.file.FileStore;
 import com.codingchosun.backend.domain.Image;
 import com.codingchosun.backend.domain.Post;
+import com.codingchosun.backend.domain.User;
+import com.codingchosun.backend.exception.invalidrequest.IsNotPostAuthor;
+import com.codingchosun.backend.exception.invalidrequest.IsNotPostImage;
+import com.codingchosun.backend.exception.notfoundfromdb.ImageNotFoundFromDB;
 import com.codingchosun.backend.repository.imagerepository.DataJpaImageRepository;
 import com.codingchosun.backend.response.ImageResponse;
 import jakarta.transaction.Transactional;
@@ -56,6 +60,26 @@ public class ImageService {
         }
 
         return  count;
+    }
+
+    public Long deleteImage(User user, Post post, Long imageId) {
+        Image image = dataJpaImageRepository.findById(imageId)
+                .orElseThrow(() -> new ImageNotFoundFromDB("image id = " + imageId + " 못 찾음"));
+
+        Long targetId = image.getImageId();
+
+        //글쓴이 확인
+        if( !(post.getUser().getUserId().equals(user.getUserId())) ){
+            throw new IsNotPostAuthor("글쓴이만 삭제할수있습니다.");
+        }
+        //post의 이미지가 맞는지 확인
+        if( !(post.getImages().contains(image)) ){
+            throw new IsNotPostImage("imageId:" + targetId + "는 postId:" + post.getPostId() + "의 이미지가 아닙니다");
+        }
+
+        dataJpaImageRepository.delete(image);
+
+        return targetId;
     }
 
 
