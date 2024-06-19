@@ -41,7 +41,7 @@ public class EventScheduler {
 
     private void updateEndTimeEvent(){
         List<Post> targetPostList = dataJpaPostRepository
-                .findAllByEndTimeBeforeAndStateCode(LocalDateTime.now(), StateCode.ACTIVE);
+                .findAllByStartTimeBeforeAndStateCode(LocalDateTime.now(), StateCode.ACTIVE);
 
         //확인용
         List<Long> postIdList = targetPostList.stream()
