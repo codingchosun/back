@@ -30,6 +30,7 @@ public class SignUpService {
         String encodedPassword = passwordEncoder.encode(registerUserRequest.getPassword());
         registerUserRequest.setPassword(encodedPassword);
         User user = new User(registerUserRequest);
+        user.setScore(50);
         return dataJpaUserRepository.save(user);
     }
 }
