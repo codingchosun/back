@@ -173,7 +173,7 @@ public class PostService {
                 m -> new LoginPostsResponse().builder()
                         .id(m.getPostId())
                         .contents(m.getContent())
-                        .path(splitImagePath(dataJpaImageRepository.findFirstByPost(m).orElse(new Image()).getUrl()))
+                        .path(splitImagePath(splitImagePath(dataJpaImageRepository.findFirstByPost(m).orElse(new Image()).getUrl())))
                         .title(m.getTitle())
                         .build());
 
@@ -210,7 +210,7 @@ public class PostService {
                         .id(m.getPostId())
                         .title(m.getTitle())
                         .contents(m.getContent())
-                        .path(dataJpaImageRepository.findFirstByPost(m).orElse(new Image()).getUrl())
+                        .path(splitImagePath(dataJpaImageRepository.findFirstByPost(m).orElse(new Image()).getUrl()))
                         .build()
         );
     }
