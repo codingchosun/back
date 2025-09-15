@@ -39,6 +39,7 @@ out/
 
 ### properties ###
 application-dev.properties
+application-prod.properties
 
 ### Querydsl ###
 src/main/generated/
