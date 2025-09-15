@@ -16,11 +16,10 @@ public class UserHash {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "userId")
+    @JoinColumn
     private User user;
 
-
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "hashtagId")
+    @JoinColumn
     private Hashtag hashtag;
 }
