@@ -18,7 +18,7 @@ public class DeleteAccountService {
     }
 
     public void deleteAccount(User user) {
-        user.setState(StateCode.INACTIVE);
+        user.setStateCode(StateCode.INACTIVE);
         userRepository.save(user);
     }
 
