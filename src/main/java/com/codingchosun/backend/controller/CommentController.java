@@ -1,89 +1,78 @@
 package com.codingchosun.backend.controller;
 
-import com.codingchosun.backend.constants.ExceptionConstants;
 import com.codingchosun.backend.domain.Comment;
-import com.codingchosun.backend.domain.Post;
-import com.codingchosun.backend.domain.User;
 import com.codingchosun.backend.exception.LoggedInUserNotFound;
-import com.codingchosun.backend.exception.emptyrequest.EmptyCommentException;
-import com.codingchosun.backend.exception.notfoundfromdb.PostNotFoundFromDB;
-import com.codingchosun.backend.repository.userrepository.DataJpaUserRepository;
 import com.codingchosun.backend.request.RegisterCommentRequest;
-import com.codingchosun.backend.response.ApiResponse;
 import com.codingchosun.backend.response.CommentResponse;
 import com.codingchosun.backend.service.CommentService;
-import com.codingchosun.backend.service.PostService;
-import com.codingchosun.backend.web.argumentresolver.Login;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
-@Slf4j
+@RequestMapping("/api/posts/{postId}/comments")
 public class CommentController {
 
     private final CommentService commentService;
-    private final PostService postService;
-    private final DataJpaUserRepository dataJpaUserRepository;
 
-    @PostMapping("/posts/{postId}/comments")
-    public ApiResponse<Long> registerComment(@AuthenticationPrincipal UserDetails userDetails,
-                                             @PathVariable Long postId,
-                                             @RequestBody RegisterCommentRequest registerCommentRequest){
-
-        //user 못 가져올경우
-        if(userDetails == null){
+    /**
+     * 게시물 댓글 등록 API
+     *
+     * @param postId                 게시글 식별번호
+     * @param userDetails            로그인 정보
+     * @param registerCommentRequest 댓글내용
+     * @return 201 CREATED, commentId
+     */
+    @PostMapping
+    public ResponseEntity<Map<String, Long>> registerComment(@PathVariable Long postId,
+                                                             @AuthenticationPrincipal UserDetails userDetails,
+                                                             @Valid @RequestBody RegisterCommentRequest registerCommentRequest) {
+        if (userDetails == null) {
             throw new LoggedInUserNotFound("로그인을 해야 댓글을 작성할수있습니다");
         }
-        User user = this.getUserFromUserDetails(userDetails);
+        Comment comment = commentService.registerComments(postId, userDetails.getUsername(), registerCommentRequest);
 
-        //빈 댓글 예외처리
-        if(registerCommentRequest.getContents() == null){
-            throw new EmptyCommentException(ExceptionConstants.EMPTY_COMMENT);
-        }
-
-        //포스트 가져오며 예외처리
-        Post post = postService.getPost(postId)
-                .orElseThrow(() -> new PostNotFoundFromDB("postId: " + postId + "를 찾지 못했습니다"));
-
-        Comment comment = commentService.registerComments(user, post, registerCommentRequest);
-
-        return new ApiResponse<>(HttpStatus.OK, true, comment.getCommentId());
+        return ResponseEntity.status(HttpStatus.CREATED).body(Map.of("commentId", comment.getCommentId()));
     }
 
-    @GetMapping("/posts/{postId}/comments")
-    public Page<CommentResponse> getPostComments(@PathVariable Long postId,
-                                                 @RequestParam(required = false, defaultValue = "1", value = "pageNo") int pageNo,
-                                                 @RequestParam(required = false, defaultValue = "createdAt", value = "criteria") String criteria){
+    /**
+     * 특정 게시물의 댓글 조회 API
+     *
+     * @param postId     게시물 식별번호
+     * @param pageNumber 조회수
+     * @param pageSize   조회페이지
+     * @return 댓글목록
+     */
+    @GetMapping
+    public ResponseEntity<Page<CommentResponse>> getPostComments(@PathVariable Long postId,
+                                                                 @RequestParam(required = false, defaultValue = "1", value = "pageNumber") int pageNumber,
+                                                                 @RequestParam(required = false, defaultValue = "10", value = "pageSize") int pageSize) {
+        Page<CommentResponse> comments = commentService.getPagedComments(PageRequest.of(pageNumber, pageSize), postId);
 
-        Pageable pageable = PageRequest.of(pageNo - 1, 5, Sort.by(Sort.Direction.DESC, criteria));
-
-        return commentService.getPagedComments(pageable, postId);
+        return ResponseEntity.status(HttpStatus.OK).body(comments);
     }
 
-    @DeleteMapping("/posts/{postId}/comments/{commentId}")
-    public HttpEntity<String> deleteComments(@Login User user,
-                                              @PathVariable Long postId,
-                                             @PathVariable Long commentId) {
-        return new ResponseEntity<>(commentService.deleteComment(user, postId, commentId), HttpStatus.OK);
-    }
+    /**
+     * 댓글 삭제 API
+     *
+     * @param userDetails 로그인 정보
+     * @param commentId   댓글 식별키
+     * @return 200 OK, "댓글이 성공적을 삭제되었습니다"
+     */
+    @DeleteMapping("/{commentId}")
+    public ResponseEntity<String> deleteComments(@AuthenticationPrincipal UserDetails userDetails, @PathVariable Long commentId) {
+        commentService.deleteComment(commentId, userDetails.getUsername());
 
-
-
-    public User getUserFromUserDetails(UserDetails userDetails){
-        return dataJpaUserRepository.findByLoginId(userDetails.getUsername());
+        return ResponseEntity.status(HttpStatus.OK).body("댓글이 성공적을 삭제되었습니다");
     }
 
 }

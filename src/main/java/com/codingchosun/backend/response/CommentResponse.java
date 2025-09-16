@@ -1,21 +1,30 @@
 package com.codingchosun.backend.response;
 
 import com.codingchosun.backend.domain.Comment;
-import lombok.Data;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
-@Data
+@Getter
+@NoArgsConstructor
+@AllArgsConstructor
 public class CommentResponse {
+
     private Long commentId;
     private String content;
     private LocalDateTime createdAt;
-    private UserDTO userDTO;
+    private String hostNickname;
+    private Long writerUserId;
 
-    public CommentResponse(Comment comment){
-        this.commentId = comment.getCommentId();
-        this.content = comment.getContent();
-        this.createdAt = comment.getCreatedAt();
-        this.userDTO = new UserDTO(comment.getUser());
+    public static CommentResponse from(Comment comment) {
+        return new CommentResponse(
+                comment.getCommentId(),
+                comment.getContent(),
+                comment.getCreatedAt(),
+                comment.getUser().getNickname(),
+                comment.getUser().getUserId()
+        );
     }
 }
