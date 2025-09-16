@@ -124,15 +124,6 @@ public class User {
         this.password = passwordEncoder.encode(newPassword);
     }
 
-    //TODO: 엔티티가 DTO 에 직접 의존 -> 서비스 계층에서 처리하기
-    public void setUpdateRequest(UserUpdateRequest updateRequest) {
-        this.nickname = updateRequest.getNickname();
-        this.password = updateRequest.getPassword();
-        this.email = updateRequest.getEmail();
-        this.genderCode = updateRequest.getGenderCode();
-        this.introduction = updateRequest.getIntroduction();
-    }
-
     public int calMannerScore(int mannersScore) {
         return this.score = Math.max(0, Math.min(100, this.score + mannersScore));
     }
