@@ -1,42 +1,38 @@
 package com.codingchosun.backend.controller;
 
-
-import com.codingchosun.backend.domain.User;
 import com.codingchosun.backend.request.RegisterUserRequest;
-import com.codingchosun.backend.service.SignUpService;
+import com.codingchosun.backend.response.ApiResponse;
+import com.codingchosun.backend.service.user.SignUpService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
 
-@Slf4j
 @RequiredArgsConstructor
-@Controller
+@RestController
 public class SignUpController {
 
     private final SignUpService signUpService;
 
+    /**
+     * 회원가입 API
+     *
+     * @param registerUserRequest 이름, 로그인 아이디, 비밀번호, 이메일, 성별코드, 생년월일, 닉네임
+     * @param bindingResult       유효성 검사
+     * @return 200 OK, true, "회원가입이 완료되었습니다."
+     */
     @PostMapping("/register")
-    public ResponseEntity<String> register(@RequestBody @Valid RegisterUserRequest registerUserRequest
-            , BindingResult bindingResult) {
+    public ResponseEntity<ApiResponse<?>> register(@RequestBody @Valid RegisterUserRequest registerUserRequest, BindingResult bindingResult) {
 
-        if (bindingResult.hasErrors()) {    //검증 실패
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("validation fail");
+        if (bindingResult.hasErrors()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ApiResponse<>(HttpStatus.BAD_REQUEST, false, bindingResult.getAllErrors().get(0).getDefaultMessage()));
         }
+        signUpService.signUp(registerUserRequest);
 
-        User signUpSuccessful = signUpService.signUp(registerUserRequest);
-
-        if (signUpSuccessful != null) { // 회원가입 성공
-            log.info("register success");
-            return ResponseEntity.ok("registered successfully");
-        } else {    // 회원가입 실패
-            log.info("register fail");
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to register user");
-        }
+        return ResponseEntity.status(HttpStatus.CREATED).body(new ApiResponse<>(HttpStatus.CREATED, true, "회원가입이 완료되었습니다."));
     }
 }

@@ -1,16 +1,17 @@
-package com.codingchosun.backend.service;
-
+package com.codingchosun.backend.service.user;
 
 import com.codingchosun.backend.domain.User;
 import com.codingchosun.backend.exception.ExistLoginId;
-import com.codingchosun.backend.repository.userrepository.DataJpaUserRepository;
+import com.codingchosun.backend.repository.user.DataJpaUserRepository;
 import com.codingchosun.backend.request.RegisterUserRequest;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+@Slf4j
 @Service
 @Transactional
 @RequiredArgsConstructor
@@ -19,18 +20,17 @@ public class SignUpService {
     private final DataJpaUserRepository dataJpaUserRepository;
     private final PasswordEncoder passwordEncoder;
 
-    public User signUp(RegisterUserRequest registerUserRequest) {
-
-        User IdCheck = dataJpaUserRepository.findByLoginId(registerUserRequest.getLoginId());
-
-        if(IdCheck != null) {
-            throw new ExistLoginId("이미 존재하는 id 입니다.", HttpStatus.NOT_ACCEPTABLE);
+    public void signUp(RegisterUserRequest registerUserRequest) {
+        if (dataJpaUserRepository.findByLoginId(registerUserRequest.getLoginId()).isPresent()) {
+            throw new ExistLoginId("이미 존재하는 ID 입니다.", HttpStatus.CONFLICT);
         }
 
-        String encodedPassword = passwordEncoder.encode(registerUserRequest.getPassword());
-        registerUserRequest.setPassword(encodedPassword);
         User user = new User(registerUserRequest);
-        user.setScore(50);
-        return dataJpaUserRepository.save(user);
+        log.info("회원 가입 성공: {}", user.getUserId());
+
+        String encodedPassword = passwordEncoder.encode(registerUserRequest.getPassword());
+        user.passwordEncode(encodedPassword);
+
+        dataJpaUserRepository.save(user);
     }
 }
