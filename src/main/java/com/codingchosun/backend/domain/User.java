@@ -1,7 +1,9 @@
 package com.codingchosun.backend.domain;
 
 import com.codingchosun.backend.constants.GenderCode;
+import com.codingchosun.backend.constants.Role;
 import com.codingchosun.backend.constants.StateCode;
+import com.codingchosun.backend.exception.PasswordNotMatch;
 import com.codingchosun.backend.request.RegisterUserRequest;
 import com.codingchosun.backend.request.UserUpdateRequest;
 import jakarta.persistence.*;
@@ -10,19 +12,16 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Past;
 import jakarta.validation.constraints.Size;
 import lombok.*;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.time.LocalDate;
 import java.util.List;
 
-
 @Entity
 @Getter
-@Setter
 @Table
-@Generated
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-@EqualsAndHashCode
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -36,10 +35,12 @@ public class User {
     @NotNull
     private String password;
 
+    @Setter
     @NotNull
     @Size(min = 2, max = 16)
     private String name;
 
+    @Setter
     @NotNull
     @Email
     private String email;
@@ -48,22 +49,32 @@ public class User {
     @Past
     private LocalDate birth;
 
+    @Setter
     private String introduction;
 
+    @Setter
     @NotNull
     @Size(min = 2, max = 12)
     @Column(unique = true)
     private String nickname;
 
+    @Setter
     @NotNull
     @Enumerated(EnumType.STRING)
     private StateCode stateCode;
 
+    @Setter
     private int score;
 
+    @Setter
     @NotNull
     @Enumerated(EnumType.STRING)
     private GenderCode genderCode;
+
+    @Setter
+    @NotNull
+    @Enumerated(EnumType.STRING)
+    private Role role;
 
     @OneToMany(mappedBy = "user")
     private List<PostUser> postUsers;
@@ -85,13 +96,14 @@ public class User {
 
     public User(RegisterUserRequest register) {
         this.loginId = register.getLoginId();
-        this.password = register.getPassword();
         this.email = register.getEmail();
         this.birth = register.getBirth();
         this.nickname = register.getNickname();
         this.name = register.getName();
+        this.score = 50;
         this.genderCode = register.getGenderCode();
         this.stateCode = StateCode.ACTIVE;
+        this.role = Role.USER;
     }
 
     @Override
@@ -101,6 +113,18 @@ public class User {
                 "\n 닉네임 : " + this.nickname + "\n 매너점수 : " + this.score + "\n 상태 : " + this.stateCode;
     }
 
+    public void passwordEncode(String encodedPassword) {
+        this.password = encodedPassword;
+    }
+
+    public void updatePassword(String currentPassword, String newPassword, PasswordEncoder passwordEncoder) {
+        if (!passwordEncoder.matches(currentPassword, this.password)) {
+            throw new PasswordNotMatch("기존 비밀번호가 일치하지 않습니다");
+        }
+        this.password = passwordEncoder.encode(newPassword);
+    }
+
+    //TODO: 엔티티가 DTO 에 직접 의존 -> 서비스 계층에서 처리하기
     public void setUpdateRequest(UserUpdateRequest updateRequest) {
         this.nickname = updateRequest.getNickname();
         this.password = updateRequest.getPassword();
@@ -110,7 +134,6 @@ public class User {
     }
 
     public int calMannerScore(int mannersScore) {
-        //로직: 기존의 매너 점수를 더하고, 점수 총합이 100점을 초과할 경우 100으로 고정시키거나 0점 아래인 경우 0점으로 고정시킴 -> 점수 검증을 할때, 이 메서드의 반환값을 사용하지 않는 문제 발생
         return this.score = Math.max(0, Math.min(100, this.score + mannersScore));
     }
 }
