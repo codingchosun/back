@@ -24,6 +24,12 @@ public class MyPostController {
     private final DataJpaUserRepository userRepository;
 
 
+    /**
+     * 자신이 참여한 게시물 목록 조회 API
+     *
+     * @param userDetails 로그인 정보
+     * @return 게시물 식별번호, 제목, 생성일, 주최자(닉네임)
+     */
     @GetMapping("/posts")
     public ResponseEntity<ApiResponse<List<MyPostResponse>>> getMyPosts(@AuthenticationPrincipal UserDetails userDetails) {
 
