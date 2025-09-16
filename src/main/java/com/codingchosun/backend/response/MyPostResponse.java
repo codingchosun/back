@@ -1,26 +1,27 @@
 package com.codingchosun.backend.response;
 
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import com.codingchosun.backend.domain.Post;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
 @Getter
 @Setter
-@ToString
+@NoArgsConstructor
+@AllArgsConstructor
 public class MyPostResponse {
+
     private Long postId;
     private String title;
     private LocalDateTime createAt;
-    private String author;
+    private String host;
 
-    @Builder
-    public MyPostResponse(Long postId, String title, LocalDateTime createAt, String author) {
-        this.postId = postId;
-        this.title = title;
-        this.createAt = createAt;
-        this.author = author;
+    public static MyPostResponse from(Post post) {
+        return new MyPostResponse(
+                post.getPostId(),
+                post.getTitle(),
+                post.getCreatedAt(),
+                post.getUser().getNickname()
+        );
     }
 }
