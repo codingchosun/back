@@ -2,15 +2,13 @@ package com.codingchosun.backend.request;
 
 import com.codingchosun.backend.constants.GenderCode;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 
 import java.time.LocalDate;
 
 @Getter
-@Setter
 @AllArgsConstructor
-@Builder
-@Generated
 public class RegisterUserRequest {
     @JsonProperty("name")
     private String name;
