@@ -3,7 +3,7 @@ package com.codingchosun.backend.exception;
 import com.codingchosun.backend.constants.ExceptionConstants;
 import com.codingchosun.backend.exception.emptyrequest.EmptyRequestException;
 import com.codingchosun.backend.exception.invalidrequest.InvalidEditorException;
-import com.codingchosun.backend.exception.invalidtime.TimeBeforeCurrentException;
+import com.codingchosun.backend.exception.invalidtime.BeforeCurrentTimeException;
 import com.codingchosun.backend.exception.notfoundfromdb.EntityNotFoundFromDB;
 import com.codingchosun.backend.response.ApiResponse;
 import lombok.AllArgsConstructor;
@@ -51,9 +51,9 @@ public class GlobalControllerAdvice {
         return new ApiResponse<>(HttpStatus.NOT_FOUND, false, exceptionDto);
     }
 
-    @ExceptionHandler({TimeBeforeCurrentException.class})
+    @ExceptionHandler({BeforeCurrentTimeException.class})
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    protected ApiResponse<ExceptionDto> timeBeforeCurrentExceptionHandler(TimeBeforeCurrentException e) {
+    protected ApiResponse<ExceptionDto> timeBeforeCurrentExceptionHandler(BeforeCurrentTimeException e) {
         ExceptionDto exceptionDto = new ExceptionDto("현재시간보다 이른 약속시간을 설정할수없습니다.", e.getMessage());
         log.warn(ExceptionConstants.PROCESSED);
         return new ApiResponse<>(HttpStatus.BAD_REQUEST, false, exceptionDto);
