@@ -1,5 +1,4 @@
-package com.codingchosun.backend.repository.validaterepository;
-
+package com.codingchosun.backend.repository.validate;
 
 import com.codingchosun.backend.domain.Post;
 import com.codingchosun.backend.domain.User;

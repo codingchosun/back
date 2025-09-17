@@ -1,5 +1,4 @@
-package com.codingchosun.backend.repository.hashtagrepository;
-
+package com.codingchosun.backend.repository.hashtag;
 
 import com.codingchosun.backend.domain.Hashtag;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -10,10 +9,12 @@ import java.util.List;
 import java.util.Optional;
 
 public interface DataJpaHashtagRepository extends JpaRepository<Hashtag, Long> {
+
     List<Hashtag> findByHashtagIdIn(List<Long> hashtagIds);
+
     Optional<Hashtag> findByHashtagName(String hashtagName);
+
     @Query(value = "SELECT * FROM hashtag ORDER BY RAND() LIMIT :limit", nativeQuery = true)
     List<Hashtag> findRandomHashtags(@Param("limit") int limit);
 
-    List<Hashtag> findAllByHashtagNameIn(List<String> hashNames);
 }

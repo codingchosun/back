@@ -6,7 +6,7 @@ import com.codingchosun.backend.domain.User;
 import com.codingchosun.backend.exception.invalidrequest.InvalidEditorException;
 import com.codingchosun.backend.exception.notfoundfromdb.EntityNotFoundFromDB;
 import com.codingchosun.backend.exception.notfoundfromdb.PostNotFoundFromDB;
-import com.codingchosun.backend.repository.commentrepository.DataJpaCommentRepository;
+import com.codingchosun.backend.repository.comment.DataJpaCommentRepository;
 import com.codingchosun.backend.repository.post.DataJpaPostRepository;
 import com.codingchosun.backend.repository.user.DataJpaUserRepository;
 import com.codingchosun.backend.request.RegisterCommentRequest;

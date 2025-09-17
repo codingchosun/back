@@ -1,4 +1,4 @@
-package com.codingchosun.backend.repository.postuserrepository;
+package com.codingchosun.backend.repository.postuser;
 
 import com.codingchosun.backend.domain.Post;
 import com.codingchosun.backend.domain.PostUser;
@@ -13,11 +13,16 @@ import java.util.Optional;
 @Transactional
 @Repository
 public interface DataJpaPostUserRepository extends JpaRepository<PostUser, Long> {
+
     List<PostUser> findAllByPost_PostId(Long postId);
+
     List<PostUser> findAllByUser_UserId(Long userId);
 
     List<PostUser> findAllByUser(User user);
 
-    //모임 탈퇴 만들때 쓰려고 만듦
     Optional<PostUser> findByUserAndPost(User user, Post post);
+
+    boolean existsByUserAndPost(User user, Post post);
+
+    void deleteByUserAndPost(User user, Post post);
 }

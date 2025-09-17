@@ -9,7 +9,7 @@ import com.codingchosun.backend.exception.LoggedInUserNotFound;
 import com.codingchosun.backend.exception.notfoundfromdb.HashtagNotFoundFromDB;
 import com.codingchosun.backend.repository.hashtag.DataJpaHashtagRepository;
 import com.codingchosun.backend.repository.hashtag.DataJpaUserHashRepository;
-import com.codingchosun.backend.repository.templaterepository.TemplateRepository;
+import com.codingchosun.backend.repository.template.TemplateRepository;
 import com.codingchosun.backend.repository.user.DataJpaUserRepository;
 import com.codingchosun.backend.request.ProfileResponse;
 import com.codingchosun.backend.request.UserUpdateRequest;

@@ -1,4 +1,4 @@
-package com.codingchosun.backend.repository.postrepository;
+package com.codingchosun.backend.repository.post;
 
 import com.codingchosun.backend.constants.StateCode;
 import com.codingchosun.backend.domain.Post;
@@ -8,7 +8,6 @@ import com.codingchosun.backend.domain.QPostHash;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.JPAExpressions;
-import com.querydsl.jpa.JPQLQuery;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
@@ -16,7 +15,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.support.PageableExecutionUtils;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static com.codingchosun.backend.domain.QHashtag.hashtag;
@@ -52,7 +50,7 @@ public class DataJpaPostRepositoryImpl implements DataJpaPostRepositoryCustom {
     }
 
     @Override
-    public Page<Post> findPostsByResearchQuery(List<String> titleQuery, List<String> hashQuery, Pageable pageable) {
+    public Page<Post> findPostsBySearchQuery(List<String> titleQuery, List<String> hashQuery, Pageable pageable) {
         BooleanBuilder builder = new BooleanBuilder();
         for (String t : titleQuery) {
             builder.and(post.title.contains(t));

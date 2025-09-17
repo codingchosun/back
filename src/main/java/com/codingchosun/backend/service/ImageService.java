@@ -7,7 +7,7 @@ import com.codingchosun.backend.domain.User;
 import com.codingchosun.backend.exception.invalidrequest.IsNotPostAuthor;
 import com.codingchosun.backend.exception.invalidrequest.IsNotPostImage;
 import com.codingchosun.backend.exception.notfoundfromdb.ImageNotFoundFromDB;
-import com.codingchosun.backend.repository.imagerepository.DataJpaImageRepository;
+import com.codingchosun.backend.repository.image.DataJpaImageRepository;
 import com.codingchosun.backend.response.ImageResponse;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;

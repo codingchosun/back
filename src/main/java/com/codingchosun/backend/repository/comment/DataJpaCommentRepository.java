@@ -1,5 +1,4 @@
-package com.codingchosun.backend.repository.commentrepository;
-
+package com.codingchosun.backend.repository.comment;
 
 import com.codingchosun.backend.domain.Comment;
 import org.springframework.data.domain.Page;

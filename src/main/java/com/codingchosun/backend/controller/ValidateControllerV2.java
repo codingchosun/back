@@ -4,14 +4,13 @@ import com.codingchosun.backend.domain.Post;
 import com.codingchosun.backend.domain.User;
 import com.codingchosun.backend.exception.LoggedInUserNotFound;
 import com.codingchosun.backend.exception.notfoundfromdb.PostNotFoundFromDB;
-import com.codingchosun.backend.repository.userrepository.DataJpaUserRepository;
+import com.codingchosun.backend.repository.user.DataJpaUserRepository;
 import com.codingchosun.backend.request.UserValidationRequest;
 import com.codingchosun.backend.response.ApiResponse;
 import com.codingchosun.backend.response.UserDTO;
 import com.codingchosun.backend.service.PostService;
-import com.codingchosun.backend.service.PostUserService;
+import com.codingchosun.backend.service.PostParticipantService;
 import com.codingchosun.backend.service.ValidateService;
-import com.codingchosun.backend.web.argumentresolver.Login;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -27,7 +26,7 @@ import java.util.stream.Collectors;
 @RequestMapping("/mypost")
 public class ValidateControllerV2 {
 
-    private final PostUserService postUserService;
+    private final PostParticipantService postParticipantService;
     private final PostService postService;
     private final ValidateService validateService;
     private final DataJpaUserRepository dataJpaUserRepository;
@@ -41,7 +40,7 @@ public class ValidateControllerV2 {
         }
         User user = this.getUserFromUserDetails(userDetails);
 
-        List<UserDTO> participants = postUserService.getParticipants(postId);
+        List<UserDTO> participants = postParticipantService.getParticipants(postId);
 
         //로그인한 유저 빼기
         Long userId = user.getUserId();

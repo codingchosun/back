@@ -1,4 +1,4 @@
-package com.codingchosun.backend.repository.imagerepository;
+package com.codingchosun.backend.repository.image;
 
 import com.codingchosun.backend.domain.Image;
 import com.codingchosun.backend.domain.Post;

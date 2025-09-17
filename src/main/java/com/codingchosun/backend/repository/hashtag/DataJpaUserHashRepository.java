@@ -1,9 +1,10 @@
-package com.codingchosun.backend.repository.hashtagrepository;
-
+package com.codingchosun.backend.repository.hashtag;
 
 import com.codingchosun.backend.domain.UserHash;
 import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -11,6 +12,10 @@ import java.util.List;
 @Transactional
 @Repository
 public interface DataJpaUserHashRepository extends JpaRepository<UserHash, Long> {
+
     List<UserHash> findHashtagsByUser_UserId(Long userId);
-    UserHash findHashtagsByHashtag_HashtagIdAndUser_UserId(Long hashtagId, Long userId);
+
+    @Query("SELECT uh.hashtag.hashtagId FROM UserHash uh WHERE uh.user.loginId = :loginId")
+    List<Long> findHashtagIdsByLoginId(@Param("loginId") String loginId);
+
 }
