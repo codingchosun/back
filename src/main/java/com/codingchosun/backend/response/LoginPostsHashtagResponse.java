@@ -1,19 +1,18 @@
 package com.codingchosun.backend.response;
 
-import com.codingchosun.backend.domain.Hashtag;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.springframework.data.domain.Page;
 
 import java.util.List;
 
 @Getter
 @NoArgsConstructor
-@Builder
 @AllArgsConstructor
-@Setter
 public class LoginPostsHashtagResponse {
-    Page<LoginPostsResponse> loginPostsResponses;
-    List<HashtagDto> hashtagDtoList;
 
+    Page<LoginPostsResponse> posts;
+    List<HashtagDto> recommendHashtags;
 
 }

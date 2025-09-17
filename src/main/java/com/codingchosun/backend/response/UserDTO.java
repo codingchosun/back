@@ -1,19 +1,24 @@
 package com.codingchosun.backend.response;
 
 import com.codingchosun.backend.domain.User;
-import lombok.Data;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
-@Data
+@Getter
+@NoArgsConstructor
+@AllArgsConstructor
 public class UserDTO {
 
     private Long userId;
-    private String nickname;
     private String loginId;
+    private String nickname;
 
-    public UserDTO(User user){
-        this.userId = user.getUserId();
-        this.loginId = user.getLoginId();
-        this.nickname = user.getNickname();
+    public static UserDTO from(User user) {
+        return new UserDTO(
+                user.getUserId(),
+                user.getLoginId(),
+                user.getNickname()
+        );
     }
-
 }

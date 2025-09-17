@@ -1,18 +1,26 @@
 package com.codingchosun.backend.response;
 
-import com.codingchosun.backend.domain.Hashtag;
-import lombok.*;
-
-import java.util.List;
+import com.codingchosun.backend.domain.Post;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor
-@Builder
 @AllArgsConstructor
-@Setter
 public class NoLoginPostsResponse {
-    Long id;
-    String title;
-    String contents;
-    String path;
+
+    private Long id;
+    private String title;
+    private String contents;
+    private String path;
+
+    public static NoLoginPostsResponse from(Post post, String imageUrl) {
+        return new NoLoginPostsResponse(
+                post.getPostId(),
+                post.getTitle(),
+                post.getContent(),
+                imageUrl
+        );
+    }
 }

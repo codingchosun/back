@@ -3,17 +3,21 @@ package com.codingchosun.backend.service;
 import com.codingchosun.backend.domain.Comment;
 import com.codingchosun.backend.domain.Post;
 import com.codingchosun.backend.domain.User;
-import com.codingchosun.backend.repository.commentrepository.DataJpaCommentRepository;
+import com.codingchosun.backend.exception.invalidrequest.InvalidEditorException;
+import com.codingchosun.backend.exception.notfoundfromdb.EntityNotFoundFromDB;
+import com.codingchosun.backend.exception.notfoundfromdb.PostNotFoundFromDB;
+import com.codingchosun.backend.repository.comment.DataJpaCommentRepository;
+import com.codingchosun.backend.repository.post.DataJpaPostRepository;
+import com.codingchosun.backend.repository.user.DataJpaUserRepository;
 import com.codingchosun.backend.request.RegisterCommentRequest;
 import com.codingchosun.backend.response.CommentResponse;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
-import java.util.List;
+import java.util.Objects;
 
 @Service
 @Transactional
@@ -21,31 +25,47 @@ import java.util.List;
 public class CommentService {
 
     private final DataJpaCommentRepository dataJpaCommentRepository;
+    private final DataJpaUserRepository dataJpaUserRepository;
+    private final DataJpaPostRepository dataJpaPostRepository;
 
-    public Comment registerComments(User user, Post post, RegisterCommentRequest registerCommentRequest){
-        Comment comment = new Comment();
-        comment.setUser(user);
-        comment.setPost(post);
-        comment.setContent(registerCommentRequest.getContents());
-        comment.setCreatedAt(LocalDateTime.now());
+    public Comment registerComments(Long postId, String loginId, RegisterCommentRequest registerCommentRequest) {
+        User user = findUserByLoginId(loginId);
+        Post post = findPostById(postId);
+        Comment comment = new Comment(registerCommentRequest.getContents(), user, post);
 
         return dataJpaCommentRepository.save(comment);
     }
 
-    public String deleteComment(User user, Long postId, Long commentId) {
-        Comment comment = dataJpaCommentRepository.findCommentByPost_PostIdAndCommentId(postId, commentId);
-        if (comment.getUser().getUserId() != user.getUserId()) {
-            return "댓글 작성자가 아닙니다.";
-        }
-        int count = dataJpaCommentRepository.deleteCommentByPost_PostIdAndCommentId(postId, commentId);
+    public void deleteComment(Long commentId, String loginId) {
+        User user = findUserByLoginId(loginId);
+        Comment comment = findCommentById(commentId);
 
-        if (count == 0) {
-            return "포스트아이디와 댓글아이디에 일치하는 댓글이 없습니다.";
+        if (!Objects.equals(comment.getUser().getUserId(), user.getUserId())) {
+            throw new InvalidEditorException("댓글 작성자가 아닙니다: " + loginId);
         }
-        return "댓글 " + count + "개가 삭제됐습니다.";
+
+        comment.validateOwner(user);
+        dataJpaCommentRepository.delete(comment);
     }
 
-    public Page<CommentResponse> getPagedComments(Pageable pageable, Long postId){
-        return dataJpaCommentRepository.findAllByPost_PostId(postId, pageable).map(CommentResponse::new);
+    @Transactional(readOnly = true)
+    public Page<CommentResponse> getPagedComments(Pageable pageable, Long postId) {
+        return dataJpaCommentRepository.findAllByPost_PostId(postId, pageable)
+                .map(CommentResponse::from);
+    }
+
+    private User findUserByLoginId(String loginId) {
+        return dataJpaUserRepository.findByLoginId(loginId)
+                .orElseThrow(() -> new EntityNotFoundFromDB("사용자를 찾을 수 없습니다: " + loginId));
+    }
+
+    private Post findPostById(Long postId) {
+        return dataJpaPostRepository.findById(postId)
+                .orElseThrow(() -> new PostNotFoundFromDB("게시물을 찾을 수 없습니다: " + postId));
+    }
+
+    private Comment findCommentById(Long commentId) {
+        return dataJpaCommentRepository.findById(commentId)
+                .orElseThrow(() -> new EntityNotFoundFromDB("댓글을 찾을 수 없습니다: " + commentId));
     }
 }

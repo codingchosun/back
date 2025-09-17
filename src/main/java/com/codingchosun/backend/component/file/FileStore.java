@@ -2,7 +2,7 @@ package com.codingchosun.backend.component.file;
 
 
 
-import com.codingchosun.backend.repository.imagerepository.DataJpaImageRepository;
+import com.codingchosun.backend.repository.image.DataJpaImageRepository;
 import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;

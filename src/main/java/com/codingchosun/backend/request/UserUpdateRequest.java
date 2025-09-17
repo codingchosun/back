@@ -2,22 +2,22 @@ package com.codingchosun.backend.request;
 
 import com.codingchosun.backend.constants.GenderCode;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.*;
-import org.springframework.stereotype.Repository;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.util.List;
 
 @Getter
-@Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
-@Generated
-@Repository
-@ToString
 public class UserUpdateRequest {
-    @JsonProperty("password")
-    private String password;
+
+    @JsonProperty("currentPassword")
+    private String currentPassword;
+
+    @JsonProperty("newPassword")
+    private String newPassword;
 
     @JsonProperty("email")
     private String email;
@@ -33,13 +33,4 @@ public class UserUpdateRequest {
 
     @JsonProperty("hashList")
     private List<String> hashList;
-
-    @Builder
-    public UserUpdateRequest(String password, String email, String nickname, String introduction, GenderCode genderCode) {
-        this.password = password;
-        this.email = email;
-        this.nickname = nickname;
-        this.introduction = introduction;
-        this.genderCode = genderCode;
-    }
 }

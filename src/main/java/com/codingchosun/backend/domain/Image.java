@@ -8,14 +8,16 @@ import lombok.Setter;
 @Getter @Setter
 @Table
 public class Image {
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long imageId;
 
     private String url;
+
     private String name;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "postId")
+    @JoinColumn
     private Post post;
 
 }

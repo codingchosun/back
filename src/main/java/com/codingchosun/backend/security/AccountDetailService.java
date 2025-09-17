@@ -1,33 +1,28 @@
 package com.codingchosun.backend.security;
 
 import com.codingchosun.backend.domain.User;
-import com.codingchosun.backend.repository.userrepository.DataJpaUserRepository;
-import jakarta.transaction.Transactional;
+import com.codingchosun.backend.repository.user.DataJpaUserRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
 public class AccountDetailService implements UserDetailsService {
 
-    private DataJpaUserRepository userRepository;
-    private AccountDetailSupplier accountDetailSupplier;
-
-    @Autowired
-    public AccountDetailService(DataJpaUserRepository userRepository, AccountDetailSupplier accountDetailSupplier) {
-        this.userRepository = userRepository;
-        this.accountDetailSupplier = accountDetailSupplier;
-    }
+    private final DataJpaUserRepository userRepository;
+    private final AccountDetailSupplier accountDetailSupplier;
 
     @Override
-    @Transactional
+    @Transactional(readOnly = true)
     public UserDetails loadUserByUsername(String loginId) throws UsernameNotFoundException {
-        User user = userRepository.findByLoginId(loginId);
-        //Set<Role> roles = accountRoleReader.findRolesByAccountId(normalAccount.getId());
+        User user = userRepository.findByLoginId(loginId).orElseThrow(
+                () -> new UsernameNotFoundException(loginId + "에 해당하는 사용자를 찾을 수 없습니다")
+        );
+
         return accountDetailSupplier.supply(user);
     }
 }

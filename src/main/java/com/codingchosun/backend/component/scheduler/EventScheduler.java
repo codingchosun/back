@@ -3,10 +3,9 @@ package com.codingchosun.backend.component.scheduler;
 import com.codingchosun.backend.constants.StateCode;
 import com.codingchosun.backend.domain.Post;
 import com.codingchosun.backend.domain.PostUser;
-import com.codingchosun.backend.domain.User;
 import com.codingchosun.backend.domain.Validate;
-import com.codingchosun.backend.repository.postrepository.DataJpaPostRepository;
-import com.codingchosun.backend.repository.validaterepository.ValidateRepository;
+import com.codingchosun.backend.repository.post.DataJpaPostRepository;
+import com.codingchosun.backend.repository.validate.ValidateRepository;
 import com.codingchosun.backend.response.UserPairDto;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -15,9 +14,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Component
 @Transactional
