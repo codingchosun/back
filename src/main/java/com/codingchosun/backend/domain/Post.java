@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -54,8 +55,8 @@ public class Post {
     @OneToMany(mappedBy = "post")
     private List<Comment> comments;
 
-    @OneToMany(mappedBy = "post")
-    private List<Image> images;
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
+    private final List<Image> images = new ArrayList<>();
 
     @OneToMany(mappedBy = "post")
     private List<Validate> validates;
@@ -97,5 +98,8 @@ public class Post {
         for (Hashtag hashtag : hashtags) {
             this.postHashes.add(new PostHash(this, hashtag));
         }
+    }
+    public void addImage(Image image) {
+        this.images.add(image);
     }
 }
