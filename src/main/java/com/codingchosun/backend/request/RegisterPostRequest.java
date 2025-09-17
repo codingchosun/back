@@ -7,31 +7,22 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
-@Getter @Setter
+@Getter
 @NoArgsConstructor
 @AllArgsConstructor
 public class RegisterPostRequest {
+
     @NotNull
     private String title;
+
     @NotNull
     private String content;
 
-    //모임 시작 시간
+    @Setter
     @NotNull
     private LocalDateTime startTime;
 
-    private List<String> hashtags = new ArrayList<>();
-
-    @Override
-    public String toString() {
-        return "RegisterPostRequest{" +
-                "title='" + title + '\'' +
-                ", content='" + content + '\'' +
-                ", startTime=" + startTime +
-                ", hashtags=" + hashtags +
-                '}';
-    }
+    private List<String> hashtags;
 }

@@ -1,12 +1,16 @@
 package com.codingchosun.backend.request;
 
 import jakarta.validation.constraints.NotEmpty;
-import lombok.Data;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
-@Data
+@Getter
+@NoArgsConstructor
+@AllArgsConstructor
 public class PostUpdateRequest {
 
     @NotEmpty
@@ -16,9 +20,9 @@ public class PostUpdateRequest {
     private String content;
 
     @NotEmpty
-    private LocalDateTime startTime;    //약속시간
+    private LocalDateTime startTime;
 
     @NotEmpty
-    private String alterTags; //스페이스로 구분한 해쉬태그
+    private List<String> hashtags;
 
 }

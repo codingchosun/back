@@ -17,7 +17,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 
 @Slf4j
 @Service
@@ -28,10 +27,6 @@ public class PostParticipantService {
     private final DataJpaPostUserRepository postUserRepository;
     private final DataJpaPostRepository postRepository;
     private final DataJpaUserRepository userRepository;
-
-    public Optional<PostUser> getPostUserByUserAndPost(User user, Post post) {
-        return postUserRepository.findByUserAndPost(user, post);
-    }
 
     //특정 게시물(모임)의 모든 참가자 목록 조회
     @Transactional(readOnly = true)
