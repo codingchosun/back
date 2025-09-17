@@ -1,15 +1,26 @@
 package com.codingchosun.backend.response;
 
-import lombok.*;
+import com.codingchosun.backend.domain.Post;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor
-@Builder
 @AllArgsConstructor
-@Setter
 public class LoginPostsResponse {
-    Long id;
-    String title;
-    String contents;
-    String path;
+
+    private Long id;
+    private String title;
+    private String contents;
+    private String path;
+
+    public static LoginPostsResponse from(Post post, String imageUrl) {
+        return new LoginPostsResponse(
+                post.getPostId(),
+                post.getTitle(),
+                post.getContent(),
+                imageUrl
+        );
+    }
 }

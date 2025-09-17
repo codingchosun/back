@@ -1,43 +1,35 @@
 package com.codingchosun.backend.service;
 
 import com.codingchosun.backend.domain.Post;
-import com.codingchosun.backend.domain.PostUser;
-import com.codingchosun.backend.domain.User;
-import com.codingchosun.backend.repository.postuserrepository.DataJpaPostUserRepository;
+import com.codingchosun.backend.exception.notfoundfromdb.PostNotFoundFromDB;
+import com.codingchosun.backend.repository.post.DataJpaPostRepository;
 import com.codingchosun.backend.response.MyPostResponse;
-import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 
-@Service
-@Transactional
 @Slf4j
+@Service
+@Transactional(readOnly = true)
+@RequiredArgsConstructor
 public class MyPostService {
 
-    private final DataJpaPostUserRepository postUserRepository;
-    public MyPostService(DataJpaPostUserRepository postUserRepository) {this.postUserRepository = postUserRepository;}
+    private final DataJpaPostRepository postRepository;
 
-    public List<MyPostResponse> getMyPost(User user)  {
+    public List<MyPostResponse> getMyPosts(String loginId) {
+        List<Post> participatedPosts = postRepository.findParticipatedPosts(loginId);
 
-        List<PostUser> postUsers = postUserRepository.findAllByUser(user);
-        log.info(postUsers.toString());
-        List<MyPostResponse> myPostResponses = new ArrayList<>();
-
-        for (PostUser postUser : postUsers) {
-            Post post = postUser.getPost();
-            Long id = postUser.getPost().getPostId();
-            myPostResponses.add(MyPostResponse.builder()
-                    .postId(id)
-                    .title(post.getTitle())
-                    .createAt(post.getCreatedAt())
-                    .author(post.getUser().getNickname())
-                    .build());
+        if (participatedPosts.isEmpty()) {
+            throw new PostNotFoundFromDB("참여한 모임이 없습니다");
         }
-        myPostResponses.sort(Comparator.comparing(MyPostResponse::getPostId).reversed());
-        return myPostResponses;
+
+        log.info("게시물 목록: {}", participatedPosts);
+
+        return participatedPosts.stream()
+                .map(MyPostResponse::from)
+                .toList();
     }
 }
