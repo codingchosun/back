@@ -28,4 +28,8 @@ public class Hashtag {
 
     @OneToMany(mappedBy = "hashtag")
     private List<UserHash> userHashes;
+
+    public Hashtag(String hashtagName) {
+        this.hashtagName = hashtagName;
+    }
 }
