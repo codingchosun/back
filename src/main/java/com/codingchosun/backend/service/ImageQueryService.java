@@ -1,7 +1,7 @@
 package com.codingchosun.backend.service;
 
 import com.codingchosun.backend.repository.image.DataJpaImageRepository;
-import com.codingchosun.backend.response.ImageResponse;
+import com.codingchosun.backend.dto.response.ImageResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

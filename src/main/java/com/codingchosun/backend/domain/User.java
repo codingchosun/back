@@ -4,7 +4,7 @@ import com.codingchosun.backend.constants.GenderCode;
 import com.codingchosun.backend.constants.Role;
 import com.codingchosun.backend.constants.StateCode;
 import com.codingchosun.backend.exception.PasswordNotMatch;
-import com.codingchosun.backend.request.RegisterUserRequest;
+import com.codingchosun.backend.dto.request.RegisterUserRequest;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;

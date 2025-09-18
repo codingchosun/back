@@ -2,8 +2,8 @@ package com.codingchosun.backend.controller;
 
 import com.codingchosun.backend.domain.Comment;
 import com.codingchosun.backend.exception.LoggedInUserNotFound;
-import com.codingchosun.backend.request.RegisterCommentRequest;
-import com.codingchosun.backend.response.CommentResponse;
+import com.codingchosun.backend.dto.request.RegisterCommentRequest;
+import com.codingchosun.backend.dto.response.CommentResponse;
 import com.codingchosun.backend.service.CommentService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

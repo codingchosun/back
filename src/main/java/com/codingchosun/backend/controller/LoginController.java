@@ -1,6 +1,6 @@
 package com.codingchosun.backend.controller;
 
-import com.codingchosun.backend.request.LoginRequest;
+import com.codingchosun.backend.dto.request.LoginRequest;
 import com.codingchosun.backend.service.user.LoginService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;

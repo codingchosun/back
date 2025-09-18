@@ -5,7 +5,7 @@ import com.codingchosun.backend.exception.emptyrequest.EmptyRequestException;
 import com.codingchosun.backend.exception.invalidrequest.InvalidEditorException;
 import com.codingchosun.backend.exception.invalidtime.BeforeCurrentTimeException;
 import com.codingchosun.backend.exception.notfoundfromdb.EntityNotFoundFromDB;
-import com.codingchosun.backend.response.ApiResponse;
+import com.codingchosun.backend.dto.response.ApiResponse;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;

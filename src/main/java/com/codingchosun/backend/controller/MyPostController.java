@@ -1,8 +1,8 @@
 package com.codingchosun.backend.controller;
 
 import com.codingchosun.backend.repository.user.DataJpaUserRepository;
-import com.codingchosun.backend.response.ApiResponse;
-import com.codingchosun.backend.response.MyPostResponse;
+import com.codingchosun.backend.dto.response.ApiResponse;
+import com.codingchosun.backend.dto.response.MyPostResponse;
 import com.codingchosun.backend.service.MyPostService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;

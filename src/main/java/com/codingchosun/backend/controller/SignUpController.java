@@ -1,7 +1,7 @@
 package com.codingchosun.backend.controller;
 
-import com.codingchosun.backend.request.RegisterUserRequest;
-import com.codingchosun.backend.response.ApiResponse;
+import com.codingchosun.backend.dto.request.RegisterUserRequest;
+import com.codingchosun.backend.dto.response.ApiResponse;
 import com.codingchosun.backend.service.user.SignUpService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

@@ -4,7 +4,7 @@ import com.codingchosun.backend.constants.ExceptionConstants;
 import com.codingchosun.backend.controller.EvaluationController;
 import com.codingchosun.backend.exception.GlobalControllerAdvice;
 import com.codingchosun.backend.exception.invalidrequest.AlreadyValidated;
-import com.codingchosun.backend.response.ApiResponse;
+import com.codingchosun.backend.dto.response.ApiResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;

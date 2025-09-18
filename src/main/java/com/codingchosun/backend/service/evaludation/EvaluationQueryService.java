@@ -9,9 +9,9 @@ import com.codingchosun.backend.repository.evaluation.DataJpaEvaluationRepositor
 import com.codingchosun.backend.repository.post.DataJpaPostRepository;
 import com.codingchosun.backend.repository.template.DataJpaTemplateRepository;
 import com.codingchosun.backend.repository.user.DataJpaUserRepository;
-import com.codingchosun.backend.response.EvaluationResponse;
-import com.codingchosun.backend.response.TemplateDto;
-import com.codingchosun.backend.response.UserToEvaluateDto;
+import com.codingchosun.backend.dto.response.EvaluationResponse;
+import com.codingchosun.backend.dto.response.TemplateDto;
+import com.codingchosun.backend.dto.response.UserToEvaluateDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

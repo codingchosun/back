@@ -3,7 +3,7 @@ package com.codingchosun.backend.service;
 import com.codingchosun.backend.domain.Post;
 import com.codingchosun.backend.exception.notfoundfromdb.PostNotFoundFromDB;
 import com.codingchosun.backend.repository.post.DataJpaPostRepository;
-import com.codingchosun.backend.response.MyPostResponse;
+import com.codingchosun.backend.dto.response.MyPostResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

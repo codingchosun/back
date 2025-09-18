@@ -1,12 +1,11 @@
 package com.codingchosun.backend.controller;
 
-import com.codingchosun.backend.request.ProfileResponse;
-import com.codingchosun.backend.request.UserUpdateRequest;
-import com.codingchosun.backend.response.UpdateProfileResponse;
+import com.codingchosun.backend.dto.request.ProfileResponse;
+import com.codingchosun.backend.dto.request.UserUpdateRequest;
+import com.codingchosun.backend.dto.response.UpdateProfileResponse;
 import com.codingchosun.backend.service.ProfileService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;

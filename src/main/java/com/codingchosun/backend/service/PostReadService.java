@@ -2,12 +2,12 @@ package com.codingchosun.backend.service;
 
 import com.codingchosun.backend.domain.Image;
 import com.codingchosun.backend.domain.Post;
+import com.codingchosun.backend.dto.response.*;
 import com.codingchosun.backend.exception.notfoundfromdb.PostNotFoundFromDB;
 import com.codingchosun.backend.repository.hashtag.DataJpaHashtagRepository;
 import com.codingchosun.backend.repository.hashtag.DataJpaUserHashRepository;
 import com.codingchosun.backend.repository.image.DataJpaImageRepository;
 import com.codingchosun.backend.repository.post.DataJpaPostRepository;
-import com.codingchosun.backend.response.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;

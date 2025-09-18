@@ -1,7 +1,7 @@
 package com.codingchosun.backend.controller;
 
 import com.codingchosun.backend.exception.LoggedInUserNotFound;
-import com.codingchosun.backend.response.ImageResponse;
+import com.codingchosun.backend.dto.response.ImageResponse;
 import com.codingchosun.backend.service.ImageQueryService;
 import com.codingchosun.backend.service.ImageService;
 import lombok.RequiredArgsConstructor;

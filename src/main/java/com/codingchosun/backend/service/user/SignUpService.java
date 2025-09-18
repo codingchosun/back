@@ -3,7 +3,7 @@ package com.codingchosun.backend.service.user;
 import com.codingchosun.backend.domain.User;
 import com.codingchosun.backend.exception.ExistLoginId;
 import com.codingchosun.backend.repository.user.DataJpaUserRepository;
-import com.codingchosun.backend.request.RegisterUserRequest;
+import com.codingchosun.backend.dto.request.RegisterUserRequest;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

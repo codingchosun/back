@@ -1,7 +1,7 @@
 package com.codingchosun.backend.controller;
 
-import com.codingchosun.backend.request.EvaluationRequest;
-import com.codingchosun.backend.response.EvaluationResponse;
+import com.codingchosun.backend.dto.request.EvaluationRequest;
+import com.codingchosun.backend.dto.response.EvaluationResponse;
 import com.codingchosun.backend.service.evaludation.EvaluationQueryService;
 import com.codingchosun.backend.service.evaludation.EvaluationService;
 import jakarta.validation.Valid;

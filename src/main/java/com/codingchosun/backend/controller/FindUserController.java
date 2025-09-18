@@ -1,9 +1,9 @@
 package com.codingchosun.backend.controller;
 
-import com.codingchosun.backend.request.FindLoginIdRequest;
-import com.codingchosun.backend.request.FindPasswordRequest;
-import com.codingchosun.backend.response.ApiResponse;
-import com.codingchosun.backend.response.FindUserResponse;
+import com.codingchosun.backend.dto.request.FindLoginIdRequest;
+import com.codingchosun.backend.dto.request.FindPasswordRequest;
+import com.codingchosun.backend.dto.response.ApiResponse;
+import com.codingchosun.backend.dto.response.FindUserResponse;
 import com.codingchosun.backend.service.user.FindUserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.PostMapping;

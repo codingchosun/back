@@ -1,6 +1,6 @@
 package com.codingchosun.backend.controller;
 
-import com.codingchosun.backend.response.UserDTO;
+import com.codingchosun.backend.dto.response.UserDTO;
 import com.codingchosun.backend.service.PostParticipantService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
