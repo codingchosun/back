@@ -59,7 +59,7 @@ public class Post {
     private final List<Image> images = new ArrayList<>();
 
     @OneToMany(mappedBy = "post")
-    private List<Validate> validates;
+    private List<Evaluation> evaluations;
 
     public Post(String title, String content, LocalDateTime startTime, User user) {
         this.title = title;

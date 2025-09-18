@@ -10,7 +10,7 @@ import com.codingchosun.backend.response.ApiResponse;
 import com.codingchosun.backend.response.UserDTO;
 import com.codingchosun.backend.service.PostService;
 import com.codingchosun.backend.service.PostParticipantService;
-import com.codingchosun.backend.service.ValidateService;
+import com.codingchosun.backend.service.evaludation.EvaluationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -28,7 +28,7 @@ public class ValidateControllerV2 {
 
     private final PostParticipantService postParticipantService;
     private final PostService postService;
-    private final ValidateService validateService;
+    private final EvaluationService evaluationService;
     private final DataJpaUserRepository dataJpaUserRepository;
 
     @GetMapping("/{postId}")
@@ -67,7 +67,7 @@ public class ValidateControllerV2 {
                 .orElseThrow(() -> new PostNotFoundFromDB("포스트를 못 찾겠습니다"));
 
         //평가하기
-        int cnt = validateService.validateUser(post, user, userValidationRequestMap.get("userValidationRequestList"));
+        int cnt = evaluationService.validateUser(post, user, userValidationRequestMap.get("userValidationRequestList"));
 
         return new ApiResponse<>(HttpStatus.OK,true,cnt);   //평가한 개수 리턴
     }

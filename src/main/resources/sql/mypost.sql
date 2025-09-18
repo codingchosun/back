@@ -30,9 +30,9 @@ INSERT INTO template (score, content) VALUES (10, '밥경찰');
 INSERT INTO template (score, content) VALUES (33, '재미없어요');
 
 
-INSERT INTO validate(template_id, from_user_id, to_user_id, post_id)
+INSERT INTO evaluation(template_id, from_user_id, to_user_id, post_id)
 VALUES (1, 2, 1, 1);
-INSERT INTO validate(template_id, from_user_id, to_user_id, post_id)
+INSERT INTO evaluation(template_id, from_user_id, to_user_id, post_id)
 VALUES (2, 3, 1, 2);
-INSERT INTO validate(template_id, from_user_id, to_user_id, post_id)
+INSERT INTO evaluation(template_id, from_user_id, to_user_id, post_id)
 VALUES (3, 4, 1, 3);

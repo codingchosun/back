@@ -9,9 +9,6 @@ import com.codingchosun.backend.exception.invalidtime.BeforeCurrentTimeException
 import com.codingchosun.backend.exception.notfoundfromdb.EntityNotFoundFromDB;
 import com.codingchosun.backend.exception.notfoundfromdb.PostNotFoundFromDB;
 import com.codingchosun.backend.repository.hashtag.DataJpaHashtagRepository;
-import com.codingchosun.backend.repository.hashtag.DataJpaPostHashRepository;
-import com.codingchosun.backend.repository.hashtag.DataJpaUserHashRepository;
-import com.codingchosun.backend.repository.image.DataJpaImageRepository;
 import com.codingchosun.backend.repository.post.DataJpaPostRepository;
 import com.codingchosun.backend.repository.postuser.DataJpaPostUserRepository;
 import com.codingchosun.backend.repository.user.DataJpaUserRepository;
@@ -34,12 +31,8 @@ public class PostService {
 
     private final DataJpaPostRepository postRepository;
     private final DataJpaPostUserRepository postUserRepository;
-    private final DataJpaPostHashRepository postHashRepository;
     private final DataJpaHashtagRepository hashtagRepository;
-    private final DataJpaUserHashRepository userHashRepository;
     private final DataJpaUserRepository userRepository;
-    private final DataJpaImageRepository jpaImageRepository;
-    private final ValidateService validateService;
 
     //게시물 생성
     public Post registerPost(RegisterPostRequest registerPostRequest, String loginId) {

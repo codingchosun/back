@@ -9,7 +9,7 @@ import com.codingchosun.backend.exception.LoggedInUserNotFound;
 import com.codingchosun.backend.exception.notfoundfromdb.HashtagNotFoundFromDB;
 import com.codingchosun.backend.repository.hashtag.DataJpaHashtagRepository;
 import com.codingchosun.backend.repository.hashtag.DataJpaUserHashRepository;
-import com.codingchosun.backend.repository.template.TemplateRepository;
+import com.codingchosun.backend.repository.template.DataJpaTemplateRepository;
 import com.codingchosun.backend.repository.user.DataJpaUserRepository;
 import com.codingchosun.backend.request.ProfileResponse;
 import com.codingchosun.backend.request.UserUpdateRequest;
@@ -32,7 +32,7 @@ public class ProfileService {
     private final DataJpaUserRepository userRepository;
     private final DataJpaHashtagRepository hashtagRepository;
     private final DataJpaUserHashRepository userHashRepository;
-    private final TemplateRepository templateRepository;
+    private final DataJpaTemplateRepository dataJpaTemplateRepository;
     private final PasswordEncoder passwordEncoder;
 
     @Transactional(readOnly = true)
@@ -51,7 +51,7 @@ public class ProfileService {
                 .map(Hashtag::getHashtagName)
                 .toList();
 
-        List<String> templateNames = templateRepository.findByValidates_ToUser_UserId(user.getUserId()).stream()
+        List<String> templateNames = dataJpaTemplateRepository.findByEvaluations_ToUser_UserId(user.getUserId()).stream()
                 .map(Template::getContent)
                 .toList();
 
