@@ -1,7 +1,8 @@
 package com.codingchosun.backend.domain;
 
 import com.codingchosun.backend.constants.StateCode;
-import com.codingchosun.backend.exception.invalidrequest.InvalidEditorException;
+import com.codingchosun.backend.exception.common.ErrorCode;
+import com.codingchosun.backend.exception.invalidrequest.UnauthorizedActionException;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -18,7 +19,8 @@ import java.util.List;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Post {
 
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long postId;
 
     @Setter
@@ -85,7 +87,7 @@ public class Post {
 
     public void validateOwner(User user) {
         if (!this.user.getUserId().equals(user.getUserId())) {
-            throw new InvalidEditorException("게시물 수정 권한이 없습니다.");
+            throw new UnauthorizedActionException(ErrorCode.UNAUTHORIZED_ACTION);
         }
     }
 
@@ -99,6 +101,7 @@ public class Post {
             this.postHashes.add(new PostHash(this, hashtag));
         }
     }
+
     public void addImage(Image image) {
         this.images.add(image);
     }
