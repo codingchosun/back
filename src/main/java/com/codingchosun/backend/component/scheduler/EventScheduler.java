@@ -1,11 +1,11 @@
 package com.codingchosun.backend.component.scheduler;
 
 import com.codingchosun.backend.constants.StateCode;
+import com.codingchosun.backend.domain.Evaluation;
 import com.codingchosun.backend.domain.Post;
 import com.codingchosun.backend.domain.PostUser;
-import com.codingchosun.backend.domain.Validate;
 import com.codingchosun.backend.repository.post.DataJpaPostRepository;
-import com.codingchosun.backend.repository.validate.ValidateRepository;
+import com.codingchosun.backend.repository.evaluation.DataJpaEvaluationRepository;
 import com.codingchosun.backend.response.UserPairDto;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -23,7 +23,7 @@ import java.util.List;
 public class EventScheduler {
 
     private final DataJpaPostRepository dataJpaPostRepository;
-    private final ValidateRepository validateRepository;
+    private final DataJpaEvaluationRepository dataJpaEvaluationRepository;
     /*
     *   매 30분마다
     *   1. startTime이 지나간 post를 확인해서 post의 참가자를 validate 테이블에 넣어줌
@@ -74,12 +74,12 @@ public class EventScheduler {
         log.info("userPairList: {}", userPairList);
 
         for (UserPairDto userPair : userPairList) {
-            Validate validate = new Validate();
-            validate.setPost(post);
-            validate.setFromUser(userPair.getFromUser());
-            validate.setToUser(userPair.getToUser());
-            Validate save = validateRepository.save(validate);
-            log.info("save: {}", save.getValidateId());
+            Evaluation evaluation = new Evaluation();
+            evaluation.setPost(post);
+            evaluation.setFromUser(userPair.getFromUser());
+            evaluation.setToUser(userPair.getToUser());
+            Evaluation save = dataJpaEvaluationRepository.save(evaluation);
+            log.info("save: {}", save.getEvaluationId());
         }
     }
 

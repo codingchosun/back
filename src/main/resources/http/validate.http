@@ -13,7 +13,7 @@ Content-Type: application/json
 
 ###
 
-POST /bridge/validate/post/4/user/1
+POST /bridge/evaluation/post/4/user/1
 Host: localhost:8090
 Content-Type: application/json
 
@@ -33,7 +33,7 @@ Content-Type: application/json
 
 ###
 
-GET /bridge/validate/post/4/members
+GET /bridge/evaluation/post/4/members
 Host: localhost:8090
 Content-Type: application/json
 
