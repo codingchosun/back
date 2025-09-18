@@ -12,8 +12,6 @@ public interface DataJpaImageRepository extends JpaRepository<Image, Long> {
 
     Page<Image> findByPost_PostId(Long postId, Pageable pageable);
 
-    Optional<Image> findByPost(Post post);
-
     Optional<Image> findFirstByPost(Post post);
 
 }
