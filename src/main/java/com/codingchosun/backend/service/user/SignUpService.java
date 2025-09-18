@@ -1,13 +1,13 @@
 package com.codingchosun.backend.service.user;
 
 import com.codingchosun.backend.domain.User;
-import com.codingchosun.backend.exception.ExistLoginId;
+import com.codingchosun.backend.exception.login.DuplicationLoginIdException;
+import com.codingchosun.backend.exception.common.ErrorCode;
 import com.codingchosun.backend.repository.user.DataJpaUserRepository;
-import com.codingchosun.backend.request.RegisterUserRequest;
+import com.codingchosun.backend.dto.request.RegisterUserRequest;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -22,7 +22,7 @@ public class SignUpService {
 
     public void signUp(RegisterUserRequest registerUserRequest) {
         if (dataJpaUserRepository.findByLoginId(registerUserRequest.getLoginId()).isPresent()) {
-            throw new ExistLoginId("이미 존재하는 ID 입니다.", HttpStatus.CONFLICT);
+            throw new DuplicationLoginIdException(ErrorCode.LOGIN_ID_DUPLICATION);
         }
 
         User user = new User(registerUserRequest);

@@ -1,6 +1,8 @@
 package com.codingchosun.backend.security;
 
 import com.codingchosun.backend.domain.User;
+import com.codingchosun.backend.exception.common.ErrorCode;
+import com.codingchosun.backend.exception.notfoundfromdb.UserNotFoundFromDB;
 import com.codingchosun.backend.repository.user.DataJpaUserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -20,7 +22,7 @@ public class AccountDetailService implements UserDetailsService {
     @Transactional(readOnly = true)
     public UserDetails loadUserByUsername(String loginId) throws UsernameNotFoundException {
         User user = userRepository.findByLoginId(loginId).orElseThrow(
-                () -> new UsernameNotFoundException(loginId + "에 해당하는 사용자를 찾을 수 없습니다")
+                () -> new UserNotFoundFromDB(ErrorCode.USER_NOT_FOUND)
         );
 
         return accountDetailSupplier.supply(user);

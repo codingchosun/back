@@ -1,8 +1,12 @@
 package com.codingchosun.backend.domain;
 
-import com.codingchosun.backend.exception.invalidrequest.InvalidEditorException;
+import com.codingchosun.backend.exception.common.ErrorCode;
+import com.codingchosun.backend.exception.invalidrequest.UnauthorizedActionException;
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.time.LocalDateTime;
 
@@ -39,7 +43,7 @@ public class Comment {
 
     public void validateOwner(User user) {
         if (!this.user.getUserId().equals(user.getUserId())) {
-            throw new InvalidEditorException("해당 댓글의 삭제 권한이 없습니다.");
+            throw new UnauthorizedActionException(ErrorCode.UNAUTHORIZED_ACTION);
         }
     }
 }

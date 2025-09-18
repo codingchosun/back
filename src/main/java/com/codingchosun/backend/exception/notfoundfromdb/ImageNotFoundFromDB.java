@@ -1,11 +1,10 @@
 package com.codingchosun.backend.exception.notfoundfromdb;
 
-public class ImageNotFoundFromDB extends EntityNotFoundFromDB{
-    public ImageNotFoundFromDB(String message, Throwable cause) {
-        super(message, cause);
-    }
+import com.codingchosun.backend.exception.common.ApiException;
+import com.codingchosun.backend.exception.common.ErrorCode;
 
-    public ImageNotFoundFromDB(String message) {
-        super(message);
+public class ImageNotFoundFromDB extends ApiException {
+    public ImageNotFoundFromDB(ErrorCode errorCode) {
+        super(errorCode);
     }
 }
