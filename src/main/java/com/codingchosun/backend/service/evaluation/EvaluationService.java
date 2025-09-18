@@ -1,4 +1,4 @@
-package com.codingchosun.backend.service.evaludation;
+package com.codingchosun.backend.service.evaluation;
 
 
 import com.codingchosun.backend.domain.Evaluation;
