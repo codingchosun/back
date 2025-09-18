@@ -1,0 +1,60 @@
+package com.codingchosun.backend.dto.response;
+
+
+import com.codingchosun.backend.constants.StateCode;
+import com.codingchosun.backend.domain.Post;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
+
+@Getter
+@NoArgsConstructor
+public class PostResponse {
+
+    private Long postId;
+    private String title;
+    private String content;
+    private LocalDateTime createdAt;
+    private LocalDateTime startTime;
+    private StateCode stateCode;
+    private Long viewCount;
+
+    private String hostId;
+    private String hostNickname;
+
+    private List<String> hashtags;
+
+    public PostResponse(Post post) {
+        this.postId = post.getPostId();
+        this.title = post.getTitle();
+        this.content = post.getContent();
+        this.createdAt = post.getCreatedAt();
+        this.startTime = post.getStartTime();
+        this.viewCount = post.getViewCount();
+        this.hostId = String.valueOf(post.getUser().getUserId());
+        this.hostNickname = post.getUser().getNickname();
+        this.hashtags = post.getPostHashes().stream()
+                .map(postHash -> postHash.getHashtag().getHashtagName())
+                .collect(Collectors.toList());
+    }
+
+    public static PostResponse from(Post post) {
+        PostResponse response = new PostResponse();
+        response.postId = post.getPostId();
+        response.title = post.getTitle();
+        response.content = post.getContent();
+        response.createdAt = post.getCreatedAt();
+        response.startTime = post.getStartTime();
+        response.stateCode = post.getStateCode();
+        response.viewCount = post.getViewCount();
+        response.hostId = String.valueOf(post.getUser().getUserId());
+        response.hostNickname = post.getUser().getNickname();
+        response.hashtags = post.getPostHashes().stream()
+                .map(postHash -> postHash.getHashtag().getHashtagName())
+                .collect(Collectors.toList());
+        return response;
+    }
+}

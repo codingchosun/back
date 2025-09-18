@@ -1,121 +1,123 @@
 package com.codingchosun.backend.domain;
 
 import com.codingchosun.backend.constants.GenderCode;
+import com.codingchosun.backend.constants.Role;
 import com.codingchosun.backend.constants.StateCode;
-import com.codingchosun.backend.request.RegisterUserRequest;
-import com.codingchosun.backend.request.UserUpdateRequest;
+import com.codingchosun.backend.dto.request.RegisterUserRequest;
+import com.codingchosun.backend.exception.login.NotMatchPasswordException;
+import com.codingchosun.backend.exception.common.ErrorCode;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Past;
 import jakarta.validation.constraints.Size;
 import lombok.*;
-
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.time.LocalDate;
 import java.util.List;
 
-
 @Entity
-@Getter @Setter
+@Getter
 @Table
-@Generated
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-@EqualsAndHashCode
 public class User {
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long userId;
 
-    @NotNull @Size(min = 6, max = 16)
+    @NotNull
+    @Size(min = 6, max = 16)
     @Column(unique = true)
     private String loginId;
 
     @NotNull
     private String password;
 
-    @NotNull @Size(min = 2, max = 16)
+    @Setter
+    @NotNull
+    @Size(min = 2, max = 16)
     private String name;
 
-    @NotNull @Email
+    @Setter
+    @NotNull
+    @Email
     private String email;
 
-    @NotNull @Past
+    @NotNull
+    @Past
     private LocalDate birth;
 
+    @Setter
     private String introduction;
 
-    @NotNull @Size(min = 2, max = 12)
+    @Setter
+    @NotNull
+    @Size(min = 2, max = 12)
     @Column(unique = true)
     private String nickname;
 
-    @NotNull @Enumerated(EnumType.STRING)
-    private StateCode state;
+    @Setter
+    @NotNull
+    @Enumerated(EnumType.STRING)
+    private StateCode stateCode;
 
+    @Setter
     private int score;
 
-    //    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "GENDER_ID")
-//    private Gender genderName;
-//
-//    @OneToMany(mappedBy = "User")
-//    private List<Post> posts = new ArrayList<>();
-//
+    @Setter
+    @NotNull
+    @Enumerated(EnumType.STRING)
+    private GenderCode genderCode;
+
+    @Setter
+    @NotNull
+    @Enumerated(EnumType.STRING)
+    private Role role;
+
     @OneToMany(mappedBy = "user")
     private List<PostUser> postUsers;
 
     @OneToMany(mappedBy = "user")
     private List<UserHash> userHashes;
+
     @OneToMany(mappedBy = "user")
     private List<Comment> comments;
 
     @OneToMany(mappedBy = "fromUser")
-    private List<Validate> fromValidates;
+    private List<Evaluation> fromEvaluations;
+
     @OneToMany(mappedBy = "toUser")
-    private List<Validate> toValidates;
+    private List<Evaluation> toEvaluations;
 
     @OneToMany(mappedBy = "user")
     private List<Post> posts;
 
-    @NotNull @Enumerated(EnumType.STRING)
-    private GenderCode genderCode;
-
-    //
-    //    public User() {}
-
-    public User(RegisterUserRequest register){
+    public User(RegisterUserRequest register) {
         this.loginId = register.getLoginId();
-        this.password = register.getPassword();
         this.email = register.getEmail();
-        this.birth =  register.getBirth();
+        this.birth = register.getBirth();
         this.nickname = register.getNickname();
         this.name = register.getName();
+        this.score = 50;
         this.genderCode = register.getGenderCode();
-        this.state = StateCode.ACTIVE;
+        this.stateCode = StateCode.ACTIVE;
+        this.role = Role.USER;
     }
 
-    @Override
-    public String toString() {
-        return "\n유저아이디 : " + this.userId + "\n로그인아이디 : " + this.loginId + "\n 닉네임 : " + this.nickname + "\n 성별 + " + this.genderCode +
-                "\n 자기소개 : " + this.introduction + "\n 이메일 : " + this.email + "\n 생일 : " + this.birth +
-                "\n 닉네임 : " + this.nickname  + "\n 매너점수 : " + this.score + "\n 상태 : " + this.state;
+    public void passwordEncode(String encodedPassword) {
+        this.password = encodedPassword;
     }
 
-    public void setUpdateRequest(UserUpdateRequest updateRequest) {
-        this.nickname = updateRequest.getNickname();
-        this.password = updateRequest.getPassword();
-        this.email = updateRequest.getEmail();
-        this.genderCode = updateRequest.getGenderCode();
-        this.introduction = updateRequest.getIntroduction();
-    }
-
-    public int calMannerScore(int score) {
-        this.score += score;
-        if (this.score > 100) {
-            score = 100;
-        } else if (this.score < 0) {
-            score = 0;
+    public void updatePassword(String currentPassword, String newPassword, PasswordEncoder passwordEncoder) {
+        if (!passwordEncoder.matches(currentPassword, this.password)) {
+            throw new NotMatchPasswordException(ErrorCode.LOGIN_FAILED);
         }
-        return this.score;
+        this.password = passwordEncoder.encode(newPassword);
+    }
+
+    public int calMannerScore(int mannersScore) {
+        return this.score = Math.max(0, Math.min(100, this.score + mannersScore));
     }
 }

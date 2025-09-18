@@ -1,11 +1,12 @@
 package com.codingchosun.backend.exception.notfoundfromdb;
 
-public class EntityNotFoundFromDB extends RuntimeException {
-    public EntityNotFoundFromDB(String message, Throwable cause) {
-        super(message, cause);
+import com.codingchosun.backend.exception.common.ApiException;
+import com.codingchosun.backend.exception.common.ErrorCode;
+
+public class EntityNotFoundFromDB extends ApiException {
+
+    public EntityNotFoundFromDB(ErrorCode errorCode) {
+        super(errorCode);
     }
 
-    public EntityNotFoundFromDB(String message) {
-        super(message);
-    }
 }

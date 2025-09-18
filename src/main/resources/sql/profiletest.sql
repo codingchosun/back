@@ -33,11 +33,11 @@ VALUES (9998, 'ACTIVE', 21, '1542-02-14 15:40:21.000000', '2024-05-12 15:40:28.0
 INSERT INTO post (post_id , state_code, view_count, created_at, end_time, start_time, user_id, content, title)
 VALUES (9997, 'ACTIVE', 21,  '2008-03-15 15:40:21.000000', '2024-05-12 15:40:28.000000', '2024-05-12 15:40:31.000000', 9997, 'zxc', 'qweqe');
 
-INSERT INTO validate(template_id, from_user_id, to_user_id, post_id)
+INSERT INTO evaluation(template_id, from_user_id, to_user_id, post_id)
 VALUES (9999, 9999, 10000, 9999);
-INSERT INTO validate(template_id, from_user_id, to_user_id, post_id)
+INSERT INTO evaluation(template_id, from_user_id, to_user_id, post_id)
 VALUES (9998, 9998, 10000, 9998);
-INSERT INTO validate(template_id, from_user_id, to_user_id, post_id)
+INSERT INTO evaluation(template_id, from_user_id, to_user_id, post_id)
 VALUES (9997, 9997, 10000, 9997);
 
 INSERT INTO post_user (user_id, post_id) VALUES  (10000 , 9999);

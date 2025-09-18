@@ -1,5 +1,10 @@
 package com.codingchosun.backend.exception.invalidrequest;
 
-public class DeletedUserException extends RuntimeException {
-    public DeletedUserException(String message) {super(message);}
+import com.codingchosun.backend.exception.common.ApiException;
+import com.codingchosun.backend.exception.common.ErrorCode;
+
+public class DeletedUserException extends ApiException {
+    public DeletedUserException(ErrorCode errorCode) {
+        super(errorCode);
+    }
 }

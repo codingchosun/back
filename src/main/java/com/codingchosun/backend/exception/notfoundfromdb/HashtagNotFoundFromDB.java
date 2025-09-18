@@ -1,12 +1,11 @@
 package com.codingchosun.backend.exception.notfoundfromdb;
 
 
-public class HashtagNotFoundFromDB extends EntityNotFoundFromDB {
-    public HashtagNotFoundFromDB(String message, Throwable cause) {
-        super(message, cause);
-    }
+import com.codingchosun.backend.exception.common.ApiException;
+import com.codingchosun.backend.exception.common.ErrorCode;
 
-    public HashtagNotFoundFromDB(String message) {
-        super(message);
+public class HashtagNotFoundFromDB extends ApiException {
+    public HashtagNotFoundFromDB(ErrorCode errorCode) {
+        super(errorCode);
     }
 }
