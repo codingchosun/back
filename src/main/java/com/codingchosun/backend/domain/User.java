@@ -5,7 +5,6 @@ import com.codingchosun.backend.constants.Role;
 import com.codingchosun.backend.constants.StateCode;
 import com.codingchosun.backend.exception.PasswordNotMatch;
 import com.codingchosun.backend.request.RegisterUserRequest;
-import com.codingchosun.backend.request.UserUpdateRequest;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
@@ -86,10 +85,10 @@ public class User {
     private List<Comment> comments;
 
     @OneToMany(mappedBy = "fromUser")
-    private List<Validate> fromValidates;
+    private List<Evaluation> fromEvaluations;
 
     @OneToMany(mappedBy = "toUser")
-    private List<Validate> toValidates;
+    private List<Evaluation> toEvaluations;
 
     @OneToMany(mappedBy = "user")
     private List<Post> posts;
