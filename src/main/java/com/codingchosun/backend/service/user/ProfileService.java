@@ -5,15 +5,16 @@ import com.codingchosun.backend.domain.Hashtag;
 import com.codingchosun.backend.domain.Template;
 import com.codingchosun.backend.domain.User;
 import com.codingchosun.backend.domain.UserHash;
-import com.codingchosun.backend.exception.LoggedInUserNotFound;
+import com.codingchosun.backend.dto.request.ProfileResponse;
+import com.codingchosun.backend.dto.request.UserUpdateRequest;
+import com.codingchosun.backend.dto.response.UpdateProfileResponse;
+import com.codingchosun.backend.exception.login.NotAuthenticatedException;
+import com.codingchosun.backend.exception.common.ErrorCode;
 import com.codingchosun.backend.exception.notfoundfromdb.HashtagNotFoundFromDB;
 import com.codingchosun.backend.repository.hashtag.DataJpaHashtagRepository;
 import com.codingchosun.backend.repository.hashtag.DataJpaUserHashRepository;
 import com.codingchosun.backend.repository.template.DataJpaTemplateRepository;
 import com.codingchosun.backend.repository.user.DataJpaUserRepository;
-import com.codingchosun.backend.dto.request.ProfileResponse;
-import com.codingchosun.backend.dto.request.UserUpdateRequest;
-import com.codingchosun.backend.dto.response.UpdateProfileResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -96,7 +97,7 @@ public class ProfileService {
 
         for (String hashtagName : newHashtags) {
             Hashtag hashtag = hashtagRepository.findByHashtagName(hashtagName).orElseThrow(
-                    () -> new HashtagNotFoundFromDB("이름에 맞는 해시태그를 찾을 수 없습니다")
+                    () -> new HashtagNotFoundFromDB(ErrorCode.HASHTAG_NOT_FOUND)
             );
             userHashRepository.save(new UserHash(user, hashtag));
         }
@@ -104,7 +105,7 @@ public class ProfileService {
 
     private User findUserByLoginId(String loginId) {
         return userRepository.findByLoginId(loginId).orElseThrow(
-                () -> new LoggedInUserNotFound("로그인된 유저 정보를 찾을 수 없습니다")
+                () -> new NotAuthenticatedException(ErrorCode.AUTHENTICATION_REQUIRED)
         );
     }
 }

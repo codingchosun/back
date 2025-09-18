@@ -3,14 +3,16 @@ package com.codingchosun.backend.service.comment;
 import com.codingchosun.backend.domain.Comment;
 import com.codingchosun.backend.domain.Post;
 import com.codingchosun.backend.domain.User;
-import com.codingchosun.backend.exception.invalidrequest.InvalidEditorException;
-import com.codingchosun.backend.exception.notfoundfromdb.EntityNotFoundFromDB;
+import com.codingchosun.backend.dto.request.RegisterCommentRequest;
+import com.codingchosun.backend.dto.response.CommentResponse;
+import com.codingchosun.backend.exception.common.ErrorCode;
+import com.codingchosun.backend.exception.invalidrequest.UnauthorizedActionException;
+import com.codingchosun.backend.exception.notfoundfromdb.CommentNotFoundFromDB;
 import com.codingchosun.backend.exception.notfoundfromdb.PostNotFoundFromDB;
+import com.codingchosun.backend.exception.notfoundfromdb.UserNotFoundFromDB;
 import com.codingchosun.backend.repository.comment.DataJpaCommentRepository;
 import com.codingchosun.backend.repository.post.DataJpaPostRepository;
 import com.codingchosun.backend.repository.user.DataJpaUserRepository;
-import com.codingchosun.backend.dto.request.RegisterCommentRequest;
-import com.codingchosun.backend.dto.response.CommentResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -41,7 +43,7 @@ public class CommentService {
         Comment comment = findCommentById(commentId);
 
         if (!Objects.equals(comment.getUser().getUserId(), user.getUserId())) {
-            throw new InvalidEditorException("댓글 작성자가 아닙니다: " + loginId);
+            throw new UnauthorizedActionException(ErrorCode.UNAUTHORIZED_ACTION);
         }
 
         comment.validateOwner(user);
@@ -56,16 +58,20 @@ public class CommentService {
 
     private User findUserByLoginId(String loginId) {
         return dataJpaUserRepository.findByLoginId(loginId)
-                .orElseThrow(() -> new EntityNotFoundFromDB("사용자를 찾을 수 없습니다: " + loginId));
+                .orElseThrow(
+                        () -> new UserNotFoundFromDB(ErrorCode.USER_NOT_FOUND)
+                );
     }
 
     private Post findPostById(Long postId) {
         return dataJpaPostRepository.findById(postId)
-                .orElseThrow(() -> new PostNotFoundFromDB("게시물을 찾을 수 없습니다: " + postId));
+                .orElseThrow(() -> new PostNotFoundFromDB(ErrorCode.POST_NOT_FOUND)
+                );
     }
 
     private Comment findCommentById(Long commentId) {
         return dataJpaCommentRepository.findById(commentId)
-                .orElseThrow(() -> new EntityNotFoundFromDB("댓글을 찾을 수 없습니다: " + commentId));
+                .orElseThrow(() -> new CommentNotFoundFromDB(ErrorCode.COMMENT_NOT_FOUND)
+                );
     }
 }

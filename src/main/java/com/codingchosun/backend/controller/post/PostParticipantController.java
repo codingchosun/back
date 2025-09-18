@@ -2,6 +2,7 @@ package com.codingchosun.backend.controller.post;
 
 import com.codingchosun.backend.dto.response.UserDTO;
 import com.codingchosun.backend.service.post.PostParticipantService;
+import com.codingchosun.backend.service.post.PostQueryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,11 +18,12 @@ import java.util.List;
 public class PostParticipantController {
 
     private final PostParticipantService postParticipantService;
+    private final PostQueryService postQueryService;
 
     //특정 모임의 참가자 목록 조회 api
     @GetMapping("/{postId}/participants")
     public ResponseEntity<List<UserDTO>> getParticipatePost(@PathVariable Long postId) {
-        List<UserDTO> participants = postParticipantService.getParticipants(postId);
+        List<UserDTO> participants = postQueryService.getParticipants(postId);
 
         return ResponseEntity.status(HttpStatus.OK).body(participants);
     }

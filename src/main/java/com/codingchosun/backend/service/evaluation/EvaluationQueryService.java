@@ -3,15 +3,16 @@ package com.codingchosun.backend.service.evaluation;
 import com.codingchosun.backend.domain.Post;
 import com.codingchosun.backend.domain.PostUser;
 import com.codingchosun.backend.domain.User;
-import com.codingchosun.backend.exception.notfoundfromdb.EntityNotFoundFromDB;
+import com.codingchosun.backend.dto.response.EvaluationResponse;
+import com.codingchosun.backend.dto.response.TemplateDto;
+import com.codingchosun.backend.dto.response.UserToEvaluateDto;
+import com.codingchosun.backend.exception.common.ErrorCode;
 import com.codingchosun.backend.exception.notfoundfromdb.PostNotFoundFromDB;
+import com.codingchosun.backend.exception.notfoundfromdb.UserNotFoundFromDB;
 import com.codingchosun.backend.repository.evaluation.DataJpaEvaluationRepository;
 import com.codingchosun.backend.repository.post.DataJpaPostRepository;
 import com.codingchosun.backend.repository.template.DataJpaTemplateRepository;
 import com.codingchosun.backend.repository.user.DataJpaUserRepository;
-import com.codingchosun.backend.dto.response.EvaluationResponse;
-import com.codingchosun.backend.dto.response.TemplateDto;
-import com.codingchosun.backend.dto.response.UserToEvaluateDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,7 +29,6 @@ public class EvaluationQueryService {
     private final DataJpaPostRepository postRepository;
     private final DataJpaTemplateRepository templateRepository;
 
-    //특정 게시물(모임)에서 평가할 참여자 목록 조회
     public EvaluationResponse getTargetsToEvaluate(Long postId, String loginId) {
         User currentUser = findUserByLoginId(loginId);
         Post post = findPostById(postId);
@@ -52,13 +52,13 @@ public class EvaluationQueryService {
 
     private Post findPostById(Long postId) {
         return postRepository.findById(postId).orElseThrow(
-                () -> new PostNotFoundFromDB("해당 게시물을 찾지 못하였습니다" + postId)
+                () -> new PostNotFoundFromDB(ErrorCode.POST_NOT_FOUND)
         );
     }
 
     private User findUserByLoginId(String loginId) {
         return userRepository.findByLoginId(loginId).orElseThrow(
-                () -> new EntityNotFoundFromDB("해당 유저를 찾지 못했습니다" + loginId)
+                () -> new UserNotFoundFromDB(ErrorCode.USER_NOT_FOUND)
         );
     }
 }

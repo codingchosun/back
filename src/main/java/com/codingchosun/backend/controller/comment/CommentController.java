@@ -1,9 +1,10 @@
 package com.codingchosun.backend.controller.comment;
 
 import com.codingchosun.backend.domain.Comment;
-import com.codingchosun.backend.exception.LoggedInUserNotFound;
 import com.codingchosun.backend.dto.request.RegisterCommentRequest;
 import com.codingchosun.backend.dto.response.CommentResponse;
+import com.codingchosun.backend.exception.login.NotAuthenticatedException;
+import com.codingchosun.backend.exception.common.ErrorCode;
 import com.codingchosun.backend.service.comment.CommentService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -37,7 +38,7 @@ public class CommentController {
                                                              @AuthenticationPrincipal UserDetails userDetails,
                                                              @Valid @RequestBody RegisterCommentRequest registerCommentRequest) {
         if (userDetails == null) {
-            throw new LoggedInUserNotFound("로그인을 해야 댓글을 작성할수있습니다");
+            throw new NotAuthenticatedException(ErrorCode.AUTHENTICATION_REQUIRED);
         }
         Comment comment = commentService.registerComments(postId, userDetails.getUsername(), registerCommentRequest);
 
@@ -69,7 +70,10 @@ public class CommentController {
      * @return 200 OK, "댓글이 성공적을 삭제되었습니다"
      */
     @DeleteMapping("/{commentId}")
-    public ResponseEntity<String> deleteComments(@AuthenticationPrincipal UserDetails userDetails, @PathVariable Long commentId) {
+    public ResponseEntity<String> deleteComments(@AuthenticationPrincipal UserDetails userDetails, @PathVariable(name = "commentId") Long commentId) {
+        if (userDetails == null) {
+            throw new NotAuthenticatedException(ErrorCode.AUTHENTICATION_REQUIRED);
+        }
         commentService.deleteComment(commentId, userDetails.getUsername());
 
         return ResponseEntity.status(HttpStatus.OK).body("댓글이 성공적을 삭제되었습니다");

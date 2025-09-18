@@ -3,6 +3,7 @@ package com.codingchosun.backend.service.post;
 import com.codingchosun.backend.domain.Image;
 import com.codingchosun.backend.domain.Post;
 import com.codingchosun.backend.dto.response.*;
+import com.codingchosun.backend.exception.common.ErrorCode;
 import com.codingchosun.backend.exception.notfoundfromdb.PostNotFoundFromDB;
 import com.codingchosun.backend.repository.hashtag.DataJpaHashtagRepository;
 import com.codingchosun.backend.repository.hashtag.DataJpaUserHashRepository;
@@ -114,7 +115,7 @@ public class PostReadService {
 
     private Post findPostById(Long postId) {
         return postRepository.findById(postId).orElseThrow(
-                () -> new PostNotFoundFromDB("해당 게시물을 찾지 못하였습니다" + postId)
+                () -> new PostNotFoundFromDB(ErrorCode.POST_NOT_FOUND)
         );
     }
 }

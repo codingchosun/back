@@ -5,10 +5,11 @@ import com.codingchosun.backend.component.file.UploadFile;
 import com.codingchosun.backend.domain.Image;
 import com.codingchosun.backend.domain.Post;
 import com.codingchosun.backend.domain.User;
-import com.codingchosun.backend.exception.FileException;
-import com.codingchosun.backend.exception.notfoundfromdb.EntityNotFoundFromDB;
+import com.codingchosun.backend.exception.file.FileStorageFailedException;
+import com.codingchosun.backend.exception.common.ErrorCode;
 import com.codingchosun.backend.exception.notfoundfromdb.ImageNotFoundFromDB;
 import com.codingchosun.backend.exception.notfoundfromdb.PostNotFoundFromDB;
+import com.codingchosun.backend.exception.notfoundfromdb.UserNotFoundFromDB;
 import com.codingchosun.backend.repository.post.DataJpaPostRepository;
 import com.codingchosun.backend.repository.user.DataJpaUserRepository;
 import lombok.RequiredArgsConstructor;
@@ -30,7 +31,6 @@ public class ImageService {
     private final DataJpaUserRepository userRepository;
     private final FileStore fileStore;
 
-    //여러개의 파일을 받아서 지정된 경로에 저장
     public void uploadImages(Long postId, String loginId, List<MultipartFile> multipartFiles) {
         try {
             User user = findUserByLoginId(loginId);
@@ -44,11 +44,10 @@ public class ImageService {
                 post.addImage(image);
             }
         } catch (IOException e) {
-            throw new FileException("이미지 저장 실패");
+            throw new FileStorageFailedException(ErrorCode.FILE_STORAGE_FAILED);
         }
     }
 
-    //이미지 삭제
     public void deleteImage(Long postId, Long imageId, String loginId) {
         User user = findUserByLoginId(loginId);
         Post post = findPostById(postId);
@@ -60,19 +59,19 @@ public class ImageService {
                 );
 
         if (!removed) {
-            throw new ImageNotFoundFromDB("해당 게시물에 존재하지 않는 이미지입니다: " + imageId);
+            throw new ImageNotFoundFromDB(ErrorCode.IMAGE_NOT_FOUND);
         }
     }
 
     private Post findPostById(Long postId) {
         return postRepository.findById(postId).orElseThrow(
-                () -> new PostNotFoundFromDB("해당 게시물을 찾지 못하였습니다" + postId)
+                () -> new PostNotFoundFromDB(ErrorCode.POST_NOT_FOUND)
         );
     }
 
     private User findUserByLoginId(String loginId) {
         return userRepository.findByLoginId(loginId).orElseThrow(
-                () -> new EntityNotFoundFromDB("아이디에 해당하는 유저를 찾지 못했습니다" + loginId)
+                () -> new UserNotFoundFromDB(ErrorCode.USER_NOT_FOUND)
         );
     }
 }

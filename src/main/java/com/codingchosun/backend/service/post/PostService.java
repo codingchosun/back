@@ -5,15 +5,16 @@ import com.codingchosun.backend.domain.Hashtag;
 import com.codingchosun.backend.domain.Post;
 import com.codingchosun.backend.domain.PostUser;
 import com.codingchosun.backend.domain.User;
-import com.codingchosun.backend.exception.invalidtime.BeforeCurrentTimeException;
-import com.codingchosun.backend.exception.notfoundfromdb.EntityNotFoundFromDB;
+import com.codingchosun.backend.dto.request.PostUpdateRequest;
+import com.codingchosun.backend.dto.request.RegisterPostRequest;
+import com.codingchosun.backend.exception.common.ErrorCode;
+import com.codingchosun.backend.exception.invalidtime.InvalidTimeSetupException;
 import com.codingchosun.backend.exception.notfoundfromdb.PostNotFoundFromDB;
+import com.codingchosun.backend.exception.notfoundfromdb.UserNotFoundFromDB;
 import com.codingchosun.backend.repository.hashtag.DataJpaHashtagRepository;
 import com.codingchosun.backend.repository.post.DataJpaPostRepository;
 import com.codingchosun.backend.repository.postuser.DataJpaPostUserRepository;
 import com.codingchosun.backend.repository.user.DataJpaUserRepository;
-import com.codingchosun.backend.dto.request.PostUpdateRequest;
-import com.codingchosun.backend.dto.request.RegisterPostRequest;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -102,19 +103,19 @@ public class PostService {
 
     private void validateStartTime(LocalDateTime startTime) {
         if (startTime.isBefore(LocalDateTime.now())) {
-            throw new BeforeCurrentTimeException("설정한 시간이 현재 시간보다 빠릅니다.");
+            throw new InvalidTimeSetupException(ErrorCode.INVALID_TIME_SETUP);
         }
     }
 
     private Post findPostById(Long postId) {
         return postRepository.findById(postId).orElseThrow(
-                () -> new PostNotFoundFromDB("해당 게시물을 찾지 못하였습니다" + postId)
+                () -> new PostNotFoundFromDB(ErrorCode.POST_NOT_FOUND)
         );
     }
 
     private User findUserByLoginId(String loginId) {
         return userRepository.findByLoginId(loginId).orElseThrow(
-                () -> new EntityNotFoundFromDB("해당 유저를 찾지 못했습니다" + loginId)
+                () -> new UserNotFoundFromDB(ErrorCode.USER_NOT_FOUND)
         );
     }
 

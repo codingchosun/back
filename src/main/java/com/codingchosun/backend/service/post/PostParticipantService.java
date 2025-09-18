@@ -3,14 +3,15 @@ package com.codingchosun.backend.service.post;
 import com.codingchosun.backend.domain.Post;
 import com.codingchosun.backend.domain.PostUser;
 import com.codingchosun.backend.domain.User;
-import com.codingchosun.backend.exception.invalidrequest.AlreadyJoinedPost;
-import com.codingchosun.backend.exception.invalidrequest.NotJoinedPost;
-import com.codingchosun.backend.exception.notfoundfromdb.EntityNotFoundFromDB;
+import com.codingchosun.backend.dto.response.UserDTO;
+import com.codingchosun.backend.exception.common.ErrorCode;
+import com.codingchosun.backend.exception.invalidrequest.UserAlreadyParticipantException;
+import com.codingchosun.backend.exception.invalidrequest.UserNotParticipantException;
 import com.codingchosun.backend.exception.notfoundfromdb.PostNotFoundFromDB;
+import com.codingchosun.backend.exception.notfoundfromdb.UserNotFoundFromDB;
 import com.codingchosun.backend.repository.post.DataJpaPostRepository;
 import com.codingchosun.backend.repository.postuser.DataJpaPostUserRepository;
 import com.codingchosun.backend.repository.user.DataJpaUserRepository;
-import com.codingchosun.backend.dto.response.UserDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -28,25 +29,15 @@ public class PostParticipantService {
     private final DataJpaPostRepository postRepository;
     private final DataJpaUserRepository userRepository;
 
-    //특정 게시물(모임)의 모든 참가자 목록 조회
-    @Transactional(readOnly = true)
-    public List<UserDTO> getParticipants(Long postId) {
-        Post post = findPostById(postId);
-
-        return post.getPostUsers().stream().map(PostUser::getUser).map(UserDTO::from).toList();
-    }
-
     //로그인된 유저가 특정 게시물(모임) 참여
     public void participatePost(Long postId, String loginId) {
         User user = findUserByLoginId(loginId);
         Post post = findPostById(postId);
 
-        //중복 참가 검사
         if (postUserRepository.existsByUserAndPost(user, post)) {
-            throw new AlreadyJoinedPost("이미 모임에 참가한 유저입니다");
+            throw new UserAlreadyParticipantException(ErrorCode.USER_ALREADY_PARTICIPANT);
         }
 
-        //게시물(모임) 참가(postUser 객체 생성)
         new PostUser(user, post);
     }
 
@@ -56,7 +47,7 @@ public class PostParticipantService {
         Post post = findPostById(postId);
 
         PostUser postUser = postUserRepository.findByUserAndPost(user, post).orElseThrow(
-                () -> new NotJoinedPost("삭제 대상이 참가자가 아닙니다")
+                () -> new UserNotParticipantException(ErrorCode.USER_NOT_PARTICIPANT)
         );
 
         postUserRepository.delete(postUser);
@@ -75,19 +66,19 @@ public class PostParticipantService {
 
     private Post findPostById(Long postId) {
         return postRepository.findById(postId).orElseThrow(
-                () -> new PostNotFoundFromDB("해당 게시물을 찾지 못하였습니다" + postId)
+                () -> new PostNotFoundFromDB(ErrorCode.POST_NOT_FOUND)
         );
     }
 
     private User findUserByLoginId(String loginId) {
         return userRepository.findByLoginId(loginId).orElseThrow(
-                () -> new EntityNotFoundFromDB("아이디에 해당하는 유저를 찾지 못했습니다" + loginId)
+                () -> new UserNotFoundFromDB(ErrorCode.USER_NOT_FOUND)
         );
     }
 
     private User findUserById(Long userId) {
         return userRepository.findByUserId(userId).orElseThrow(
-                () -> new EntityNotFoundFromDB("해당 유저를 찾지 못했습니다" + userId)
+                () -> new UserNotFoundFromDB(ErrorCode.USER_NOT_FOUND)
         );
     }
 }

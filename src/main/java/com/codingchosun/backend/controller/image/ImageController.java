@@ -1,7 +1,8 @@
 package com.codingchosun.backend.controller.image;
 
-import com.codingchosun.backend.exception.LoggedInUserNotFound;
 import com.codingchosun.backend.dto.response.ImageResponse;
+import com.codingchosun.backend.exception.login.NotAuthenticatedException;
+import com.codingchosun.backend.exception.common.ErrorCode;
 import com.codingchosun.backend.service.image.ImageQueryService;
 import com.codingchosun.backend.service.image.ImageService;
 import lombok.RequiredArgsConstructor;
@@ -39,7 +40,7 @@ public class ImageController {
                                                @RequestParam(value = "files") List<MultipartFile> files,
                                                @AuthenticationPrincipal UserDetails userDetails) {
         if (userDetails == null) {
-            throw new LoggedInUserNotFound("로그인 유저만 게시물에 이미지를 첨부할 수 있습니다");
+            throw new NotAuthenticatedException(ErrorCode.AUTHENTICATION_REQUIRED);
         }
         imageService.uploadImages(postId, userDetails.getUsername(), files);
 
@@ -52,7 +53,7 @@ public class ImageController {
                                               @PathVariable Long imageId,
                                               @AuthenticationPrincipal UserDetails userDetails) {
         if (userDetails == null) {
-            throw new LoggedInUserNotFound("로그인 유저만 게시물에 이미지를 삭제할 수 있습니다");
+            throw new NotAuthenticatedException(ErrorCode.AUTHENTICATION_REQUIRED);
         }
 
         imageService.deleteImage(postId, imageId, userDetails.getUsername());

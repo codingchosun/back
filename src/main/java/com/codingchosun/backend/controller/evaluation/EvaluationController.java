@@ -2,8 +2,8 @@ package com.codingchosun.backend.controller.evaluation;
 
 import com.codingchosun.backend.dto.request.EvaluationRequest;
 import com.codingchosun.backend.dto.response.EvaluationResponse;
-import com.codingchosun.backend.service.evaludation.EvaluationQueryService;
-import com.codingchosun.backend.service.evaludation.EvaluationService;
+import com.codingchosun.backend.service.evaluation.EvaluationQueryService;
+import com.codingchosun.backend.service.evaluation.EvaluationService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;

@@ -1,8 +1,10 @@
 package com.codingchosun.backend.service.user;
 
 import com.codingchosun.backend.domain.User;
-import com.codingchosun.backend.exception.LoggedInUserNotFound;
-import com.codingchosun.backend.exception.notfoundfromdb.EntityNotFoundFromDB;
+import com.codingchosun.backend.exception.login.NotAuthenticatedException;
+import com.codingchosun.backend.exception.common.ErrorCode;
+import com.codingchosun.backend.exception.login.LoginProcessFailedException;
+import com.codingchosun.backend.exception.notfoundfromdb.UserNotFoundFromDB;
 import com.codingchosun.backend.repository.user.DataJpaUserRepository;
 import com.codingchosun.backend.dto.request.LoginRequest;
 import com.codingchosun.backend.dto.response.UserDTO;
@@ -43,10 +45,11 @@ public class LoginService {
             session.setAttribute("SPRING_SECURITY_CONTEXT", securityContext);
         } catch (AuthenticationException e) {
             log.error("로그인 실패: {}", e.getMessage());
+            throw new LoginProcessFailedException(ErrorCode.LOGIN_FAILED);
         }
 
         User user = dataJpaUserRepository.findByLoginIdAndPassword(loginRequest.getLoginId(), loginRequest.getPassword()).orElseThrow(
-                () -> new EntityNotFoundFromDB("로그인 유저를 찾을 수 없습니다")
+                () -> new UserNotFoundFromDB(ErrorCode.USER_NOT_FOUND)
         );
         log.info("로그인 성공: {}", user);
 
@@ -66,11 +69,11 @@ public class LoginService {
     @Transactional(readOnly = true)
     public UserDTO loggedInCheck(UserDetails userDetails) {
         if (userDetails == null) {
-            throw new LoggedInUserNotFound("로그인 확인 실패");
+            throw new NotAuthenticatedException(ErrorCode.AUTHENTICATION_REQUIRED);
         }
 
         User user = dataJpaUserRepository.findByLoginId(userDetails.getUsername()).orElseThrow(
-                () -> new LoggedInUserNotFound("로그인된 유저 정보를 찾을 수 없습니다")
+                () -> new UserNotFoundFromDB(ErrorCode.USER_NOT_FOUND)
         );
 
         return new UserDTO(user.getUserId(), user.getLoginId(),user.getNickname());

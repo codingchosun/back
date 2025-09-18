@@ -2,17 +2,14 @@ package com.codingchosun.backend.controller.post;
 
 
 import com.codingchosun.backend.domain.Post;
-import com.codingchosun.backend.exception.LoggedInUserNotFound;
-import com.codingchosun.backend.repository.user.DataJpaUserRepository;
 import com.codingchosun.backend.dto.request.PostUpdateRequest;
 import com.codingchosun.backend.dto.request.RegisterPostRequest;
 import com.codingchosun.backend.dto.response.LoginPostsHashtagResponse;
 import com.codingchosun.backend.dto.response.NoLoginPostsHashtagsResponse;
 import com.codingchosun.backend.dto.response.PostResponse;
 import com.codingchosun.backend.dto.response.SearchPostResponse;
-import com.codingchosun.backend.service.comment.CommentService;
-import com.codingchosun.backend.service.image.ImageService;
-import com.codingchosun.backend.service.post.PostParticipantService;
+import com.codingchosun.backend.exception.login.NotAuthenticatedException;
+import com.codingchosun.backend.exception.common.ErrorCode;
 import com.codingchosun.backend.service.post.PostReadService;
 import com.codingchosun.backend.service.post.PostService;
 import jakarta.validation.Valid;
@@ -40,11 +37,6 @@ public class PostController {
     private final PostService postService;
     private final PostReadService postReadService;
 
-    private final CommentService commentService;
-    private final ImageService imageService;
-    private final PostParticipantService postParticipantService;
-    private final DataJpaUserRepository dataJpaUserRepository;
-
     /**
      * 게시물 작성 API
      *
@@ -56,7 +48,7 @@ public class PostController {
     public ResponseEntity<Map<String, Long>> registerPost(@AuthenticationPrincipal UserDetails userDetails, @RequestBody @Valid RegisterPostRequest registerPostRequest) {
 
         if (userDetails == null) {
-            throw new LoggedInUserNotFound("게시물 작성은 로그인이 필수입니다.");
+            throw new NotAuthenticatedException(ErrorCode.AUTHENTICATION_REQUIRED);
         }
         //2024.06.18 타임존 설정에 실패하고 시간에 +9를 더하기로 결정 -> TODO: 타임존 적용방법 찾기
         registerPostRequest.setStartTime(registerPostRequest.getStartTime().plusHours(9));
@@ -81,7 +73,7 @@ public class PostController {
                                                       @AuthenticationPrincipal UserDetails userDetails) {
 
         if (userDetails == null) {
-            throw new LoggedInUserNotFound("게시물 수정은 로그인이 필수입니다.");
+            throw new NotAuthenticatedException(ErrorCode.AUTHENTICATION_REQUIRED);
         }
         //마찬가지로 타임존 설정 필요
         Post editPost = postService.editPost(postId, userDetails.getUsername(), postUpdateRequest);
@@ -100,7 +92,7 @@ public class PostController {
     public HttpEntity<String> deletePost(@PathVariable Long postId, @AuthenticationPrincipal UserDetails userDetails) {
 
         if (userDetails == null) {
-            throw new LoggedInUserNotFound("삭제는 로그인이 필수입니다.");
+            throw new NotAuthenticatedException(ErrorCode.AUTHENTICATION_REQUIRED);
         }
         String message = postService.deletePost(postId, userDetails.getUsername());
 
