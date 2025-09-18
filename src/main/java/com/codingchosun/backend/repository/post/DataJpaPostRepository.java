@@ -16,7 +16,7 @@ public interface DataJpaPostRepository extends JpaRepository<Post, Long>, DataJp
     @Query("SELECT p FROM Post p WHERE p.stateCode = 'ACTIVE' ORDER BY p.createdAt DESC")
     Page<Post> findAllActiveByOrderByCreatedAtDesc(Pageable pageable);
 
-    List<Post> findAllByStartTimeBeforeAndStateCode(LocalDateTime startTime, StateCode stateCode);
+    List<Post> findAllByEndTimeBeforeAndStateCode(LocalDateTime endTimeBefore, StateCode stateCode);
 
     @Query(value = "SELECT p FROM Post p JOIN p.postUsers pu WHERE pu.user.loginId = :loginId ORDER BY p.postId DESC")
     List<Post> findParticipatedPosts(@Param("loginId") String loginId);
