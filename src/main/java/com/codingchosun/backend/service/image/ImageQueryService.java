@@ -1,4 +1,4 @@
-package com.codingchosun.backend.service;
+package com.codingchosun.backend.service.image;
 
 import com.codingchosun.backend.repository.image.DataJpaImageRepository;
 import com.codingchosun.backend.dto.response.ImageResponse;

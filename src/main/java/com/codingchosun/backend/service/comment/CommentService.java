@@ -1,4 +1,4 @@
-package com.codingchosun.backend.service;
+package com.codingchosun.backend.service.comment;
 
 import com.codingchosun.backend.domain.Comment;
 import com.codingchosun.backend.domain.Post;

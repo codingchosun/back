@@ -1,4 +1,4 @@
-package com.codingchosun.backend.service;
+package com.codingchosun.backend.service.image;
 
 import com.codingchosun.backend.component.file.FileStore;
 import com.codingchosun.backend.component.file.UploadFile;

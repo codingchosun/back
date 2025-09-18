@@ -1,4 +1,4 @@
-package com.codingchosun.backend.service;
+package com.codingchosun.backend.service.user;
 
 
 import com.codingchosun.backend.domain.Hashtag;
