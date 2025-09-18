@@ -6,10 +6,10 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 import java.util.Optional;
 
-public interface TemplateRepository extends JpaRepository<Template, Long> {
+public interface DataJpaTemplateRepository extends JpaRepository<Template, Long> {
 
     Optional<Template> findTemplateByContent(String content);
 
-    List<Template> findByValidates_ToUser_UserId(Long id);
+    List<Template> findByEvaluations_ToUser_UserId(Long evaluationsToUserUserId);
 
 }
