@@ -2,7 +2,8 @@ package com.codingchosun.backend.service.user;
 
 import com.codingchosun.backend.constants.StateCode;
 import com.codingchosun.backend.domain.User;
-import com.codingchosun.backend.exception.LoggedInUserNotFound;
+import com.codingchosun.backend.exception.login.NotAuthenticatedException;
+import com.codingchosun.backend.exception.common.ErrorCode;
 import com.codingchosun.backend.repository.user.DataJpaUserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,7 +20,7 @@ public class DeleteAccountService {
 
     public void deleteAccount(String loginId) {
         User user = userRepository.findByLoginId(loginId).orElseThrow(
-                () -> new LoggedInUserNotFound("로그인 된 유저를 찾을 수 없습니다")
+                () -> new NotAuthenticatedException(ErrorCode.USER_NOT_FOUND)
         );
 
         user.setStateCode(StateCode.INACTIVE);
