@@ -1,85 +1,62 @@
 package com.codingchosun.backend.controller;
 
-import com.codingchosun.backend.domain.Post;
-import com.codingchosun.backend.domain.User;
 import com.codingchosun.backend.exception.LoggedInUserNotFound;
-import com.codingchosun.backend.exception.invalidrequest.IsNotPostAuthor;
-import com.codingchosun.backend.exception.notfoundfromdb.PostNotFoundFromDB;
-import com.codingchosun.backend.repository.post.DataJpaPostRepository;
-import com.codingchosun.backend.repository.user.DataJpaUserRepository;
-import com.codingchosun.backend.request.ImageDeleteRequest;
-import com.codingchosun.backend.response.ApiResponse;
+import com.codingchosun.backend.response.ImageResponse;
+import com.codingchosun.backend.service.ImageQueryService;
 import com.codingchosun.backend.service.ImageService;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
-@Controller
+@RestController
 @RequiredArgsConstructor
-@Slf4j
+@RequestMapping("/api/posts/{postId}/images")
 public class ImageController {
 
     private final ImageService imageService;
-    private final DataJpaPostRepository dataJpaPostRepository;
-    private final DataJpaUserRepository dataJpaUserRepository;
+    private final ImageQueryService imageQueryService;
 
-    @PostMapping(value = "/posts/{postId}/images", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    @ResponseBody
-    public ApiResponse<Integer> saveImages(@RequestParam(value = "files") List<MultipartFile> files,
-                                           @PathVariable Long postId,
-                                           @AuthenticationPrincipal UserDetails userDetails){
-        
-        log.info("멀티파트 폼 데이터 크기 = {}", files.size());
+    //이미지 조회
+    @GetMapping
+    public ResponseEntity<Page<ImageResponse>> getImages(@PathVariable Long postId, Pageable pageable) {
+        Page<ImageResponse> imageResponses = imageQueryService.getImages(postId, pageable);
 
-        if(userDetails==null){ //로그인 검사
-            throw new LoggedInUserNotFound("로그인 하세요");
+        return ResponseEntity.status(HttpStatus.OK).body(imageResponses);
+    }
+
+    //이미지 저장
+    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<String> uploadImages(@PathVariable Long postId,
+                                               @RequestParam(value = "files") List<MultipartFile> files,
+                                               @AuthenticationPrincipal UserDetails userDetails) {
+        if (userDetails == null) {
+            throw new LoggedInUserNotFound("로그인 유저만 게시물에 이미지를 첨부할 수 있습니다");
         }
-        User user = this.getUserFromUserDetails(userDetails);
+        imageService.uploadImages(postId, userDetails.getUsername(), files);
 
-        Post post = dataJpaPostRepository.findById(postId)
-                .orElseThrow(() -> new PostNotFoundFromDB("postId: " + postId + "를 찾지 못했습니다"));
-
-        //log.info("로그인 유저: {}, 글 작성자:{}",user.getUserId(), post.getUser().getUserId());
-
-        //글 작성자와 로그인된 유저가 같은지 검사
-        if( !(post.getUser().getUserId().equals(user.getUserId())) ){
-            throw new IsNotPostAuthor("로그인 유저:" + user.getUserId() + "가 글 작성자:" + post.getUser().getUserId() + "와 다릅니다");
-        }
-
-        int count = imageService.uploadImages(files, post);    //저장된 파일 개수
-
-        return new ApiResponse<>(HttpStatus.OK, true, count);
+        return ResponseEntity.status(HttpStatus.CREATED).body("이미지 저장 성공");
     }
 
     //이미지 삭제
-    @PostMapping(value = "/posts/{posdId}/deleteimage")
-    @ResponseBody
-    public ApiResponse<Long> dropImage(@PathVariable Long posdId,
-                                         @AuthenticationPrincipal UserDetails userDetails,
-                                         @RequestBody ImageDeleteRequest imageDeleteRequest){
-
-        if(userDetails==null){ //로그인 검사
-            throw new LoggedInUserNotFound("로그인 하세요");
+    @DeleteMapping("/{imageId}")
+    public ResponseEntity<String> deleteImage(@PathVariable Long postId,
+                                              @PathVariable Long imageId,
+                                              @AuthenticationPrincipal UserDetails userDetails) {
+        if (userDetails == null) {
+            throw new LoggedInUserNotFound("로그인 유저만 게시물에 이미지를 삭제할 수 있습니다");
         }
-        User user = this.getUserFromUserDetails(userDetails);
 
-        //포스트 찾기
-        Post post = dataJpaPostRepository.findById(posdId)
-                .orElseThrow(() -> new PostNotFoundFromDB("postId = " + posdId + "를 찾지 못했습니다"));
-
-        Long deletedImageId = imageService.deleteImage(user, post, imageDeleteRequest.getDeleteImageId());
-        return new ApiResponse<>(HttpStatus.OK, true, deletedImageId);
+        imageService.deleteImage(postId, imageId, userDetails.getUsername());
+        return ResponseEntity.status(HttpStatus.OK).body("이미지 삭제 성공");
     }
 
-    public User getUserFromUserDetails(UserDetails userDetails){
-        return dataJpaUserRepository.findByLoginId(userDetails.getUsername());
-    }
 }
