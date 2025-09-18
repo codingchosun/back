@@ -1,4 +1,4 @@
-package com.codingchosun.backend.controller;
+package com.codingchosun.backend.controller.user;
 
 import com.codingchosun.backend.dto.response.ApiResponse;
 import com.codingchosun.backend.dto.response.UserDTO;

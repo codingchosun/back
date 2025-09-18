@@ -1,9 +1,9 @@
-package com.codingchosun.backend.controller;
+package com.codingchosun.backend.controller.user;
 
 import com.codingchosun.backend.dto.request.ProfileResponse;
 import com.codingchosun.backend.dto.request.UserUpdateRequest;
 import com.codingchosun.backend.dto.response.UpdateProfileResponse;
-import com.codingchosun.backend.service.ProfileService;
+import com.codingchosun.backend.service.user.ProfileService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;

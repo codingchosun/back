@@ -1,9 +1,9 @@
-package com.codingchosun.backend.controller;
+package com.codingchosun.backend.controller.image;
 
 import com.codingchosun.backend.exception.LoggedInUserNotFound;
 import com.codingchosun.backend.dto.response.ImageResponse;
-import com.codingchosun.backend.service.ImageQueryService;
-import com.codingchosun.backend.service.ImageService;
+import com.codingchosun.backend.service.image.ImageQueryService;
+import com.codingchosun.backend.service.image.ImageService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

@@ -1,4 +1,4 @@
-package com.codingchosun.backend.controller;
+package com.codingchosun.backend.controller.user;
 
 import com.codingchosun.backend.service.user.DeleteAccountService;
 import jakarta.servlet.http.HttpServletRequest;

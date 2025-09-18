@@ -1,4 +1,4 @@
-package com.codingchosun.backend.controller;
+package com.codingchosun.backend.controller.user;
 
 import com.codingchosun.backend.dto.request.FindLoginIdRequest;
 import com.codingchosun.backend.dto.request.FindPasswordRequest;

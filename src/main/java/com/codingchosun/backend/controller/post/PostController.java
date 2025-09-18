@@ -1,4 +1,4 @@
-package com.codingchosun.backend.controller;
+package com.codingchosun.backend.controller.post;
 
 
 import com.codingchosun.backend.domain.Post;
@@ -10,7 +10,11 @@ import com.codingchosun.backend.dto.response.LoginPostsHashtagResponse;
 import com.codingchosun.backend.dto.response.NoLoginPostsHashtagsResponse;
 import com.codingchosun.backend.dto.response.PostResponse;
 import com.codingchosun.backend.dto.response.SearchPostResponse;
-import com.codingchosun.backend.service.*;
+import com.codingchosun.backend.service.comment.CommentService;
+import com.codingchosun.backend.service.image.ImageService;
+import com.codingchosun.backend.service.post.PostParticipantService;
+import com.codingchosun.backend.service.post.PostReadService;
+import com.codingchosun.backend.service.post.PostService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

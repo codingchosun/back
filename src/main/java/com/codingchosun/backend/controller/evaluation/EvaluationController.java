@@ -1,4 +1,4 @@
-package com.codingchosun.backend.controller;
+package com.codingchosun.backend.controller.evaluation;
 
 import com.codingchosun.backend.dto.request.EvaluationRequest;
 import com.codingchosun.backend.dto.response.EvaluationResponse;

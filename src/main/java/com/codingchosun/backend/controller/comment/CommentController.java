@@ -1,10 +1,10 @@
-package com.codingchosun.backend.controller;
+package com.codingchosun.backend.controller.comment;
 
 import com.codingchosun.backend.domain.Comment;
 import com.codingchosun.backend.exception.LoggedInUserNotFound;
 import com.codingchosun.backend.dto.request.RegisterCommentRequest;
 import com.codingchosun.backend.dto.response.CommentResponse;
-import com.codingchosun.backend.service.CommentService;
+import com.codingchosun.backend.service.comment.CommentService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
