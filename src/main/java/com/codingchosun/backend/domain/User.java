@@ -3,8 +3,9 @@ package com.codingchosun.backend.domain;
 import com.codingchosun.backend.constants.GenderCode;
 import com.codingchosun.backend.constants.Role;
 import com.codingchosun.backend.constants.StateCode;
-import com.codingchosun.backend.exception.PasswordNotMatch;
 import com.codingchosun.backend.dto.request.RegisterUserRequest;
+import com.codingchosun.backend.exception.login.NotMatchPasswordException;
+import com.codingchosun.backend.exception.common.ErrorCode;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
@@ -105,20 +106,13 @@ public class User {
         this.role = Role.USER;
     }
 
-    @Override
-    public String toString() {
-        return "\n유저아이디 : " + this.userId + "\n로그인아이디 : " + this.loginId + "\n 닉네임 : " + this.nickname + "\n 성별 + " + this.genderCode +
-                "\n 자기소개 : " + this.introduction + "\n 이메일 : " + this.email + "\n 생일 : " + this.birth +
-                "\n 닉네임 : " + this.nickname + "\n 매너점수 : " + this.score + "\n 상태 : " + this.stateCode;
-    }
-
     public void passwordEncode(String encodedPassword) {
         this.password = encodedPassword;
     }
 
     public void updatePassword(String currentPassword, String newPassword, PasswordEncoder passwordEncoder) {
         if (!passwordEncoder.matches(currentPassword, this.password)) {
-            throw new PasswordNotMatch("기존 비밀번호가 일치하지 않습니다");
+            throw new NotMatchPasswordException(ErrorCode.LOGIN_FAILED);
         }
         this.password = passwordEncoder.encode(newPassword);
     }
