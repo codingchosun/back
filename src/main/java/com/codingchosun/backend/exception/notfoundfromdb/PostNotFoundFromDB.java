@@ -1,11 +1,10 @@
 package com.codingchosun.backend.exception.notfoundfromdb;
 
-public class PostNotFoundFromDB extends EntityNotFoundFromDB {
-    public PostNotFoundFromDB(String message, Throwable cause) {
-        super(message, cause);
-    }
+import com.codingchosun.backend.exception.common.ApiException;
+import com.codingchosun.backend.exception.common.ErrorCode;
 
-    public PostNotFoundFromDB(String message) {
-        super(message);
+public class PostNotFoundFromDB extends ApiException {
+    public PostNotFoundFromDB(ErrorCode errorCode) {
+        super(errorCode);
     }
 }

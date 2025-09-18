@@ -1,11 +1,13 @@
 package com.codingchosun.backend.exception.notfoundfromdb;
 
-
 import com.codingchosun.backend.exception.common.ApiException;
 import com.codingchosun.backend.exception.common.ErrorCode;
+import lombok.Getter;
 
-public class HashtagNotFoundFromDB extends ApiException {
-    public HashtagNotFoundFromDB(ErrorCode errorCode) {
+@Getter
+public class UserNotFoundFromDB extends ApiException {
+
+    public UserNotFoundFromDB(ErrorCode errorCode) {
         super(errorCode);
     }
 }
