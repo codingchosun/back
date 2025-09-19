@@ -1,19 +1,26 @@
 package com.codingchosun.backend.dto.response;
 
 import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Getter;
 import org.springframework.http.HttpStatus;
 
-/*
-    컨트롤러 처리의 결과를 담을 객체
- */
-@Data
+//컨트롤러 API 응답
+@Getter
 @AllArgsConstructor
 public class ApiResponse<T> {
-    //http 상태코드
     private HttpStatus httpStatus;
-    //처리 결과의 성공 여부
     private Boolean success;
-    //첨부할 데이터와 메시지들
     private T body;
+
+    //200 OK
+    public static <T> ApiResponse<T> ok(T data) {
+        return new ApiResponse<>(HttpStatus.OK, true, data);
+    }
+
+    //201 CREATED
+    public static <T> ApiResponse<T> created(T data) {
+        return new ApiResponse<>(HttpStatus.CREATED, true, data);
+    }
+
+
 }
