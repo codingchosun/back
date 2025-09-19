@@ -63,7 +63,8 @@ public class SecurityConfig {
             authorizeRequests.requestMatchers(
                             "/", "/error",
                             "/register", "/login", "logout",
-                            "/users/login-id", "/users/password"
+                            "/users/login-id", "/users/password",
+                            "/swagger-ui/**", "/v3/api-docs/**"
                     ).permitAll()
                     .requestMatchers("/admin/**").hasRole("ADMIN")
                     .requestMatchers("/mypage", "/useredit", "/myposts").hasRole("USER")
