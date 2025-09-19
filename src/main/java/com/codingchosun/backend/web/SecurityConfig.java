@@ -42,12 +42,7 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
 
                 .httpBasic(AbstractHttpConfigurer::disable)
-                .formLogin(AbstractHttpConfigurer::disable)
-
-                .logout(logoutConfig -> logoutConfig.logoutSuccessHandler(logoutSuccessHandler()))
-                .sessionManagement(session -> session
-                        .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
-                );
+                .formLogin(AbstractHttpConfigurer::disable);
 
 //        http.oauth2Login(oauth2Config -> {
 //            oauth2Config.successHandler(authenticationSuccessHandler());
@@ -56,15 +51,15 @@ public class SecurityConfig {
 
         // http.addFilterAfter(new CsrfCookieFilter(), CsrfFilter.class);
 
-        http.exceptionHandling(exceptionHandleConfig -> exceptionHandleConfig.authenticationEntryPoint(
-                new HttpStatusEntryPoint(HttpStatus.FORBIDDEN)));
+        http.exceptionHandling(exceptionHandleConfig -> exceptionHandleConfig.authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED)));
 
         http.authorizeHttpRequests(authorizeRequests -> {
-            authorizeRequests.requestMatchers(
+            authorizeRequests
+                    .requestMatchers(
                             "/", "/error",
-                            "/register", "/login", "logout",
+                            "/register", "/login", "/logout",
                             "/users/login-id", "/users/password",
-                            "/swagger/**"
+                            "/swagger-ui/**", "/v3/api-docs/**"
                     ).permitAll()
                     .requestMatchers("/admin/**").hasRole("ADMIN")
                     .requestMatchers("/mypage", "/useredit", "/myposts").hasRole("USER")
@@ -76,6 +71,11 @@ public class SecurityConfig {
 //            authorizeRequests.requestMatchers("/oauth2/**").permitAll();
 //            authorizeRequests.requestMatchers("/ws-zelkova/**").permitAll();
         });
+
+        http.logout(logoutConfig -> logoutConfig.logoutSuccessHandler(logoutSuccessHandler()))
+                .sessionManagement(session -> session
+                        .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
+                );
 
         http.userDetailsService(accountDetailService);
 
