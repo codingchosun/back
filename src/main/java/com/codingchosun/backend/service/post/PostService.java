@@ -5,8 +5,11 @@ import com.codingchosun.backend.domain.Hashtag;
 import com.codingchosun.backend.domain.Post;
 import com.codingchosun.backend.domain.PostUser;
 import com.codingchosun.backend.domain.User;
+import com.codingchosun.backend.dto.request.PostRegistrationRequest;
+import com.codingchosun.backend.dto.request.PostRemoveRequest;
 import com.codingchosun.backend.dto.request.PostUpdateRequest;
-import com.codingchosun.backend.dto.request.RegisterPostRequest;
+import com.codingchosun.backend.dto.response.PostRegistrationResponse;
+import com.codingchosun.backend.dto.response.PostUpdateResponse;
 import com.codingchosun.backend.exception.common.ErrorCode;
 import com.codingchosun.backend.exception.invalidtime.InvalidTimeSetupException;
 import com.codingchosun.backend.exception.notfoundfromdb.PostNotFoundFromDB;
@@ -36,15 +39,15 @@ public class PostService {
     private final DataJpaUserRepository userRepository;
 
     //게시물 생성
-    public Post registerPost(RegisterPostRequest registerPostRequest, String loginId) {
+    public PostRegistrationResponse registerPost(PostRegistrationRequest postRegistrationRequest, String loginId) {
         User user = findUserByLoginId(loginId);
 
-        validateStartTime(registerPostRequest.getStartTime());
+        validateStartTime(postRegistrationRequest.getStartTime());
 
         Post post = new Post(
-                registerPostRequest.getTitle(),
-                registerPostRequest.getContent(),
-                registerPostRequest.getStartTime(),
+                postRegistrationRequest.getTitle(),
+                postRegistrationRequest.getContent(),
+                postRegistrationRequest.getStartTime(),
                 user
         );
 
@@ -52,14 +55,16 @@ public class PostService {
         post.getPostUsers().add(postUser);
         postUserRepository.save(postUser);
 
-        List<Hashtag> hashtags = findOrCreateHashtags(registerPostRequest.getHashtags());
+        List<Hashtag> hashtags = findOrCreateHashtags(postRegistrationRequest.getHashtags());
         post.updateHashtags(hashtags);
 
-        return postRepository.save(post);
+        postRepository.save(post);
+
+        return new PostRegistrationResponse(post.getPostId());
     }
 
     //게시물 수정
-    public Post editPost(Long postId, String loginId, PostUpdateRequest postUpdateRequest) {
+    public PostUpdateResponse updatePost(Long postId, String loginId, PostUpdateRequest postUpdateRequest) {
         Post post = findPostById(postId);
         User user = findUserByLoginId(loginId);
 
@@ -70,12 +75,12 @@ public class PostService {
         List<Hashtag> hashtags = findOrCreateHashtags(postUpdateRequest.getHashtags());
         post.updateHashtags(hashtags);
 
-        return post;
+        return new PostUpdateResponse(post.getPostId());
     }
 
     //게시물 삭제
-    public String deletePost(Long postId, String loginId) {
-        Post post = findPostById(postId);
+    public String deletePost(PostRemoveRequest postRemoveRequest, String loginId) {
+        Post post = findPostById(Long.valueOf(postRemoveRequest.getPostId()));
         User user = findUserByLoginId(loginId);
 
         post.validateOwner(user);
