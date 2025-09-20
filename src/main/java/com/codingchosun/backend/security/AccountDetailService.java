@@ -22,7 +22,7 @@ public class AccountDetailService implements UserDetailsService {
     @Transactional(readOnly = true)
     public UserDetails loadUserByUsername(String loginId) throws UsernameNotFoundException {
         User user = userRepository.findByLoginId(loginId).orElseThrow(
-                () -> new UserNotFoundFromDB(ErrorCode.USER_NOT_FOUND)
+                () -> new UsernameNotFoundException("유저를 찾을 수 없습니다")
         );
 
         return accountDetailSupplier.supply(user);

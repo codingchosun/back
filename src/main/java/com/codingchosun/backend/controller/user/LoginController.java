@@ -26,8 +26,8 @@ public class LoginController {
     private final LoginService loginService;
 
     @PostMapping("/login")
-    public ResponseEntity<ApiResponse<String>> login(@RequestBody LoginRequest loginRequest) {
-        loginService.login(loginRequest);
+    public ResponseEntity<ApiResponse<String>> login(@RequestBody LoginRequest loginRequest, HttpServletRequest httpServletRequest) {
+        loginService.login(loginRequest, httpServletRequest);
 
         return ApiResponse.ok("로그인에 성공하였습니다.");
     }
