@@ -1,10 +1,10 @@
 package com.codingchosun.backend.controller.post;
 
+import com.codingchosun.backend.dto.response.ApiResponse;
 import com.codingchosun.backend.dto.response.UserDTO;
 import com.codingchosun.backend.service.post.PostParticipantService;
 import com.codingchosun.backend.service.post.PostQueryService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -20,35 +20,31 @@ public class PostParticipantController {
     private final PostParticipantService postParticipantService;
     private final PostQueryService postQueryService;
 
-    //특정 모임의 참가자 목록 조회 api
     @GetMapping("/{postId}/participants")
-    public ResponseEntity<List<UserDTO>> getParticipatePost(@PathVariable Long postId) {
+    public ResponseEntity<ApiResponse<List<UserDTO>>> getParticipatePost(@PathVariable Long postId) {
         List<UserDTO> participants = postQueryService.getParticipants(postId);
 
-        return ResponseEntity.status(HttpStatus.OK).body(participants);
+        return ApiResponse.ok(participants);
     }
 
-    //로그인 유저가 모임 참가 api
     @PostMapping("/{postId}/participants")
-    public ResponseEntity<String> participatePost(@PathVariable Long postId, @AuthenticationPrincipal UserDetails userDetails) {
+    public ResponseEntity<ApiResponse<String>> participatePost(@PathVariable Long postId, @AuthenticationPrincipal UserDetails userDetails) {
         postParticipantService.participatePost(postId, userDetails.getUsername());
 
-        return ResponseEntity.status(HttpStatus.OK).body("모임 참여 완료");
+        return ApiResponse.ok("모임 참여에 완료하였습니다.");
     }
 
-    //모임 참여 유저 탈퇴 api
-    @DeleteMapping("/me")
-    public ResponseEntity<String> leavePost(@RequestParam Long postId, @AuthenticationPrincipal UserDetails userDetails) {
+    @DeleteMapping("/{postId}/exit")
+    public ResponseEntity<ApiResponse<String>> exitPost(@PathVariable Long postId, @AuthenticationPrincipal UserDetails userDetails) {
         postParticipantService.leavePost(postId, userDetails.getUsername());
 
-        return ResponseEntity.status(HttpStatus.OK).body("모임 탈퇴 완료");
+        return ApiResponse.ok("모임 탈퇴에 성공하였습니다.");
     }
 
-    //모임 유저 추방 api
-    @DeleteMapping("/{banishUserId}")
-    public ResponseEntity<String> banishPost(@RequestParam Long postId, @RequestParam Long banishUserId, @AuthenticationPrincipal UserDetails userDetails) {
+    @DeleteMapping("/{postId}/participants/{banishUserId}")
+    public ResponseEntity<ApiResponse<String>> banishPost(@PathVariable Long postId, @PathVariable Long banishUserId, @AuthenticationPrincipal UserDetails userDetails) {
         postParticipantService.banishPost(postId, banishUserId, userDetails.getUsername());
 
-        return ResponseEntity.status(HttpStatus.OK).body("해당 유저를 모임에서 추방했습니다.");
+        return ApiResponse.ok("모임에서 유저 추방을 성공하였습니다.");
     }
 }

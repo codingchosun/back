@@ -23,7 +23,7 @@ public class PostExceptionHandler {
         log.warn("Post 예외: {}", errorCode.getMessage());
         ErrorResponse errorResponse = new ErrorResponse(errorCode.getCode(), errorCode.getMessage());
 
-        return new ResponseEntity<>(new ApiResponse<>(errorCode.getStatus(), false, errorResponse), errorCode.getStatus());
+        return ApiResponse.error(errorCode.getStatus(), errorResponse.getMessage());
     }
 
     @ExceptionHandler(InvalidPostHashtagException.class)
@@ -32,7 +32,7 @@ public class PostExceptionHandler {
         log.warn("PostHash 예외: {}", errorCode.getMessage());
         ErrorResponse errorResponse = new ErrorResponse(errorCode.getCode(), errorCode.getMessage());
 
-        return new ResponseEntity<>(new ApiResponse<>(errorCode.getStatus(), false, errorResponse), errorCode.getStatus());
+        return ApiResponse.error(errorCode.getStatus(), errorResponse.getMessage());
     }
 
 }

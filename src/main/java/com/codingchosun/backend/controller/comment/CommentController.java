@@ -1,22 +1,21 @@
 package com.codingchosun.backend.controller.comment;
 
-import com.codingchosun.backend.domain.Comment;
 import com.codingchosun.backend.dto.request.RegisterCommentRequest;
+import com.codingchosun.backend.dto.response.ApiResponse;
+import com.codingchosun.backend.dto.response.CommentRegistrationResponse;
 import com.codingchosun.backend.dto.response.CommentResponse;
-import com.codingchosun.backend.exception.login.NotAuthenticatedException;
 import com.codingchosun.backend.exception.common.ErrorCode;
+import com.codingchosun.backend.exception.login.NotAuthenticatedException;
 import com.codingchosun.backend.service.comment.CommentService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.http.HttpStatus;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
@@ -25,58 +24,34 @@ public class CommentController {
 
     private final CommentService commentService;
 
-    /**
-     * 게시물 댓글 등록 API
-     *
-     * @param postId                 게시글 식별번호
-     * @param userDetails            로그인 정보
-     * @param registerCommentRequest 댓글내용
-     * @return 201 CREATED, commentId
-     */
     @PostMapping
-    public ResponseEntity<Map<String, Long>> registerComment(@PathVariable Long postId,
-                                                             @AuthenticationPrincipal UserDetails userDetails,
-                                                             @Valid @RequestBody RegisterCommentRequest registerCommentRequest) {
+    public ResponseEntity<ApiResponse<CommentRegistrationResponse>> registerComment(@PathVariable Long postId,
+                                                                                    @AuthenticationPrincipal UserDetails userDetails,
+                                                                                    @Valid @RequestBody RegisterCommentRequest registerCommentRequest) {
         if (userDetails == null) {
             throw new NotAuthenticatedException(ErrorCode.AUTHENTICATION_REQUIRED);
         }
-        Comment comment = commentService.registerComments(postId, userDetails.getUsername(), registerCommentRequest);
+        CommentRegistrationResponse commentRegistrationResponse = commentService.registerComments(postId, userDetails.getUsername(), registerCommentRequest);
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(Map.of("commentId", comment.getCommentId()));
+        return ApiResponse.created(commentRegistrationResponse);
     }
 
-    /**
-     * 특정 게시물의 댓글 조회 API
-     *
-     * @param postId     게시물 식별번호
-     * @param pageNumber 조회수
-     * @param pageSize   조회페이지
-     * @return 댓글목록
-     */
     @GetMapping
-    public ResponseEntity<Page<CommentResponse>> getPostComments(@PathVariable Long postId,
-                                                                 @RequestParam(required = false, defaultValue = "1", value = "pageNumber") int pageNumber,
-                                                                 @RequestParam(required = false, defaultValue = "10", value = "pageSize") int pageSize) {
-        Page<CommentResponse> comments = commentService.getPagedComments(PageRequest.of(pageNumber, pageSize), postId);
+    public ResponseEntity<ApiResponse<Page<CommentResponse>>> getPostComments(@PathVariable Long postId,
+                                                                              @PageableDefault(size = 20) Pageable pageable) {
+        Page<CommentResponse> comments = commentService.getPagedComments(pageable, postId);
 
-        return ResponseEntity.status(HttpStatus.OK).body(comments);
+        return ApiResponse.ok(comments);
     }
 
-    /**
-     * 댓글 삭제 API
-     *
-     * @param userDetails 로그인 정보
-     * @param commentId   댓글 식별키
-     * @return 200 OK, "댓글이 성공적을 삭제되었습니다"
-     */
     @DeleteMapping("/{commentId}")
-    public ResponseEntity<String> deleteComments(@AuthenticationPrincipal UserDetails userDetails, @PathVariable(name = "commentId") Long commentId) {
+    public ResponseEntity<ApiResponse<String>> deleteComments(@PathVariable(name = "postId") Long postId, @PathVariable(name = "commentId") Long commentId, @AuthenticationPrincipal UserDetails userDetails) {
         if (userDetails == null) {
             throw new NotAuthenticatedException(ErrorCode.AUTHENTICATION_REQUIRED);
         }
-        commentService.deleteComment(commentId, userDetails.getUsername());
+        commentService.deleteComment(postId, commentId, userDetails.getUsername());
 
-        return ResponseEntity.status(HttpStatus.OK).body("댓글이 성공적을 삭제되었습니다");
+        return ApiResponse.ok("댓글이 성공적을 삭제되었습니다");
     }
 
 }

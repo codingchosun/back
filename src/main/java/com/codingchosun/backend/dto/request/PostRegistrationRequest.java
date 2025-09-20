@@ -4,7 +4,6 @@ import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -12,7 +11,7 @@ import java.util.List;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class RegisterPostRequest {
+public class PostRegistrationRequest {
 
     @NotNull
     private String title;
@@ -20,7 +19,6 @@ public class RegisterPostRequest {
     @NotNull
     private String content;
 
-    @Setter
     @NotNull
     private LocalDateTime startTime;
 

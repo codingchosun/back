@@ -21,7 +21,8 @@ public class ImageExceptionHandler {
         ErrorCode errorCode = e.getErrorCode();
         log.warn("Image 작업 권한 예외: {}", errorCode.getMessage());
         ErrorResponse errorResponse = new ErrorResponse(errorCode.getCode(), errorCode.getMessage());
-        return new ResponseEntity<>(new ApiResponse<>(errorCode.getStatus(), false, errorResponse), errorCode.getStatus());
+
+        return ApiResponse.error(errorCode.getStatus(), errorResponse.getMessage());
     }
 
     @ExceptionHandler(ImageNotFoundFromDB.class)
@@ -29,7 +30,8 @@ public class ImageExceptionHandler {
         ErrorCode errorCode = e.getErrorCode();
         log.warn("Image 엔티티 예외: {}", errorCode.getMessage());
         ErrorResponse errorResponse = new ErrorResponse(errorCode.getCode(), errorCode.getMessage());
-        return new ResponseEntity<>(new ApiResponse<>(errorCode.getStatus(), false, errorResponse), errorCode.getStatus());
+
+        return ApiResponse.error(errorCode.getStatus(), errorResponse.getMessage());
     }
 
     @ExceptionHandler(NotPostImageException.class)
@@ -37,7 +39,8 @@ public class ImageExceptionHandler {
         ErrorCode errorCode = e.getErrorCode();
         log.warn("Image 게시글 예외: {}", errorCode.getMessage());
         ErrorResponse errorResponse = new ErrorResponse(errorCode.getCode(), errorCode.getMessage());
-        return new ResponseEntity<>(new ApiResponse<>(errorCode.getStatus(), false, errorResponse), errorCode.getStatus());
+
+        return ApiResponse.error(errorCode.getStatus(), errorResponse.getMessage());
     }
 
 }

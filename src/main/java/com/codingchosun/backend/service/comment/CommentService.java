@@ -4,6 +4,7 @@ import com.codingchosun.backend.domain.Comment;
 import com.codingchosun.backend.domain.Post;
 import com.codingchosun.backend.domain.User;
 import com.codingchosun.backend.dto.request.RegisterCommentRequest;
+import com.codingchosun.backend.dto.response.CommentRegistrationResponse;
 import com.codingchosun.backend.dto.response.CommentResponse;
 import com.codingchosun.backend.exception.common.ErrorCode;
 import com.codingchosun.backend.exception.invalidrequest.UnauthorizedActionException;
@@ -30,17 +31,23 @@ public class CommentService {
     private final DataJpaUserRepository dataJpaUserRepository;
     private final DataJpaPostRepository dataJpaPostRepository;
 
-    public Comment registerComments(Long postId, String loginId, RegisterCommentRequest registerCommentRequest) {
+    public CommentRegistrationResponse registerComments(Long postId, String loginId, RegisterCommentRequest registerCommentRequest) {
         User user = findUserByLoginId(loginId);
         Post post = findPostById(postId);
         Comment comment = new Comment(registerCommentRequest.getContents(), user, post);
 
-        return dataJpaCommentRepository.save(comment);
+        dataJpaCommentRepository.save(comment);
+
+        return new CommentRegistrationResponse(comment.getCommentId());
     }
 
-    public void deleteComment(Long commentId, String loginId) {
+    public void deleteComment(Long postId, Long commentId, String loginId) {
         User user = findUserByLoginId(loginId);
         Comment comment = findCommentById(commentId);
+
+        if (!Objects.equals(comment.getPost().getPostId(), postId)) {
+            throw new UnauthorizedActionException(ErrorCode.UNAUTHORIZED_ACTION);
+        }
 
         if (!Objects.equals(comment.getUser().getUserId(), user.getUserId())) {
             throw new UnauthorizedActionException(ErrorCode.UNAUTHORIZED_ACTION);

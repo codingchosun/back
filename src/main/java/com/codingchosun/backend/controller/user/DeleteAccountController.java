@@ -1,5 +1,6 @@
 package com.codingchosun.backend.controller.user;
 
+import com.codingchosun.backend.dto.response.ApiResponse;
 import com.codingchosun.backend.service.user.DeleteAccountService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
@@ -18,17 +19,10 @@ public class DeleteAccountController {
 
     DeleteAccountService deleteAccountService;
 
-    /**
-     * 회원탈퇴 API (유저의 StateCode 만 변경)
-     *
-     * @param userDetails 로그인 유저
-     * @param request     HTTP 요청
-     * @return 401 UNAUTHORIZED, "인증 정보가 없습니다."
-     */
     @PostMapping("/delete")
-    public ResponseEntity<String> deleteAccount(@AuthenticationPrincipal UserDetails userDetails, HttpServletRequest request) {
+    public ResponseEntity<ApiResponse<String>> deleteAccount(@AuthenticationPrincipal UserDetails userDetails, HttpServletRequest request) {
         if (userDetails == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("인증 정보가 없습니다.");
+            return ApiResponse.error(HttpStatus.UNAUTHORIZED, "인증 정보가 없습니다.");
         }
 
         deleteAccountService.deleteAccount(userDetails.getUsername());
@@ -39,6 +33,6 @@ public class DeleteAccountController {
         }
         SecurityContextHolder.clearContext();
 
-        return ResponseEntity.status(HttpStatus.OK).body("회원 탈퇴가 성공적으로 처리되었습니다.");
+        return ApiResponse.ok("회원 탈퇴가 성공적으로 처리되었습니다.");
     }
 }

@@ -20,6 +20,6 @@ public class EvaluationExceptionHandler {
         log.warn("평가 예외: {}", errorCode.getMessage());
         ErrorResponse errorResponse = new ErrorResponse(errorCode.getCode(), errorCode.getMessage());
 
-        return new ResponseEntity<>(new ApiResponse<>(errorCode.getStatus(), false, errorResponse), errorCode.getStatus());
+        return ApiResponse.error(errorCode.getStatus(), errorResponse.getMessage());
     }
 }
