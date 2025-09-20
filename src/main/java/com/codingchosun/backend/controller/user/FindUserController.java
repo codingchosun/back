@@ -5,6 +5,7 @@ import com.codingchosun.backend.dto.request.FindPasswordRequest;
 import com.codingchosun.backend.dto.response.ApiResponse;
 import com.codingchosun.backend.dto.response.FindUserResponse;
 import com.codingchosun.backend.service.user.FindUserService;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -22,7 +23,7 @@ public class FindUserController {
     }
 
     @PostMapping("/login-id")
-    public ResponseEntity<ApiResponse<FindUserResponse>> findUserId(@RequestBody FindLoginIdRequest request) {
+    public ResponseEntity<ApiResponse<FindUserResponse>> findUserId(@Valid @RequestBody FindLoginIdRequest request) {
         FindUserResponse response = findUserService.findMyLoginId(request);
 
         return ApiResponse.ok(response);
@@ -30,7 +31,7 @@ public class FindUserController {
 
     //TODO: 비밀번호 찾기 -> 이메일로 비밀번호 초기화로 변경 필요
     @PostMapping("/password")
-    public ResponseEntity<ApiResponse<String>> FindPassword(@RequestBody FindPasswordRequest request) {
+    public ResponseEntity<ApiResponse<String>> FindPassword(@Valid @RequestBody FindPasswordRequest request) {
         return ApiResponse.ok("비밀번호 찾기 성공");
     }
 }
