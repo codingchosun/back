@@ -20,7 +20,7 @@ public class GlobalExceptionHandler {
         log.warn("비즈니스 예외: {}", errorCode.getMessage());
         ErrorResponse errorResponse = new ErrorResponse(errorCode.getCode(), errorCode.getMessage());
 
-        return new ResponseEntity<>(new ApiResponse<>(errorCode.getStatus(), false, errorResponse), errorCode.getStatus());
+        return ApiResponse.error(errorCode.getStatus(), errorResponse.getMessage());
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
@@ -29,7 +29,7 @@ public class GlobalExceptionHandler {
         log.warn("@Valid 예외: {}", errorCode.getMessage());
         ErrorResponse errorResponse = new ErrorResponse(errorCode.getCode(), errorCode.getMessage());
 
-        return new ResponseEntity<>(new ApiResponse<>(errorCode.getStatus(), false, errorResponse), errorCode.getStatus());
+        return ApiResponse.error(errorCode.getStatus(), errorResponse.getMessage());
     }
 
     @ExceptionHandler(Exception.class)
@@ -38,6 +38,6 @@ public class GlobalExceptionHandler {
         log.error("예측하지 못한 예외:", e);
         ErrorResponse errorResponse = new ErrorResponse(errorCode.getCode(), errorCode.getMessage());
 
-        return new ResponseEntity<>(new ApiResponse<>(errorCode.getStatus(), false, errorResponse), errorCode.getStatus());
+        return ApiResponse.error(errorCode.getStatus(), errorResponse.getMessage());
     }
 }

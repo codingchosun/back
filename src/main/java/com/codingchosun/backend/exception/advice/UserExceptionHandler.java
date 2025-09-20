@@ -7,8 +7,8 @@ import com.codingchosun.backend.exception.common.ErrorCode;
 import com.codingchosun.backend.exception.invalidrequest.DeletedUserException;
 import com.codingchosun.backend.exception.login.DuplicationLoginIdException;
 import com.codingchosun.backend.exception.login.LoginProcessFailedException;
-import com.codingchosun.backend.exception.login.NotMatchPasswordException;
 import com.codingchosun.backend.exception.login.NotAuthenticatedException;
+import com.codingchosun.backend.exception.login.NotMatchPasswordException;
 import com.codingchosun.backend.exception.notfoundfromdb.UserNotFoundFromDB;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -25,7 +25,7 @@ public class UserExceptionHandler {
         log.warn("회원 찾기 예외: {}", errorCode.getMessage());
         ErrorResponse errorResponse = new ErrorResponse(errorCode.getCode(), errorCode.getMessage());
 
-        return new ResponseEntity<>(new ApiResponse<>(errorCode.getStatus(), false, errorResponse), errorCode.getStatus());
+        return ApiResponse.error(errorCode.getStatus(), errorResponse.getMessage());
     }
 
     @ExceptionHandler(LoginProcessFailedException.class)
@@ -34,7 +34,7 @@ public class UserExceptionHandler {
         log.warn("로그인 예외: {}", errorCode.getMessage());
         ErrorResponse errorResponse = new ErrorResponse(errorCode.getCode(), errorCode.getMessage());
 
-        return new ResponseEntity<>(new ApiResponse<>(errorCode.getStatus(), false, errorResponse), errorCode.getStatus());
+        return ApiResponse.error(errorCode.getStatus(), errorResponse.getMessage());
     }
 
     @ExceptionHandler(NotAuthenticatedException.class)
@@ -43,7 +43,7 @@ public class UserExceptionHandler {
         log.warn("로그인 권한 예외: {}", errorCode.getMessage());
         ErrorResponse errorResponse = new ErrorResponse(errorCode.getCode(), errorCode.getMessage());
 
-        return new ResponseEntity<>(new ApiResponse<>(errorCode.getStatus(), false, errorResponse), errorCode.getStatus());
+        return ApiResponse.error(errorCode.getStatus(), errorResponse.getMessage());
     }
 
     @ExceptionHandler(DuplicationLoginIdException.class)
@@ -52,7 +52,7 @@ public class UserExceptionHandler {
         log.warn("중복된 아이디 예외: {}", errorCode.getMessage());
         ErrorResponse errorResponse = new ErrorResponse(errorCode.getCode(), errorCode.getMessage());
 
-        return new ResponseEntity<>(new ApiResponse<>(errorCode.getStatus(), false, errorResponse), errorCode.getStatus());
+        return ApiResponse.error(errorCode.getStatus(), errorResponse.getMessage());
     }
 
     @ExceptionHandler(NotMatchPasswordException.class)
@@ -61,7 +61,7 @@ public class UserExceptionHandler {
         log.warn("불일치 예외: {}", errorCode.getMessage());
         ErrorResponse errorResponse = new ErrorResponse(errorCode.getCode(), errorCode.getMessage());
 
-        return new ResponseEntity<>(new ApiResponse<>(errorCode.getStatus(), false, errorResponse), errorCode.getStatus());
+        return ApiResponse.error(errorCode.getStatus(), errorResponse.getMessage());
     }
 
     @ExceptionHandler(DeletedUserException.class)
@@ -70,6 +70,6 @@ public class UserExceptionHandler {
         log.warn("회원 탈퇴 예외: {}", errorCode.getMessage());
         ErrorResponse errorResponse = new ErrorResponse(errorCode.getCode(), errorCode.getMessage());
 
-        return new ResponseEntity<>(new ApiResponse<>(errorCode.getStatus(), false, errorResponse), errorCode.getStatus());
+        return ApiResponse.error(errorCode.getStatus(), errorResponse.getMessage());
     }
 }
