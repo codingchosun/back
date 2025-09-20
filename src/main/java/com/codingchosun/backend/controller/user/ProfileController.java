@@ -4,10 +4,11 @@ import com.codingchosun.backend.dto.request.ProfileResponse;
 import com.codingchosun.backend.dto.request.UserUpdateRequest;
 import com.codingchosun.backend.dto.response.ApiResponse;
 import com.codingchosun.backend.dto.response.UpdateProfileResponse;
+import com.codingchosun.backend.exception.common.ErrorCode;
+import com.codingchosun.backend.exception.login.NotAuthenticatedException;
 import com.codingchosun.backend.service.user.ProfileService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -30,7 +31,7 @@ public class ProfileController {
     @PostMapping("/me")
     public ResponseEntity<ApiResponse<UpdateProfileResponse>> updateProfile(@AuthenticationPrincipal UserDetails userDetails, @Valid @RequestBody UserUpdateRequest userUpdateRequest) {
         if (userDetails == null) {
-            return ApiResponse.error(HttpStatus.UNAUTHORIZED, "로그인이 필요합니다");
+            throw new NotAuthenticatedException(ErrorCode.AUTHENTICATION_REQUIRED);
         }
         UpdateProfileResponse profileResponse = profileService.updateProfile(userDetails.getUsername(), userUpdateRequest);
 
