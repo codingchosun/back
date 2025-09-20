@@ -1,6 +1,8 @@
 package com.codingchosun.backend.service.user;
 
+import com.codingchosun.backend.domain.User;
 import com.codingchosun.backend.dto.request.LoginRequest;
+import com.codingchosun.backend.dto.response.LoginCheckResponse;
 import com.codingchosun.backend.exception.common.ErrorCode;
 import com.codingchosun.backend.exception.login.LoginProcessFailedException;
 import com.codingchosun.backend.exception.login.NotAuthenticatedException;
@@ -53,13 +55,15 @@ public class LoginService {
     }
 
     @Transactional(readOnly = true)
-    public void loggedInCheck(UserDetails userDetails) {
+    public LoginCheckResponse loggedInCheck(UserDetails userDetails) {
         if (userDetails == null) {
             throw new NotAuthenticatedException(ErrorCode.AUTHENTICATION_REQUIRED);
         }
 
-        dataJpaUserRepository.findByLoginId(userDetails.getUsername()).orElseThrow(
+        User user = dataJpaUserRepository.findByLoginId(userDetails.getUsername()).orElseThrow(
                 () -> new UserNotFoundFromDB(ErrorCode.USER_NOT_FOUND)
         );
+
+        return new LoginCheckResponse(user.getUserId());
     }
 }
