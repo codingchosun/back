@@ -1,10 +1,10 @@
 package com.codingchosun.backend.service.user;
 
 import com.codingchosun.backend.domain.User;
-import com.codingchosun.backend.exception.login.DuplicationLoginIdException;
-import com.codingchosun.backend.exception.common.ErrorCode;
-import com.codingchosun.backend.repository.user.DataJpaUserRepository;
 import com.codingchosun.backend.dto.request.RegisterUserRequest;
+import com.codingchosun.backend.exception.common.ErrorCode;
+import com.codingchosun.backend.exception.login.DuplicationLoginIdException;
+import com.codingchosun.backend.repository.user.DataJpaUserRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -21,9 +21,9 @@ public class SignUpService {
     private final PasswordEncoder passwordEncoder;
 
     public void signUp(RegisterUserRequest registerUserRequest) {
-        if (dataJpaUserRepository.findByLoginId(registerUserRequest.getLoginId()).isPresent()) {
-            throw new DuplicationLoginIdException(ErrorCode.LOGIN_ID_DUPLICATION);
-        }
+        dataJpaUserRepository.findByLoginId(registerUserRequest.getLoginId()).orElseThrow(
+                () -> new DuplicationLoginIdException(ErrorCode.LOGIN_ID_DUPLICATION)
+        );
 
         User user = new User(registerUserRequest);
         log.info("회원 가입 성공: {}", user.getUserId());
