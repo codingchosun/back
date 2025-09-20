@@ -1,6 +1,7 @@
 package com.codingchosun.backend.controller.user;
 
 import com.codingchosun.backend.dto.response.ApiResponse;
+import com.codingchosun.backend.dto.response.LoginCheckResponse;
 import com.codingchosun.backend.service.user.LoginService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -16,9 +17,9 @@ public class LoginCheckController {
     private final LoginService loginService;
 
     @GetMapping("/me")
-    public ResponseEntity<ApiResponse<String>> getLoggedInUser(@AuthenticationPrincipal UserDetails userDetails) {
-        loginService.loggedInCheck(userDetails);
+    public ResponseEntity<ApiResponse<LoginCheckResponse>> getLoggedInUser(@AuthenticationPrincipal UserDetails userDetails) {
+        LoginCheckResponse loginCheckResponse = loginService.loggedInCheck(userDetails);
 
-        return ApiResponse.ok("로그인 확인에 성공히였습니다.");
+        return ApiResponse.ok(loginCheckResponse);
     }
 }
