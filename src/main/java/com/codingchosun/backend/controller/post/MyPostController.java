@@ -1,6 +1,5 @@
 package com.codingchosun.backend.controller.post;
 
-import com.codingchosun.backend.repository.user.DataJpaUserRepository;
 import com.codingchosun.backend.dto.response.ApiResponse;
 import com.codingchosun.backend.dto.response.MyPostResponse;
 import com.codingchosun.backend.service.post.PostQueryService;
@@ -22,23 +21,16 @@ public class MyPostController {
 
     private final PostQueryService postQueryService;
 
-    /**
-     * 자신이 참여한 게시물 목록 조회 API
-     *
-     * @param userDetails 로그인 정보
-     * @return 게시물 식별번호, 제목, 생성일, 주최자(닉네임)
-     */
     @GetMapping("/me/posts")
     public ResponseEntity<ApiResponse<List<MyPostResponse>>> getMyPosts(@AuthenticationPrincipal UserDetails userDetails) {
 
         if (userDetails == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ApiResponse<>(HttpStatus.UNAUTHORIZED, false, null));
+            return ApiResponse.error(HttpStatus.UNAUTHORIZED, "로그인이 필요합니다");
         }
         List<MyPostResponse> responseList = postQueryService.getMyPosts(userDetails.getUsername());
 
-        return ResponseEntity.ok(new ApiResponse<>(HttpStatus.OK, true, responseList));
+        return ApiResponse.ok(responseList);
     }
-
 
 
 }
