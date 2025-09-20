@@ -29,7 +29,7 @@ public class LoginController {
     public ResponseEntity<ApiResponse<String>> login(@RequestBody LoginRequest loginRequest) {
         loginService.login(loginRequest);
 
-        return ResponseEntity.ok(ApiResponse.ok("로그인 성공"));
+        return ApiResponse.ok("로그인에 성공하였습니다.");
     }
 
     @PostMapping("/logout")
@@ -40,7 +40,7 @@ public class LoginController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         loginService.logout(request, response, authentication);
 
-        return ResponseEntity.ok(ApiResponse.ok("로그아웃 성공"));
+        return ApiResponse.ok("로그아웃에 성공하였습니다.");
     }
 
 }

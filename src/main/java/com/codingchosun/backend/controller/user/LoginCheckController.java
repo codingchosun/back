@@ -3,7 +3,6 @@ package com.codingchosun.backend.controller.user;
 import com.codingchosun.backend.dto.response.ApiResponse;
 import com.codingchosun.backend.service.user.LoginService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -20,6 +19,6 @@ public class LoginCheckController {
     public ResponseEntity<ApiResponse<String>> getLoggedInUser(@AuthenticationPrincipal UserDetails userDetails) {
         loginService.loggedInCheck(userDetails);
 
-        return ResponseEntity.ok(new ApiResponse<>(HttpStatus.OK, true, "로그인 확인 성공"));
+        return ApiResponse.ok("로그인 확인에 성공히였습니다.");
     }
 }
