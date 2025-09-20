@@ -3,24 +3,24 @@ package com.codingchosun.backend.dto.response;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 
-//컨트롤러 API 응답
 @Getter
 @AllArgsConstructor
 public class ApiResponse<T> {
-    private HttpStatus httpStatus;
     private Boolean success;
+    private String message;
     private T body;
 
-    //200 OK
-    public static <T> ApiResponse<T> ok(T data) {
-        return new ApiResponse<>(HttpStatus.OK, true, data);
+    public static <T> ResponseEntity<ApiResponse<T>> ok(T data) {
+        return ResponseEntity.status(HttpStatus.OK).body(new ApiResponse<>(true, "OK", data));
     }
 
-    //201 CREATED
-    public static <T> ApiResponse<T> created(T data) {
-        return new ApiResponse<>(HttpStatus.CREATED, true, data);
+    public static <T> ResponseEntity<ApiResponse<T>> created(T data) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(new ApiResponse<>(true, "CREATED", data));
     }
 
-
+    public static <T> ResponseEntity<ApiResponse<T>> error(HttpStatus status, String message) {
+        return ResponseEntity.status(status).body(new ApiResponse<>(false, message, null));
+    }
 }
