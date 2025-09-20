@@ -29,7 +29,6 @@ public class FindUserController {
         return ApiResponse.ok(response);
     }
 
-    //TODO: 비밀번호 찾기 -> 이메일로 비밀번호 초기화로 변경 필요
     @PostMapping("/password")
     public ResponseEntity<ApiResponse<String>> FindPassword(@Valid @RequestBody FindPasswordRequest request) {
         return ApiResponse.ok("비밀번호 찾기 성공");
