@@ -7,6 +7,6 @@ import lombok.Getter;
 @AllArgsConstructor
 public class LoginCheckResponse {
 
-    private Long userId;
+    private String loginId;
 
 }

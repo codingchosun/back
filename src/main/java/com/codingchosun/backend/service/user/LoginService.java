@@ -64,6 +64,6 @@ public class LoginService {
                 () -> new UserNotFoundFromDB(ErrorCode.USER_NOT_FOUND)
         );
 
-        return new LoginCheckResponse(user.getUserId());
+        return new LoginCheckResponse(user.getLoginId());
     }
 }
