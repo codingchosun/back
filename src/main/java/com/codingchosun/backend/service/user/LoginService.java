@@ -1,9 +1,11 @@
 package com.codingchosun.backend.service.user;
 
+import com.codingchosun.backend.constants.StateCode;
 import com.codingchosun.backend.domain.User;
 import com.codingchosun.backend.dto.request.LoginRequest;
 import com.codingchosun.backend.dto.response.LoginCheckResponse;
 import com.codingchosun.backend.exception.common.ErrorCode;
+import com.codingchosun.backend.exception.login.LoginProcessFailedException;
 import com.codingchosun.backend.exception.login.NotAuthenticatedException;
 import com.codingchosun.backend.exception.notfoundfromdb.UserNotFoundFromDB;
 import com.codingchosun.backend.repository.user.DataJpaUserRepository;
@@ -43,9 +45,12 @@ public class LoginService {
             session.setAttribute(HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY, SecurityContextHolder.getContext());
 
             UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-            dataJpaUserRepository.findByLoginId(userDetails.getUsername()).orElseThrow(
+            User user = dataJpaUserRepository.findByLoginId(userDetails.getUsername()).orElseThrow(
                     () -> new UserNotFoundFromDB(ErrorCode.USER_NOT_FOUND)
             );
+            if (user.getStateCode().equals(StateCode.INACTIVE)) {
+                throw new LoginProcessFailedException(ErrorCode.LOGIN_FAILED);
+            }
 
             log.info("로그인 성공 및 세션 저장: {}", authentication.getName());
         } catch (AuthenticationException e) {
