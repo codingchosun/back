@@ -21,16 +21,16 @@ public class SignUpService {
     private final PasswordEncoder passwordEncoder;
 
     public void signUp(RegisterUserRequest registerUserRequest) {
-        dataJpaUserRepository.findByLoginId(registerUserRequest.getLoginId()).orElseThrow(
-                () -> new DuplicationLoginIdException(ErrorCode.LOGIN_ID_DUPLICATION)
+        dataJpaUserRepository.findByLoginId(registerUserRequest.getLoginId()).ifPresent(m -> {
+                    throw new DuplicationLoginIdException(ErrorCode.LOGIN_ID_DUPLICATION);
+                }
         );
+        String encodedPassword = passwordEncoder.encode(registerUserRequest.getPassword());
 
         User user = new User(registerUserRequest);
-        log.info("회원 가입 성공: {}", user.getUserId());
-
-        String encodedPassword = passwordEncoder.encode(registerUserRequest.getPassword());
         user.passwordEncode(encodedPassword);
 
         dataJpaUserRepository.save(user);
+        log.info("회원 가입 성공: userId={}, loginId={}", user.getUserId(), user.getLoginId());
     }
 }

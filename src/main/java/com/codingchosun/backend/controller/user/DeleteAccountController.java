@@ -10,16 +10,18 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
+@RequestMapping("/api")
 public class DeleteAccountController {
 
-    DeleteAccountService deleteAccountService;
+    private final DeleteAccountService deleteAccountService;
 
-    @PostMapping("/delete")
+    @DeleteMapping("/user/me")
     public ResponseEntity<ApiResponse<String>> deleteAccount(@AuthenticationPrincipal UserDetails userDetails, HttpServletRequest request) {
         if (userDetails == null) {
             return ApiResponse.error(HttpStatus.UNAUTHORIZED, "인증 정보가 없습니다.");

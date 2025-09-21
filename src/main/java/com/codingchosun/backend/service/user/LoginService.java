@@ -4,12 +4,12 @@ import com.codingchosun.backend.domain.User;
 import com.codingchosun.backend.dto.request.LoginRequest;
 import com.codingchosun.backend.dto.response.LoginCheckResponse;
 import com.codingchosun.backend.exception.common.ErrorCode;
-import com.codingchosun.backend.exception.login.LoginProcessFailedException;
 import com.codingchosun.backend.exception.login.NotAuthenticatedException;
 import com.codingchosun.backend.exception.notfoundfromdb.UserNotFoundFromDB;
 import com.codingchosun.backend.repository.user.DataJpaUserRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -18,7 +18,9 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
+import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -31,20 +33,24 @@ public class LoginService {
     private final AuthenticationManager authenticationManager;
     private final DataJpaUserRepository dataJpaUserRepository;
 
-    public void login(LoginRequest loginRequest) {
+    public void login(LoginRequest loginRequest, HttpServletRequest httpServletRequest) {
         try {
             UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(loginRequest.getLoginId(), loginRequest.getPassword());
             Authentication authentication = authenticationManager.authenticate(authToken);
             SecurityContextHolder.getContext().setAuthentication(authentication);
-            log.info("로그인 성공: {}", authentication.getName());
+
+            HttpSession session = httpServletRequest.getSession(true);
+            session.setAttribute(HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY, SecurityContextHolder.getContext());
 
             UserDetails userDetails = (UserDetails) authentication.getPrincipal();
             dataJpaUserRepository.findByLoginId(userDetails.getUsername()).orElseThrow(
                     () -> new UserNotFoundFromDB(ErrorCode.USER_NOT_FOUND)
             );
+
+            log.info("로그인 성공 및 세션 저장: {}", authentication.getName());
         } catch (AuthenticationException e) {
             log.error("로그인 실패: {}", e.getMessage());
-            throw new LoginProcessFailedException(ErrorCode.LOGIN_FAILED);
+            throw new UsernameNotFoundException("유저를 찾을 수 없습니다");
         }
     }
 

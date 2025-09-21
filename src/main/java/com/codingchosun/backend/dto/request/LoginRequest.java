@@ -7,10 +7,10 @@ import lombok.Getter;
 @Getter
 public class LoginRequest {
     @NotEmpty
-    @JsonProperty
+    @JsonProperty("loginId")
     private String loginId;
 
     @NotEmpty
-    @JsonProperty
+    @JsonProperty("password")
     private String password;
 }

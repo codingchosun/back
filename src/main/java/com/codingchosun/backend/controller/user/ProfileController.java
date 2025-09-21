@@ -16,19 +16,19 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/profile")
+@RequestMapping("/api")
 public class ProfileController {
 
     private final ProfileService profileService;
 
-    @GetMapping("/{loginId}")
+    @GetMapping("/profile/{loginId}")
     public ResponseEntity<ApiResponse<ProfileResponse>> getProfile(@PathVariable String loginId) {
         ProfileResponse response = profileService.getProfile(loginId);
 
         return ApiResponse.ok(response);
     }
 
-    @PostMapping("/me")
+    @PatchMapping("/profile/me")
     public ResponseEntity<ApiResponse<UpdateProfileResponse>> updateProfile(@AuthenticationPrincipal UserDetails userDetails, @Valid @RequestBody UserUpdateRequest userUpdateRequest) {
         if (userDetails == null) {
             throw new NotAuthenticatedException(ErrorCode.AUTHENTICATION_REQUIRED);
