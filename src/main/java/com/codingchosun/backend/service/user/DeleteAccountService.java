@@ -16,7 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class DeleteAccountService {
 
-    DataJpaUserRepository userRepository;
+    private final DataJpaUserRepository userRepository;
 
     public void deleteAccount(String loginId) {
         User user = userRepository.findByLoginId(loginId).orElseThrow(
