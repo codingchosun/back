@@ -28,7 +28,7 @@ public class ProfileController {
         return ApiResponse.ok(response);
     }
 
-    @PostMapping("/me")
+    @PatchMapping("/me")
     public ResponseEntity<ApiResponse<UpdateProfileResponse>> updateProfile(@AuthenticationPrincipal UserDetails userDetails, @Valid @RequestBody UserUpdateRequest userUpdateRequest) {
         if (userDetails == null) {
             throw new NotAuthenticatedException(ErrorCode.AUTHENTICATION_REQUIRED);
