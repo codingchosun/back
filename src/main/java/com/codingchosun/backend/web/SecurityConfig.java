@@ -56,23 +56,51 @@ public class SecurityConfig {
         http.authorizeHttpRequests(authorizeRequests -> {
             authorizeRequests
                     .requestMatchers(
-                            "/", "/error",
-                            "/register", "/login", "/logout",
-                            "/users/login-id", "/users/password",
+                            "/", "/error", "/favicon.ico",
+                            "/api/register", "/api/login",
+                            "/api/users/login-id", "/api/users/password",
                             "/swagger-ui/**", "/v3/api-docs/**"
                     ).permitAll()
+                    .requestMatchers("/api/posts", "/api/posts/search", "/api/posts/{postId}",
+                            "/api/profile/{loginId}").permitAll()
                     .requestMatchers("/admin/**").hasRole("ADMIN")
-                    .requestMatchers("/mypage", "/useredit", "/myposts").hasRole("USER")
-                    .requestMatchers(HttpMethod.GET, "/posts/**", "/profile/**").permitAll()
-                    .requestMatchers(HttpMethod.POST, "/posts/**", "/comments/**").hasRole("USER")
-                    .requestMatchers(HttpMethod.PUT, "/profile/**").hasRole("USER")
+                    .requestMatchers("/api/me/**", "/api/profile/me", "/api/user/me").hasRole("USER")
+
+                    .requestMatchers(HttpMethod.GET,
+                            "/api/posts", "/api/posts/search", "/api/posts/{postId}",
+                            "/api/profile/{loginId}",
+                            "/api/posts/{postId}/images",
+                            "/api/posts/{postId}/comments").permitAll()
+                    .requestMatchers(HttpMethod.GET,
+                            "/api/posts/{postId}/participants",
+                            "/api/posts/{postId}/evaluations/targets").hasRole("USER")
+
+                    .requestMatchers(HttpMethod.POST,
+                            "/api/posts",
+                            "/api/posts/{postId}/participants",
+                            "/api/posts/{postId}/images",
+                            "/api/posts/{postId}/evaluations",
+                            "/api/posts/{postId}/comments").hasRole("USER")
+
+                    .requestMatchers(HttpMethod.PATCH,
+                            "/api/posts/{postId}").hasRole("USER")
+
+                    .requestMatchers(HttpMethod.DELETE,
+                            "/api/posts/{postId}",
+                            "/api/posts/{postId}/exit",
+                            "/api/{postId}/participants/{banishUserId}",
+                            "/api/posts/{postId}/images/{imageId}",
+                            "/api/posts/{postId}/comments/{commentId}").hasRole("USER")
                     .anyRequest().authenticated();
 
 //            authorizeRequests.requestMatchers("/oauth2/**").permitAll();
 //            authorizeRequests.requestMatchers("/ws-zelkova/**").permitAll();
         });
 
-        http.logout(logoutConfig -> logoutConfig.logoutSuccessHandler(logoutSuccessHandler()))
+        http.logout(logoutConfig -> logoutConfig
+                        .logoutUrl("/api/logout")
+                        .logoutSuccessHandler(logoutSuccessHandler())
+                        .invalidateHttpSession(true))
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
                 );
