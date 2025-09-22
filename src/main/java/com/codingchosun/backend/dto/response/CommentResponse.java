@@ -16,7 +16,7 @@ public class CommentResponse {
     private String content;
     private LocalDateTime createdAt;
     private String nickname;
-    private Long loginId;
+    private String loginId;
 
     public static CommentResponse from(Comment comment) {
         return new CommentResponse(
@@ -24,7 +24,7 @@ public class CommentResponse {
                 comment.getContent(),
                 comment.getCreatedAt(),
                 comment.getUser().getNickname(),
-                comment.getUser().getUserId()
+                comment.getUser().getLoginId()
         );
     }
 }
