@@ -32,5 +32,13 @@ public class MyPostController {
         return ApiResponse.ok(responseList);
     }
 
+    @GetMapping("/me/posts/participates")
+    public ResponseEntity<ApiResponse<List<MyPostResponse>>> getMyParticipatedPosts(@AuthenticationPrincipal UserDetails userDetails) {
+        if (userDetails == null) {
+            return ApiResponse.error(HttpStatus.UNAUTHORIZED, "로그인이 필요합니다");
+        }
+        List<MyPostResponse> responseList = postQueryService.getMyParticipatedPosts(userDetails.getUsername());
 
+        return ApiResponse.ok(responseList);
+    }
 }

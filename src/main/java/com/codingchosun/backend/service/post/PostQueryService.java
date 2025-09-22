@@ -2,17 +2,21 @@ package com.codingchosun.backend.service.post;
 
 import com.codingchosun.backend.domain.Post;
 import com.codingchosun.backend.domain.PostUser;
+import com.codingchosun.backend.domain.User;
 import com.codingchosun.backend.dto.response.MyPostResponse;
 import com.codingchosun.backend.dto.response.UserDTO;
 import com.codingchosun.backend.exception.common.ErrorCode;
 import com.codingchosun.backend.exception.notfoundfromdb.PostNotFoundFromDB;
+import com.codingchosun.backend.exception.notfoundfromdb.UserNotFoundFromDB;
 import com.codingchosun.backend.repository.post.DataJpaPostRepository;
+import com.codingchosun.backend.repository.user.DataJpaUserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -21,6 +25,7 @@ import java.util.List;
 public class PostQueryService {
 
     private final DataJpaPostRepository postRepository;
+    private final DataJpaUserRepository userRepository;
 
     public List<MyPostResponse> getMyPosts(String loginId) {
         List<Post> participatedPosts = postRepository.findParticipatedPosts(loginId);
@@ -43,9 +48,25 @@ public class PostQueryService {
         return post.getPostUsers().stream().map(PostUser::getUser).map(UserDTO::from).toList();
     }
 
+    @Transactional(readOnly = true)
+    public List<MyPostResponse> getMyParticipatedPosts(String loginId) {
+        User user = findUserByLoginId(loginId);
+
+        return user.getPostUsers().stream()
+                .map(PostUser::getPost)
+                .map(MyPostResponse::from)
+                .collect(Collectors.toList());
+    }
+
     private Post findPostById(Long postId) {
         return postRepository.findById(postId).orElseThrow(
                 () -> new PostNotFoundFromDB(ErrorCode.POST_NOT_FOUND)
+        );
+    }
+
+    private User findUserByLoginId(String loginId) {
+        return userRepository.findByLoginId(loginId).orElseThrow(
+                () -> new UserNotFoundFromDB(ErrorCode.USER_NOT_FOUND)
         );
     }
 }

@@ -56,7 +56,6 @@ public class PostService {
 
         PostUser postUser = new PostUser(user, post);
         post.getPostUsers().add(postUser);
-        postUserRepository.save(postUser);
 
         List<Hashtag> hashtags = findOrCreateHashtags(postRegistrationRequest.getHashtags());
         post.updateHashtags(hashtags);
