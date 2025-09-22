@@ -68,7 +68,7 @@ public class SecurityConfig {
 
                     .requestMatchers(HttpMethod.GET,
                             "/api/posts", "/api/posts/search", "/api/posts/{postId}",
-                            "/api/profile/{loginId}",
+                            "/api/profile/{loginId}/**",
                             "/api/posts/{postId}/images",
                             "/api/posts/{postId}/comments").permitAll()
                     .requestMatchers(HttpMethod.GET,
