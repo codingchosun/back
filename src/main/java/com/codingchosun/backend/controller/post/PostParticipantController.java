@@ -41,9 +41,9 @@ public class PostParticipantController {
         return ApiResponse.ok("모임 탈퇴에 성공하였습니다.");
     }
 
-    @DeleteMapping("/{postId}/participants/{banishUserId}")
-    public ResponseEntity<ApiResponse<String>> banishPost(@PathVariable Long postId, @PathVariable Long banishUserId, @AuthenticationPrincipal UserDetails userDetails) {
-        postParticipantService.banishPost(postId, banishUserId, userDetails.getUsername());
+    @DeleteMapping("/{postId}/participants/{banishUserLoginId}")
+    public ResponseEntity<ApiResponse<String>> banishPost(@PathVariable Long postId, @PathVariable String banishUserLoginId, @AuthenticationPrincipal UserDetails userDetails) {
+        postParticipantService.banishPost(postId, banishUserLoginId, userDetails.getUsername());
 
         return ApiResponse.ok("모임에서 유저 추방을 성공하였습니다.");
     }
