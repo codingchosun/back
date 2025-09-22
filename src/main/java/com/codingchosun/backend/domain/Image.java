@@ -1,5 +1,6 @@
 package com.codingchosun.backend.domain;
 
+import com.codingchosun.backend.component.file.UploadFile;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -26,9 +27,9 @@ public class Image {
     @JoinColumn
     private Post post;
 
-    public Image(String url, String name, Post post) {
-        this.url = url;
-        this.name = name;
+    public Image(String name, Post post, UploadFile uploadFile) {
         this.post = post;
+        this.url = "/images/" + uploadFile.getStoreFileName();
+        this.name = name;
     }
 }
