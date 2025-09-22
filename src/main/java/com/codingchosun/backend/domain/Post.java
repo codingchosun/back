@@ -98,7 +98,10 @@ public class Post {
     public void updateHashtags(List<Hashtag> hashtags) {
         this.postHashes.clear();
         for (Hashtag hashtag : hashtags) {
-            this.postHashes.add(new PostHash(this, hashtag));
+            PostHash postHash = new PostHash(this, hashtag);
+
+            this.postHashes.add(postHash);
+            hashtag.getPostHashes().add(postHash);
         }
     }
 

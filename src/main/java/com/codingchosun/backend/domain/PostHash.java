@@ -26,5 +26,7 @@ public class PostHash {
     public PostHash(Post post, Hashtag hashtag) {
         this.post = post;
         this.hashtag = hashtag;
+        post.getPostHashes().add(this);
+        hashtag.getPostHashes().add(this);
     }
 }

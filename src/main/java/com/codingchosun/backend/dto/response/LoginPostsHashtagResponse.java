@@ -13,6 +13,6 @@ import java.util.List;
 public class LoginPostsHashtagResponse {
 
     Page<LoginPostsResponse> posts;
-    List<HashtagDto> recommendHashtags;
+    List<HashtagDto> hashtags;
 
 }

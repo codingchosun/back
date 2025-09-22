@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -23,11 +24,11 @@ public class Hashtag {
     @Column(unique = true)
     private String hashtagName;
 
-    @OneToMany(mappedBy = "hashtag")
-    private List<PostHash> hashtags;
+    @OneToMany(mappedBy = "hashtag", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<PostHash> postHashes = new ArrayList<>();
 
-    @OneToMany(mappedBy = "hashtag")
-    private List<UserHash> userHashes;
+    @OneToMany(mappedBy = "hashtag", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<UserHash> userHashes = new ArrayList<>();
 
     public Hashtag(String hashtagName) {
         this.hashtagName = hashtagName;
