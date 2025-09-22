@@ -1,6 +1,5 @@
 package com.codingchosun.backend.dto.response;
 
-
 import com.codingchosun.backend.constants.StateCode;
 import com.codingchosun.backend.domain.Post;
 import lombok.Getter;
@@ -22,10 +21,13 @@ public class PostResponse {
     private StateCode stateCode;
     private Long viewCount;
 
-    private String hostId;
-    private String hostNickname;
+    private String loginId;
+    private String nickname;
 
     private List<String> hashtags;
+    private List<ImageResponse> images;
+    private List<CommentResponse> comments;
+    private List<UserDTO> participants;
 
     public PostResponse(Post post) {
         this.postId = post.getPostId();
@@ -34,10 +36,21 @@ public class PostResponse {
         this.createdAt = post.getCreatedAt();
         this.startTime = post.getStartTime();
         this.viewCount = post.getViewCount();
-        this.hostId = String.valueOf(post.getUser().getUserId());
-        this.hostNickname = post.getUser().getNickname();
+        this.loginId = post.getUser().getLoginId();
+        this.nickname = post.getUser().getNickname();
         this.hashtags = post.getPostHashes().stream()
                 .map(postHash -> postHash.getHashtag().getHashtagName())
+                .collect(Collectors.toList());
+        this.images = post.getImages().stream()
+                .map(ImageResponse::from)
+                .collect(Collectors.toList());
+
+        this.comments = post.getComments().stream()
+                .map(CommentResponse::from)
+                .collect(Collectors.toList());
+
+        this.participants = post.getPostUsers().stream()
+                .map(postUser -> UserDTO.from(postUser.getUser()))
                 .collect(Collectors.toList());
     }
 
@@ -50,10 +63,19 @@ public class PostResponse {
         response.startTime = post.getStartTime();
         response.stateCode = post.getStateCode();
         response.viewCount = post.getViewCount();
-        response.hostId = String.valueOf(post.getUser().getUserId());
-        response.hostNickname = post.getUser().getNickname();
+        response.loginId = post.getUser().getLoginId();
+        response.nickname = post.getUser().getNickname();
         response.hashtags = post.getPostHashes().stream()
                 .map(postHash -> postHash.getHashtag().getHashtagName())
+                .collect(Collectors.toList());
+        response.images = post.getImages().stream()
+                .map(ImageResponse::from)
+                .collect(Collectors.toList());
+        response.comments = post.getComments().stream()
+                .map(CommentResponse::from)
+                .collect(Collectors.toList());
+        response.participants = post.getPostUsers().stream()
+                .map(postUser -> UserDTO.from(postUser.getUser()))
                 .collect(Collectors.toList());
         return response;
     }

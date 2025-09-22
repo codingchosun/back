@@ -43,13 +43,14 @@ public class PostController {
     }
 
     @PatchMapping("/{postId}")
-    public ResponseEntity<ApiResponse<PostUpdateResponse>> updatePost(@RequestBody PostUpdateRequest postUpdateRequest,
+    public ResponseEntity<ApiResponse<PostUpdateResponse>> updatePost(@PathVariable Long postId,
+                                                                      @RequestBody PostUpdateRequest postUpdateRequest,
                                                                       @AuthenticationPrincipal UserDetails userDetails) {
 
         if (userDetails == null) {
             throw new NotAuthenticatedException(ErrorCode.AUTHENTICATION_REQUIRED);
         }
-        PostUpdateResponse postUpdateResponse = postService.updatePost(Long.valueOf(postUpdateRequest.getPostId()), userDetails.getUsername(), postUpdateRequest);
+        PostUpdateResponse postUpdateResponse = postService.updatePost(postId, userDetails.getUsername(), postUpdateRequest);
 
         return ApiResponse.ok(postUpdateResponse);
     }

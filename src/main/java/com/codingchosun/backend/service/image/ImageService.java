@@ -40,7 +40,7 @@ public class ImageService {
             List<UploadFile> uploadFiles = fileStore.storeImages(multipartFiles);
 
             for (UploadFile file : uploadFiles) {
-                Image image = new Image(file.getStoreFileName(), file.getUploadFileName(), post);
+                Image image = new Image(file.getStoreFileName(), post, file);
                 post.addImage(image);
             }
         } catch (IOException e) {

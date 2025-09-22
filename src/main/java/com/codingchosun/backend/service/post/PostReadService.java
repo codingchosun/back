@@ -1,5 +1,6 @@
 package com.codingchosun.backend.service.post;
 
+import com.codingchosun.backend.constants.StateCode;
 import com.codingchosun.backend.domain.Image;
 import com.codingchosun.backend.domain.Post;
 import com.codingchosun.backend.dto.response.*;
@@ -36,6 +37,10 @@ public class PostReadService {
     //게시물 상세정보 조회
     public PostResponse getPostResponse(Long postId) {
         Post post = findPostById(postId);
+
+        if (post.getStateCode().equals(StateCode.INACTIVE)) {
+            throw new PostNotFoundFromDB(ErrorCode.POST_NOT_FOUND);
+        }
 
         return PostResponse.from(post);
     }

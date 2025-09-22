@@ -58,6 +58,6 @@ public class FileStore {
 
     //파일포함한 경로
     private String getFullPath(String filename) {
-        return directoryPath + filename;
+        return directoryPath + File.separator + filename;
     }
 }

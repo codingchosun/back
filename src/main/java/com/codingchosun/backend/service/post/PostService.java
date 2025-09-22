@@ -24,6 +24,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -42,18 +43,19 @@ public class PostService {
     public PostRegistrationResponse registerPost(PostRegistrationRequest postRegistrationRequest, String loginId) {
         User user = findUserByLoginId(loginId);
 
-        validateStartTime(postRegistrationRequest.getStartTime());
+        LocalDateTime startTime = LocalDateTime.ofInstant(postRegistrationRequest.getStartTime(), ZoneId.of("Asia/Seoul"));
+
+        validateStartTime(startTime);
 
         Post post = new Post(
                 postRegistrationRequest.getTitle(),
                 postRegistrationRequest.getContent(),
-                postRegistrationRequest.getStartTime(),
+                startTime,
                 user
         );
 
         PostUser postUser = new PostUser(user, post);
         post.getPostUsers().add(postUser);
-        postUserRepository.save(postUser);
 
         List<Hashtag> hashtags = findOrCreateHashtags(postRegistrationRequest.getHashtags());
         post.updateHashtags(hashtags);
@@ -80,7 +82,7 @@ public class PostService {
 
     //게시물 삭제
     public String deletePost(PostRemoveRequest postRemoveRequest, String loginId) {
-        Post post = findPostById(Long.valueOf(postRemoveRequest.getPostId()));
+        Post post = findPostById(postRemoveRequest.getPostId());
         User user = findUserByLoginId(loginId);
 
         post.validateOwner(user);

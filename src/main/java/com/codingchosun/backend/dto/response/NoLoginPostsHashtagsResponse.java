@@ -11,6 +11,6 @@ import java.util.List;
 public class NoLoginPostsHashtagsResponse {
 
     Page<NoLoginPostsResponse> posts;
-    List<HashtagDto> randomHashtags;
+    List<HashtagDto> hashtags;
 
 }

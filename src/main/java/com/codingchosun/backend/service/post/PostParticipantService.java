@@ -3,8 +3,8 @@ package com.codingchosun.backend.service.post;
 import com.codingchosun.backend.domain.Post;
 import com.codingchosun.backend.domain.PostUser;
 import com.codingchosun.backend.domain.User;
-import com.codingchosun.backend.dto.response.UserDTO;
 import com.codingchosun.backend.exception.common.ErrorCode;
+import com.codingchosun.backend.exception.invalidrequest.UnauthorizedActionException;
 import com.codingchosun.backend.exception.invalidrequest.UserAlreadyParticipantException;
 import com.codingchosun.backend.exception.invalidrequest.UserNotParticipantException;
 import com.codingchosun.backend.exception.notfoundfromdb.PostNotFoundFromDB;
@@ -16,8 +16,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 @Slf4j
 @Service
@@ -38,7 +36,10 @@ public class PostParticipantService {
             throw new UserAlreadyParticipantException(ErrorCode.USER_ALREADY_PARTICIPANT);
         }
 
-        new PostUser(user, post);
+        PostUser postUser = new PostUser(user, post);
+        post.getPostUsers().add(postUser);
+        user.getPostUsers().add(postUser);
+        postUserRepository.save(postUser);
     }
 
     //게시물(모임) 탈퇴
@@ -54,10 +55,14 @@ public class PostParticipantService {
     }
 
     //게시물(모임) 작성자가 참가자 추방
-    public void banishPost(Long postId, Long banishUserId, String hostLoginId) {
+    public void banishPost(Long postId, String banishUserLoginId, String hostLoginId) {
         User host = findUserByLoginId(hostLoginId);
-        User banishUser = findUserById(banishUserId);
+        User banishUser = findUserByLoginId(banishUserLoginId);
+
         Post post = findPostById(postId);
+        if (!post.getUser().getLoginId().equals(hostLoginId)) {
+            throw new UnauthorizedActionException(ErrorCode.UNAUTHORIZED_ACTION);
+        }
 
         post.validateOwner(host);
 
@@ -72,12 +77,6 @@ public class PostParticipantService {
 
     private User findUserByLoginId(String loginId) {
         return userRepository.findByLoginId(loginId).orElseThrow(
-                () -> new UserNotFoundFromDB(ErrorCode.USER_NOT_FOUND)
-        );
-    }
-
-    private User findUserById(Long userId) {
-        return userRepository.findByUserId(userId).orElseThrow(
                 () -> new UserNotFoundFromDB(ErrorCode.USER_NOT_FOUND)
         );
     }
