@@ -15,7 +15,7 @@ public class CommentResponse {
     private Long commentId;
     private String content;
     private LocalDateTime createdAt;
-    private String hostNickname;
+    private String nickname;
     private Long writerUserId;
 
     public static CommentResponse from(Comment comment) {
