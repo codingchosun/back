@@ -68,7 +68,6 @@ public class ProfileService {
 
     public UpdateProfileResponse updateProfile(String loginId, UserUpdateRequest userUpdateRequest) {
         User user = findUserByLoginId(loginId);
-        log.info("업데이트 유저 아이디: {}", user.getLoginId());
 
         if (userUpdateRequest.getCurrentPassword() != null && userUpdateRequest.getNewPassword() != null) {
             user.updatePassword(userUpdateRequest.getCurrentPassword(), userUpdateRequest.getNewPassword(), passwordEncoder);
@@ -82,8 +81,6 @@ public class ProfileService {
         if (userUpdateRequest.getHashtags() != null) {
             updateUserHashtag(user, userUpdateRequest.getHashtags());
         }
-
-        log.info("수정 후 유저 정보: {}", user);
 
         return UpdateProfileResponse.from(user);
     }
