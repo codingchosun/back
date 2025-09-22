@@ -26,8 +26,8 @@ public class UpdateProfileResponse {
     @JsonProperty("introduction")
     private String introduction;
 
-    @JsonProperty("hashList")
-    private List<String> hashList;
+    @JsonProperty("hashtags")
+    private List<String> hashtags;
 
     public static UpdateProfileResponse from(User user) {
         List<String> hashtags = user.getUserHashes().stream()
