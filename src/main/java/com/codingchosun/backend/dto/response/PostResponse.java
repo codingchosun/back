@@ -36,7 +36,7 @@ public class PostResponse {
         this.createdAt = post.getCreatedAt();
         this.startTime = post.getStartTime();
         this.viewCount = post.getViewCount();
-        this.loginId = String.valueOf(post.getUser().getUserId());
+        this.loginId = post.getUser().getLoginId();
         this.nickname = post.getUser().getNickname();
         this.hashtags = post.getPostHashes().stream()
                 .map(postHash -> postHash.getHashtag().getHashtagName())
@@ -63,7 +63,7 @@ public class PostResponse {
         response.startTime = post.getStartTime();
         response.stateCode = post.getStateCode();
         response.viewCount = post.getViewCount();
-        response.loginId = String.valueOf(post.getUser().getUserId());
+        response.loginId = post.getUser().getLoginId();
         response.nickname = post.getUser().getNickname();
         response.hashtags = post.getPostHashes().stream()
                 .map(postHash -> postHash.getHashtag().getHashtagName())
