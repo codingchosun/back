@@ -14,19 +14,11 @@ public class ImageResponse {
     private String uploadFileName;
     private String url;
 
-    private static String urlParsing(String url) {
-        if (url != null) {
-            String[] urlSplit = url.split("/");
-            url = urlSplit[urlSplit.length - 1];
-        }
-        return url;
-    }
-
     public static ImageResponse from(Image image) {
         return new ImageResponse(
                 image.getImageId(),
                 image.getName(),
-                urlParsing(image.getUrl())
+                image.getUrl()
         );
     }
 
