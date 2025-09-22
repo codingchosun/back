@@ -3,7 +3,6 @@ package com.codingchosun.backend.service.post;
 import com.codingchosun.backend.domain.Post;
 import com.codingchosun.backend.domain.PostUser;
 import com.codingchosun.backend.domain.User;
-import com.codingchosun.backend.dto.response.UserDTO;
 import com.codingchosun.backend.exception.common.ErrorCode;
 import com.codingchosun.backend.exception.invalidrequest.UserAlreadyParticipantException;
 import com.codingchosun.backend.exception.invalidrequest.UserNotParticipantException;
@@ -16,8 +15,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 @Slf4j
 @Service
@@ -38,7 +35,10 @@ public class PostParticipantService {
             throw new UserAlreadyParticipantException(ErrorCode.USER_ALREADY_PARTICIPANT);
         }
 
-        new PostUser(user, post);
+        PostUser postUser = new PostUser(user, post);
+        post.getPostUsers().add(postUser);
+        user.getPostUsers().add(postUser);
+        postUserRepository.save(postUser);
     }
 
     //게시물(모임) 탈퇴
