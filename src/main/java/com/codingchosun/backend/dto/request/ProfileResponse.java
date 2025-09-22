@@ -21,7 +21,7 @@ public class ProfileResponse {
 
     private int score;
 
-    private List<String> hashNames;
+    private List<String> hashtags;
 
     private List<String> templateNames;
 
