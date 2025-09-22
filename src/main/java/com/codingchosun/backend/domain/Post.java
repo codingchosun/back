@@ -49,13 +49,13 @@ public class Post {
     private User user;
 
     @OneToMany(mappedBy = "post")
-    private List<PostHash> postHashes;
+    private List<PostHash> postHashes = new ArrayList<>();
 
     @OneToMany(mappedBy = "post")
-    private List<PostUser> postUsers;
+    private List<PostUser> postUsers = new ArrayList<>();
 
     @OneToMany(mappedBy = "post")
-    private List<Comment> comments;
+    private List<Comment> comments = new ArrayList<>();
 
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
     private final List<Image> images = new ArrayList<>();
