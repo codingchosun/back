@@ -70,7 +70,8 @@ public class SecurityConfig {
                             "/api/posts", "/api/posts/search", "/api/posts/{postId}",
                             "/api/profile/{loginId}/**",
                             "/api/posts/{postId}/images",
-                            "/api/posts/{postId}/comments").permitAll()
+                            "/api/posts/{postId}/comments",
+                            "/images/**").permitAll()
                     .requestMatchers(HttpMethod.GET,
                             "/api/posts/{postId}/participants",
                             "/api/posts/{postId}/evaluations/targets").hasRole("USER")
