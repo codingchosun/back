@@ -11,6 +11,8 @@ import java.util.List;
 @AllArgsConstructor
 public class ProfileResponse {
 
+    private String loginId;
+
     private String nickname;
 
     private String introduction;

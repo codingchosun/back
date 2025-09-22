@@ -8,9 +8,8 @@ import com.codingchosun.backend.domain.UserHash;
 import com.codingchosun.backend.dto.request.ProfileResponse;
 import com.codingchosun.backend.dto.request.UserUpdateRequest;
 import com.codingchosun.backend.dto.response.UpdateProfileResponse;
-import com.codingchosun.backend.exception.login.NotAuthenticatedException;
 import com.codingchosun.backend.exception.common.ErrorCode;
-import com.codingchosun.backend.exception.notfoundfromdb.HashtagNotFoundFromDB;
+import com.codingchosun.backend.exception.login.NotAuthenticatedException;
 import com.codingchosun.backend.repository.hashtag.DataJpaHashtagRepository;
 import com.codingchosun.backend.repository.hashtag.DataJpaUserHashRepository;
 import com.codingchosun.backend.repository.template.DataJpaTemplateRepository;
@@ -57,6 +56,7 @@ public class ProfileService {
                 .toList();
 
         return new ProfileResponse(
+                user.getLoginId(),
                 user.getNickname(),
                 user.getIntroduction(),
                 user.getEmail(),
@@ -68,16 +68,10 @@ public class ProfileService {
 
     public UpdateProfileResponse updateProfile(String loginId, UserUpdateRequest userUpdateRequest) {
         User user = findUserByLoginId(loginId);
-        log.info("수정 전 유저 정보: {}", user);
+        log.info("업데이트 유저 아이디: {}", user.getLoginId());
 
         if (userUpdateRequest.getCurrentPassword() != null && userUpdateRequest.getNewPassword() != null) {
             user.updatePassword(userUpdateRequest.getCurrentPassword(), userUpdateRequest.getNewPassword(), passwordEncoder);
-        }
-        if (userUpdateRequest.getEmail() != null) {
-            user.setEmail(userUpdateRequest.getEmail());
-        }
-        if (userUpdateRequest.getGenderCode() != null) {
-            user.setGenderCode(userUpdateRequest.getGenderCode());
         }
         if (userUpdateRequest.getNickname() != null) {
             user.setNickname(userUpdateRequest.getNickname());
@@ -85,21 +79,26 @@ public class ProfileService {
         if (userUpdateRequest.getIntroduction() != null) {
             user.setIntroduction(userUpdateRequest.getIntroduction());
         }
-        updateUserHashtag(user, userUpdateRequest.getHashList());
+        if (userUpdateRequest.getHashtags() != null) {
+            updateUserHashtag(user, userUpdateRequest.getHashtags());
+        }
+
         log.info("수정 후 유저 정보: {}", user);
 
         return UpdateProfileResponse.from(user);
     }
 
     private void updateUserHashtag(User user, List<String> newHashtags) {
-        List<UserHash> userHashes = userHashRepository.findHashtagsByUser_UserId(user.getUserId());
-        userHashRepository.deleteAll(userHashes);
+        userHashRepository.deleteAll(user.getUserHashes());
+        user.getUserHashes().clear();
 
         for (String hashtagName : newHashtags) {
-            Hashtag hashtag = hashtagRepository.findByHashtagName(hashtagName).orElseThrow(
-                    () -> new HashtagNotFoundFromDB(ErrorCode.HASHTAG_NOT_FOUND)
+            Hashtag hashtag = hashtagRepository.findByHashtagName(hashtagName).orElseGet(
+                    () -> hashtagRepository.save(new Hashtag(hashtagName))
             );
-            userHashRepository.save(new UserHash(user, hashtag));
+            UserHash userHash = new UserHash(user, hashtag);
+            user.getUserHashes().add(userHash);
+            userHashRepository.save(userHash);
         }
     }
 
