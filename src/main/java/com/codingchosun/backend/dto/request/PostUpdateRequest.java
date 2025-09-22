@@ -14,9 +14,6 @@ import java.util.List;
 public class PostUpdateRequest {
 
     @NotEmpty
-    private String postId;
-
-    @NotEmpty
     private String title;
 
     @NotEmpty
