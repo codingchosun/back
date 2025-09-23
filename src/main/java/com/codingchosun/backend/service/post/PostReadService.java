@@ -41,10 +41,6 @@ public class PostReadService {
     public PostResponse getPostResponse(Long postId) {
         Post post = findPostById(postId);
 
-        if (post.getStateCode().equals(StateCode.INACTIVE)) {
-            throw new PostNotFoundFromDB(ErrorCode.POST_NOT_FOUND);
-        }
-
         return PostResponse.from(post);
     }
 
