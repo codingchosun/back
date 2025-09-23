@@ -1,0 +1,57 @@
+### 템플릿1 생성
+POST /api/templates
+Host: localhost:8090
+Content-Type: application/json
+
+{
+  "content": "약속을 잘 지켜요",
+  "score": 1
+}
+
+### 템플릿2 생성
+POST /api/templates
+Host: localhost:8090
+Content-Type: application/json
+
+{
+  "content": "매너가 좋아요",
+  "score": 1
+}
+
+### 템플릿3 생성
+POST /api/templates
+Host: localhost:8090
+Content-Type: application/json
+
+{
+  "content": "괜찮았어요",
+  "score": 0
+}
+
+### 템플릿4 생성
+POST /api/templates
+Host: localhost:8090
+Content-Type: application/json
+
+{
+  "content": "약속을 잘 안지켜요",
+  "score": -1
+}
+
+### 템플릿5 생성
+POST /api/templates
+Host: localhost:8090
+Content-Type: application/json
+
+{
+  "content": "금쪽이에요",
+  "score": -1
+}
+
+### 템플릿 목록 조회
+GET /api/templates
+Host: localhost:8090
+
+### 템플릿 단건 조회
+GET /api/templates/1
+Host: localhost:8090
