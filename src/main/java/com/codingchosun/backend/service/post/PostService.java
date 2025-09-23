@@ -1,10 +1,7 @@
 package com.codingchosun.backend.service.post;
 
 import com.codingchosun.backend.constants.DeleteConstants;
-import com.codingchosun.backend.domain.Hashtag;
-import com.codingchosun.backend.domain.Post;
-import com.codingchosun.backend.domain.PostUser;
-import com.codingchosun.backend.domain.User;
+import com.codingchosun.backend.domain.*;
 import com.codingchosun.backend.dto.request.PostRegistrationRequest;
 import com.codingchosun.backend.dto.request.PostRemoveRequest;
 import com.codingchosun.backend.dto.request.PostUpdateRequest;
@@ -15,6 +12,7 @@ import com.codingchosun.backend.exception.invalidtime.InvalidTimeSetupException;
 import com.codingchosun.backend.exception.notfoundfromdb.PostNotFoundFromDB;
 import com.codingchosun.backend.exception.notfoundfromdb.UserNotFoundFromDB;
 import com.codingchosun.backend.repository.hashtag.DataJpaHashtagRepository;
+import com.codingchosun.backend.repository.hashtag.DataJpaPostHashRepository;
 import com.codingchosun.backend.repository.post.DataJpaPostRepository;
 import com.codingchosun.backend.repository.postuser.DataJpaPostUserRepository;
 import com.codingchosun.backend.repository.user.DataJpaUserRepository;
@@ -36,6 +34,7 @@ public class PostService {
 
     private final DataJpaPostRepository postRepository;
     private final DataJpaPostUserRepository postUserRepository;
+    private final DataJpaPostHashRepository postHashRepository;
     private final DataJpaHashtagRepository hashtagRepository;
     private final DataJpaUserRepository userRepository;
 
@@ -53,14 +52,17 @@ public class PostService {
                 startTime,
                 user
         );
+        postRepository.saveAndFlush(post);
+
+        List<Hashtag> hashtags = findOrCreateHashtags(postRegistrationRequest.getHashtags());
+        for (Hashtag hashtag : hashtags) {
+            PostHash postHash = new PostHash(post, hashtag);
+            postHashRepository.saveAndFlush(postHash);
+        }
 
         PostUser postUser = new PostUser(user, post);
         post.getPostUsers().add(postUser);
-
-        List<Hashtag> hashtags = findOrCreateHashtags(postRegistrationRequest.getHashtags());
-        post.updateHashtags(hashtags);
-
-        postRepository.save(post);
+        postUserRepository.saveAndFlush(postUser);
 
         return new PostRegistrationResponse(post.getPostId());
     }
