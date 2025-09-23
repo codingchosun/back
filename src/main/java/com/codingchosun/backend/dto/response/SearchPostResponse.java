@@ -10,10 +10,10 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class SearchPostResponse {
 
-    private Long id;
+    private Long postId;
     private String title;
     private String contents;
-    private String path;
+    private String url;
 
     public static SearchPostResponse from(Post post, String imageUrl) {
         return new SearchPostResponse(
