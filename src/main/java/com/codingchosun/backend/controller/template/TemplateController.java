@@ -21,7 +21,7 @@ public class TemplateController {
     private final TemplateQueryService templateQueryService;
 
     @PostMapping
-    public ResponseEntity<ApiResponse<String>> createTemplate(TemplateCreateRequest templateCreateRequest) {
+    public ResponseEntity<ApiResponse<String>> createTemplate(@RequestBody TemplateCreateRequest templateCreateRequest) {
         templateService.createTemplate(templateCreateRequest);
 
         return ApiResponse.ok("템플릿이 생성되었습니다.");
