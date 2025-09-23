@@ -27,7 +27,6 @@ public class PostParticipantService {
     private final DataJpaPostRepository postRepository;
     private final DataJpaUserRepository userRepository;
 
-    //로그인된 유저가 특정 게시물(모임) 참여
     public void participatePost(Long postId, String loginId) {
         User user = findUserByLoginId(loginId);
         Post post = findPostById(postId);
@@ -42,7 +41,6 @@ public class PostParticipantService {
         postUserRepository.save(postUser);
     }
 
-    //게시물(모임) 탈퇴
     public void leavePost(Long postId, String loginId) {
         User user = findUserByLoginId(loginId);
         Post post = findPostById(postId);
@@ -54,7 +52,6 @@ public class PostParticipantService {
         postUserRepository.delete(postUser);
     }
 
-    //게시물(모임) 작성자가 참가자 추방
     public void banishPost(Long postId, String banishUserLoginId, String hostLoginId) {
         User host = findUserByLoginId(hostLoginId);
         User banishUser = findUserByLoginId(banishUserLoginId);

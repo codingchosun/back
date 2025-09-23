@@ -38,7 +38,6 @@ public class PostService {
     private final DataJpaHashtagRepository hashtagRepository;
     private final DataJpaUserRepository userRepository;
 
-    //게시물 생성
     public PostRegistrationResponse registerPost(PostRegistrationRequest postRegistrationRequest, String loginId) {
         User user = findUserByLoginId(loginId);
 
@@ -67,7 +66,6 @@ public class PostService {
         return new PostRegistrationResponse(post.getPostId());
     }
 
-    //게시물 수정
     public PostUpdateResponse updatePost(Long postId, String loginId, PostUpdateRequest postUpdateRequest) {
         Post post = findPostById(postId);
         User user = findUserByLoginId(loginId);
@@ -82,7 +80,6 @@ public class PostService {
         return new PostUpdateResponse(post.getPostId());
     }
 
-    //게시물 삭제
     public String deletePost(PostRemoveRequest postRemoveRequest, String loginId) {
         Post post = findPostById(postRemoveRequest.getPostId());
         User user = findUserByLoginId(loginId);
@@ -93,7 +90,6 @@ public class PostService {
         return DeleteConstants.DELETE_COMPLETE;
     }
 
-    //게시물 조회수 증가
     public void increaseViewCount(Long postId) {
         findPostById(postId).increaseViewCount();
     }

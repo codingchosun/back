@@ -31,7 +31,6 @@ public class EvaluationController {
         return ApiResponse.ok("평가가 성공적으로 제출되었습니다.");
     }
 
-    //평가 참여자 목록 조회 api
     @GetMapping("/targets")
     public ResponseEntity<ApiResponse<EvaluationResponse>> getEvaluationTargets(@PathVariable(name = "postId") Long postId, @AuthenticationPrincipal UserDetails userDetails) {
         EvaluationResponse response = evaluationQueryService.getTargetsToEvaluate(postId, userDetails.getUsername());

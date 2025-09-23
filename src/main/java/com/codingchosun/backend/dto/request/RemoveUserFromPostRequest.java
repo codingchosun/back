@@ -6,5 +6,5 @@ import lombok.Data;
 @Data
 public class RemoveUserFromPostRequest {
     @NotEmpty
-    Long removeId;  //userId들어갈거임
+    Long removeId;
 }

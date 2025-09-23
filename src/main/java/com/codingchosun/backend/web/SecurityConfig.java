@@ -145,17 +145,17 @@ public class SecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.addAllowedOrigin("http://13.124.154.185"); // 로컬
-        configuration.addAllowedOrigin("http://codingchosun.site");// 프론트 IPv4 주소
+        configuration.addAllowedOrigin("http://codingchosun.site");
         configuration.addAllowedOrigin("http://localhost:8080");
         configuration.addAllowedOrigin("http://localhost:8090");
         configuration.addAllowedOrigin("http://localhost:3000");
-        configuration.addAllowedMethod("*"); // 모든 메소드 허용.
+        configuration.addAllowedMethod("*");
         configuration.addAllowedHeader("*");
-        configuration.setAllowCredentials(true); // 인증 정보를 서버로 전달할지 여부 설정
-        configuration.setMaxAge(3600L); // Preflight 요청의 유효 기간 설정 (초 단위)
+        configuration.setAllowCredentials(true);
+        configuration.setMaxAge(3600L);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", configuration); // 모든 경로에 대해 CORS 설정 적용
+        source.registerCorsConfiguration("/**", configuration);
 
         return source;
     }

@@ -1,8 +1,6 @@
 package com.codingchosun.backend.security;
 
 import com.codingchosun.backend.domain.User;
-import com.codingchosun.backend.exception.common.ErrorCode;
-import com.codingchosun.backend.exception.notfoundfromdb.UserNotFoundFromDB;
 import com.codingchosun.backend.repository.user.DataJpaUserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;

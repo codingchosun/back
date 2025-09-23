@@ -11,7 +11,6 @@ import com.codingchosun.backend.exception.notfoundfromdb.TemplateNotFoundFromDB;
 import com.codingchosun.backend.exception.notfoundfromdb.UserNotFoundFromDB;
 import com.codingchosun.backend.repository.evaluation.DataJpaEvaluationRepository;
 import com.codingchosun.backend.repository.post.DataJpaPostRepository;
-import com.codingchosun.backend.repository.postuser.DataJpaPostUserRepository;
 import com.codingchosun.backend.repository.template.DataJpaTemplateRepository;
 import com.codingchosun.backend.repository.user.DataJpaUserRepository;
 import lombok.RequiredArgsConstructor;
@@ -31,7 +30,6 @@ public class EvaluationService {
     private final DataJpaUserRepository userRepository;
     private final DataJpaPostRepository postRepository;
     private final DataJpaTemplateRepository templateRepository;
-    private final DataJpaPostUserRepository postUserRepository;
 
     public void saveEvaluation(Long postId, String loginId, List<EvaluationRequest> requests) {
         User fromUser = findUserByLoginId(loginId);

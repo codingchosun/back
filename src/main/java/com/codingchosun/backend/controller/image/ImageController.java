@@ -45,7 +45,6 @@ public class ImageController {
         return ApiResponse.created("이미지 저장 성공");
     }
 
-    //이미지 삭제
     @DeleteMapping("/{imageId}")
     public ResponseEntity<ApiResponse<String>> deleteImage(@PathVariable Long postId,
                                                            @PathVariable Long imageId,

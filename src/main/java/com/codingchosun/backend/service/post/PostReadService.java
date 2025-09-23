@@ -37,14 +37,12 @@ public class PostReadService {
     private final DataJpaUserRepository userRepository;
     private final DataJpaImageRepository imageRepository;
 
-    //게시물 상세정보 조회
     public PostResponse getPostResponse(Long postId) {
         Post post = findPostById(postId);
 
         return PostResponse.from(post);
     }
 
-    //비로그인 사용자용 게시물 목록 조회 및 추천 해시태그 반환
     public NoLoginPostsHashtagsResponse noLoginGetPosts(Pageable pageable) {
         List<HashtagDto> randomHashtags = hashtagRepository.findRandomHashtags(5).stream()
                 .map(HashtagDto::from)
@@ -56,7 +54,6 @@ public class PostReadService {
         return new NoLoginPostsHashtagsResponse(postsPage, randomHashtags);
     }
 
-    //로그인 사용자 추천 게시물 목록 조회, 관심 해시태그가 없을 경우 최신 게시물 목록 반환
     public LoginPostsHashtagResponse loginPostsRequests(String loginId, Pageable pageable) {
         User user = findUserByLoginId(loginId);
         List<Hashtag> userInterestHashtags = user.getUserHashes().stream()
@@ -84,7 +81,6 @@ public class PostReadService {
         return new LoginPostsHashtagResponse(resultPage, recommendHashtags);
     }
 
-    //검색어 게시물 조회
     public Page<SearchPostResponse> searchPost(String search, Pageable pageable) {
 
         if (!StringUtils.hasText(search)) {

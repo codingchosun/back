@@ -1,6 +1,5 @@
 package com.codingchosun.backend.web;
 
-// Spring Security에서의 쿠키 설정 예시
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.session.web.http.CookieSerializer;
