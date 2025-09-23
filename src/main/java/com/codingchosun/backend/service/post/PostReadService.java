@@ -62,17 +62,17 @@ public class PostReadService {
         List<Long> recommendHashtagsId = userHashRepository.findHashtagIdsByLoginId(loginId);
 
         Page<Post> postsPage = null;
+        Page<LoginPostsResponse> responsePage;
 
         if (recommendHashtagsId.isEmpty()) {
             log.info("관심 해시태그가 없는 사용자[최신 게시물을 조회]: {}", loginId);
             postsPage = postRepository.findAllActiveByOrderByCreatedAtDesc(pageable);
+            responsePage = postsPage.map(post -> LoginPostsResponse.from(post, false));
         } else {
             log.info("[관심 해시태그 기반 추천 게시물을 조회]: {}, 추천 해시 태그: {}", loginId, recommendHashtagsId);
             postsPage = postRepository.findPostsByHashTagIdIn(recommendHashtagsId, pageable);
+            responsePage = postsPage.map(post -> LoginPostsResponse.from(post, true));
         }
-
-        Page<LoginPostsResponse> responsePage = postsPage
-                .map(post -> LoginPostsResponse.from(post, findFirstImageUrl(post)));
 
         List<HashtagDto> recommendHashtags = hashtagRepository.findAllById(recommendHashtagsId).stream()
                 .map(HashtagDto::from)
