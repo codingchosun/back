@@ -27,9 +27,8 @@ public class Template {
     @OneToMany(mappedBy = "template")
     private List<Evaluation> evaluations;
 
-    public Template(String content, int score, List<Evaluation> evaluations) {
+    public Template(String content, int score) {
         this.content = content;
         this.score = score;
-        this.evaluations = evaluations;
     }
 }

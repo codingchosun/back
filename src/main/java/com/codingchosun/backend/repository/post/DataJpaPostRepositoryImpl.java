@@ -53,7 +53,7 @@ public class DataJpaPostRepositoryImpl implements DataJpaPostRepositoryCustom {
     public Page<Post> findPostsBySearchQuery(List<String> titleQuery, List<String> hashQuery, Pageable pageable) {
         BooleanBuilder builder = new BooleanBuilder();
         for (String t : titleQuery) {
-            builder.and(post.title.contains(t));
+            builder.or(post.title.contains(t));
         }
 
         if (hashQuery != null && !hashQuery.isEmpty()) {
@@ -66,7 +66,7 @@ public class DataJpaPostRepositoryImpl implements DataJpaPostRepositoryCustom {
                                 .and(hashtag.hashtagName.eq(h))
                                 .and(post.stateCode.eq(StateCode.ACTIVE)))
                         .exists();
-                builder.and(hashExpression); // 모든 해시태그 조건을 and로 결합
+                builder.or(hashExpression);
             }
         }
 
@@ -88,7 +88,5 @@ public class DataJpaPostRepositoryImpl implements DataJpaPostRepositoryCustom {
                 .where(builder);
 
         return PageableExecutionUtils.getPage(contents, pageable, countQuery::fetchOne);
-
-
     }
 }

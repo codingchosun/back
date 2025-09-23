@@ -1,6 +1,5 @@
 package com.codingchosun.backend.dto.request;
 
-import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -8,12 +7,9 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class EvaluationRequest {
+public class TemplateCreateRequest {
 
-    @NotNull
-    private String toUserLoginId;
-
-    @NotNull
-    private Long templateId;
+    private String content;
+    private int score;
 
 }

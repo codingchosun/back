@@ -1,22 +1,23 @@
 package com.codingchosun.backend.dto.response;
 
 import com.codingchosun.backend.domain.Template;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor
-@AllArgsConstructor
-public class TemplateDto {
+public class TemplateResponse {
 
-    private Long templateId;
     private int score;
     private String content;
 
-    public static TemplateDto from(Template template) {
-        return new TemplateDto(
-                template.getTemplateId(),
+    public TemplateResponse(int score, String content) {
+        this.score = score;
+        this.content = content;
+    }
+
+    public static TemplateResponse from(Template template) {
+        return new TemplateResponse(
                 template.getScore(),
                 template.getContent()
         );

@@ -1,18 +1,20 @@
 package com.codingchosun.backend.service.post;
 
 import com.codingchosun.backend.constants.StateCode;
-import com.codingchosun.backend.domain.Image;
-import com.codingchosun.backend.domain.Post;
+import com.codingchosun.backend.domain.*;
 import com.codingchosun.backend.dto.response.*;
 import com.codingchosun.backend.exception.common.ErrorCode;
+import com.codingchosun.backend.exception.login.NotAuthenticatedException;
 import com.codingchosun.backend.exception.notfoundfromdb.PostNotFoundFromDB;
 import com.codingchosun.backend.repository.hashtag.DataJpaHashtagRepository;
 import com.codingchosun.backend.repository.hashtag.DataJpaUserHashRepository;
 import com.codingchosun.backend.repository.image.DataJpaImageRepository;
 import com.codingchosun.backend.repository.post.DataJpaPostRepository;
+import com.codingchosun.backend.repository.user.DataJpaUserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -32,15 +34,12 @@ public class PostReadService {
     private final DataJpaPostRepository postRepository;
     private final DataJpaHashtagRepository hashtagRepository;
     private final DataJpaUserHashRepository userHashRepository;
+    private final DataJpaUserRepository userRepository;
     private final DataJpaImageRepository imageRepository;
 
     //게시물 상세정보 조회
     public PostResponse getPostResponse(Long postId) {
         Post post = findPostById(postId);
-
-        if (post.getStateCode().equals(StateCode.INACTIVE)) {
-            throw new PostNotFoundFromDB(ErrorCode.POST_NOT_FOUND);
-        }
 
         return PostResponse.from(post);
     }
@@ -59,26 +58,30 @@ public class PostReadService {
 
     //로그인 사용자 추천 게시물 목록 조회, 관심 해시태그가 없을 경우 최신 게시물 목록 반환
     public LoginPostsHashtagResponse loginPostsRequests(String loginId, Pageable pageable) {
-        List<Long> recommendHashtagsId = userHashRepository.findHashtagIdsByLoginId(loginId);
+        User user = findUserByLoginId(loginId);
+        List<Hashtag> userInterestHashtags = user.getUserHashes().stream()
+                .map(UserHash::getHashtag)
+                .toList();
 
-        Page<Post> postsPage = null;
+        Page<Post> allPostPage = postRepository.findAllActiveByOrderByCreatedAtDesc(pageable);
 
-        if (recommendHashtagsId.isEmpty()) {
-            log.info("관심 해시태그가 없는 사용자[최신 게시물을 조회]: {}", loginId);
-            postsPage = postRepository.findAllActiveByOrderByCreatedAtDesc(pageable);
-        } else {
-            log.info("[관심 해시태그 기반 추천 게시물을 조회]: {}, 추천 해시 태그: {}", loginId, recommendHashtagsId);
-            postsPage = postRepository.findPostsByHashTagIdIn(recommendHashtagsId, pageable);
-        }
+        List<LoginPostsResponse> responsePosts = allPostPage.getContent().stream()
+                .map(post -> {
+                    boolean isRecommend = !userInterestHashtags.isEmpty() && userInterestHashtags.stream()
+                            .anyMatch(interestTag -> post.getPostHashes().stream()
+                                    .anyMatch(postHash -> postHash.getHashtag().equals(interestTag))
+                            );
+                    return LoginPostsResponse.from(post, isRecommend);
+                })
+                .collect(Collectors.toList());
 
-        Page<LoginPostsResponse> responsePage = postsPage
-                .map(post -> LoginPostsResponse.from(post, findFirstImageUrl(post)));
+        Page<LoginPostsResponse> resultPage = new PageImpl<>(responsePosts, pageable, allPostPage.getTotalElements());
 
-        List<HashtagDto> recommendHashtags = hashtagRepository.findAllById(recommendHashtagsId).stream()
+        List<HashtagDto> recommendHashtags = userInterestHashtags.stream()
                 .map(HashtagDto::from)
                 .collect(Collectors.toList());
 
-        return new LoginPostsHashtagResponse(responsePage, recommendHashtags);
+        return new LoginPostsHashtagResponse(resultPage, recommendHashtags);
     }
 
     //검색어 게시물 조회
@@ -89,19 +92,19 @@ public class PostReadService {
                     .map(post -> SearchPostResponse.from(post, findFirstImageUrl(post)));
         }
 
-        List<String> title = new ArrayList<>();
-        List<String> hash = new ArrayList<>();
+        List<String> titleKeyword = new ArrayList<>();
+        List<String> hashtagKeyword = new ArrayList<>();
         Arrays.stream(search.split(" "))
                 .filter(StringUtils::hasText)
                 .forEach(keyword -> {
                     if (keyword.startsWith("#")) {
-                        hash.add(keyword);
+                        hashtagKeyword.add(keyword.substring(1));
                     } else {
-                        title.add(keyword);
+                        titleKeyword.add(keyword);
                     }
                 });
 
-        return postRepository.findPostsBySearchQuery(title, hash, pageable)
+        return postRepository.findPostsBySearchQuery(titleKeyword, hashtagKeyword, pageable)
                 .map(post -> SearchPostResponse.from(post, findFirstImageUrl(post)));
     }
 
@@ -121,6 +124,12 @@ public class PostReadService {
     private Post findPostById(Long postId) {
         return postRepository.findById(postId).orElseThrow(
                 () -> new PostNotFoundFromDB(ErrorCode.POST_NOT_FOUND)
+        );
+    }
+
+    private User findUserByLoginId(String loginId) {
+        return userRepository.findByLoginId(loginId).orElseThrow(
+                () -> new NotAuthenticatedException(ErrorCode.AUTHENTICATION_REQUIRED)
         );
     }
 }

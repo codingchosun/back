@@ -8,7 +8,7 @@ import java.util.Optional;
 
 public interface DataJpaTemplateRepository extends JpaRepository<Template, Long> {
 
-    Optional<Template> findTemplateByContent(String content);
+    Optional<Template> findByTemplateId(Long templateId);
 
     List<Template> findByEvaluations_ToUser_UserId(Long evaluationsToUserUserId);
 
