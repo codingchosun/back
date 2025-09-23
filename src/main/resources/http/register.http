@@ -1,26 +1,54 @@
-POST /register
+### 회원1 생성
+POST /api/register
 Host: localhost:8090
 Content-Type: application/json
 
 {
     "name": "김재진",
     "loginId": "kimjaejin",
-    "password": "12345678",
+    "password": "a12345678",
     "email": "kimjaejin@gmail.com",
     "genderCode": "MALE",
     "birth": "2000-05-11",
-    "nickname": "zzzzz"
+    "nickname": "jaejin"
 }
 
-###
-
-POST /login
+### 테스트 회원 생성
+POST /api/register
 Host: localhost:8090
 Content-Type: application/json
 
 {
-  "loginId" : "id1111",
-  "password" : "pwd1111"
+  "name": "테스트1",
+  "loginId": "test01",
+  "password": "test01",
+  "email": "test01@test.com",
+  "genderCode": "MALE",
+  "birth": "2001-11-11",
+  "nickname": "닉네임테스트1"
 }
 
-###
+### 로그인
+POST /api/login
+Host: localhost:8090
+Content-Type: application/json
+
+{
+  "loginId" : "kimjaejin",
+  "password" : "a12345678"
+}
+
+### 테스트 회원 로그인
+POST /api/login
+Host: localhost:8090
+Content-Type: application/json
+
+{
+  "loginId" : "test01",
+  "password" : "test01"
+}
+
+### 로그아웃
+POST /api/logout
+Host: localhost:8090
+Content-Type: application/json
