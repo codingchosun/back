@@ -38,7 +38,7 @@ public class EvaluationService {
         Post post = findPostById(postId);
 
         for (EvaluationRequest request : requests) {
-            User toUser = findUserById(request.getToUserId());
+            User toUser = findUserByLoginId(request.getToUserLoginId());
             Template template = findTemplateById(request.getTemplateId());
 
             if (evaluationRepository.existsByPostAndFromUserAndToUser(post, fromUser, toUser)) {

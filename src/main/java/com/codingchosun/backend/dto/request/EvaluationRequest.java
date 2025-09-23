@@ -1,5 +1,6 @@
 package com.codingchosun.backend.dto.request;
 
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -8,6 +9,11 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class EvaluationRequest {
-    private Long toUserId;
+
+    @NotNull
+    private String toUserLoginId;
+
+    @NotNull
     private Long templateId;
+
 }
