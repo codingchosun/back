@@ -96,19 +96,19 @@ public class PostReadService {
                     .map(post -> SearchPostResponse.from(post, findFirstImageUrl(post)));
         }
 
-        List<String> title = new ArrayList<>();
-        List<String> hash = new ArrayList<>();
+        List<String> titleKeyword = new ArrayList<>();
+        List<String> hashtagKeyword = new ArrayList<>();
         Arrays.stream(search.split(" "))
                 .filter(StringUtils::hasText)
                 .forEach(keyword -> {
                     if (keyword.startsWith("#")) {
-                        hash.add(keyword);
+                        hashtagKeyword.add(keyword.substring(1));
                     } else {
-                        title.add(keyword);
+                        titleKeyword.add(keyword);
                     }
                 });
 
-        return postRepository.findPostsBySearchQuery(title, hash, pageable)
+        return postRepository.findPostsBySearchQuery(titleKeyword, hashtagKeyword, pageable)
                 .map(post -> SearchPostResponse.from(post, findFirstImageUrl(post)));
     }
 
